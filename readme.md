@@ -1,4 +1,8 @@
-# electron-boilerplate
+# Usage
+
+GUI for a tag manager in Linux, Windows.
+
+# based on electron-boilerplate
 
 > Boilerplate to kickstart creating an app with [Electron](https://github.com/electron/electron)
 
