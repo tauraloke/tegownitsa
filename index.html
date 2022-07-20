@@ -1,10 +1,25 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8">
+		<meta charset="utf-8" />
 		<title>Electron boilerplate</title>
-		<link rel="stylesheet" href="index.css">
+		<link rel="stylesheet" href="index.css" />
 	</head>
+	<script>
+		async function sqlQuery() {
+			console.log(window.sqliteApi);
+			await window.sqliteApi.query(
+				"CREATE TABLE IF NOT EXISTS users (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,NAME TEXT NOT NULL)"
+			);
+			await window.sqliteApi.query(
+				'INSERT INTO users ("name") values("Kiri");'
+			);
+			console.log(await window.sqliteApi.query("SELECT * FROM users;"));
+		}
+		async function ajaxQuery() {
+			await window.sqliteApi.ajax();
+		}
+	</script>
 	<body>
 		<div class="container">
 			<header>
@@ -14,5 +29,8 @@
 			<section class="main"></section>
 			<footer></footer>
 		</div>
+		test
+		<button onclick="sqlQuery()">SQLite</button>
+		<button onclick="ajaxQuery()">Ajax</button>
 	</body>
 </html>

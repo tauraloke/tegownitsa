@@ -1,20 +1,20 @@
-'use strict';
-const path = require('path');
-const {app, BrowserWindow, Menu} = require('electron');
+"use strict";
+const path = require("path");
+const { app, BrowserWindow, Menu, ipcMain } = require("electron");
 /// const {autoUpdater} = require('electron-updater');
-const {is} = require('electron-util');
-const unhandled = require('electron-unhandled');
-const debug = require('electron-debug');
-const contextMenu = require('electron-context-menu');
-const config = require('./config.js');
-const menu = require('./menu.js');
+const { is } = require("electron-util");
+const unhandled = require("electron-unhandled");
+const debug = require("electron-debug");
+const contextMenu = require("electron-context-menu");
+const config = require("./config.js");
+const menu = require("./menu.js");
 
 unhandled();
 debug();
 contextMenu();
 
 // Note: Must match `build.appId` in package.json
-app.setAppUserModelId('com.company.AppName');
+app.setAppUserModelId("com.electron.Tegownitsa");
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
@@ -35,20 +35,23 @@ const createMainWindow = async () => {
 		title: app.name,
 		show: false,
 		width: 600,
-		height: 400
+		height: 400,
+		webPreferences: {
+			preload: path.join(__dirname, "preload.js"),
+		},
 	});
 
-	win.on('ready-to-show', () => {
+	win.on("ready-to-show", () => {
 		win.show();
 	});
 
-	win.on('closed', () => {
+	win.on("closed", () => {
 		// Dereference the window
 		// For multiple windows store them in an array
 		mainWindow = undefined;
 	});
 
-	await win.loadFile(path.join(__dirname, 'index.html'));
+	await win.loadFile(path.join(__dirname, "index.html"));
 
 	return win;
 };
@@ -58,7 +61,7 @@ if (!app.requestSingleInstanceLock()) {
 	app.quit();
 }
 
-app.on('second-instance', () => {
+app.on("second-instance", () => {
 	if (mainWindow) {
 		if (mainWindow.isMinimized()) {
 			mainWindow.restore();
@@ -68,13 +71,13 @@ app.on('second-instance', () => {
 	}
 });
 
-app.on('window-all-closed', () => {
+app.on("window-all-closed", () => {
 	if (!is.macos) {
 		app.quit();
 	}
 });
 
-app.on('activate', async () => {
+app.on("activate", async () => {
 	if (!mainWindow) {
 		mainWindow = await createMainWindow();
 	}
@@ -85,6 +88,41 @@ app.on('activate', async () => {
 	Menu.setApplicationMenu(menu);
 	mainWindow = await createMainWindow();
 
-	const favoriteAnimal = config.get('favoriteAnimal');
-	mainWindow.webContents.executeJavaScript(`document.querySelector('header p').textContent = 'Your favorite animal is ${favoriteAnimal}'`);
+	const favoriteAnimal = config.get("favoriteAnimal");
+	mainWindow.webContents.executeJavaScript(
+		`document.querySelector('header p').textContent = 'Your favorite animal is ${favoriteAnimal}'`
+	);
 })();
+
+const sqlite3 = require("sqlite3").verbose();
+let db = new sqlite3.Database("db.sqlite3");
+db.query = function (query, params) {
+	return new Promise(function (resolve, reject) {
+		db.get(query, params, function (err, row) {
+			if (err) reject("Read error: " + err.message);
+			else {
+				resolve(row);
+			}
+		});
+	});
+};
+
+ipcMain.handle("executeQuery", async (event, query, params) => {
+	return await db.query(query, params);
+});
+
+ipcMain.handle("netRequest", async (event) => {
+	const { net } = require("electron");
+	const request = net.request("https://github.com");
+	request.on("response", (response) => {
+		console.log(`STATUS: ${response.statusCode}`);
+		console.log(`HEADERS: ${JSON.stringify(response.headers)}`);
+		response.on("data", (chunk) => {
+			console.log(`BODY: ${chunk}`);
+		});
+		response.on("end", () => {
+			console.log("No more data in response.");
+		});
+	});
+	request.end();
+});
