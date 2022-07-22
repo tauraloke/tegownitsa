@@ -40,27 +40,32 @@ There's also a [Yeoman generator](https://github.com/sindresorhus/generator-elec
 
 ---
 
-# App Name
+# Tegownitsa
 
-> The best app ever
+> Image tag manager
 
-## Install
+## Build
 
-*macOS 10.10+, Linux, and Windows 7+ are supported (64-bit only).*
-
-**macOS**
-
-[**Download**](https://github.com/user/repo/releases/latest) the `.dmg` file.
+*Linux, and Windows 7+ are supported (64-bit only).*
 
 **Linux**
 
-[**Download**](https://github.com/user/repo/releases/latest) the `.AppImage` or `.deb` file.
+- Clone repo
 
-*The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-to-make-an-appimage-executable/80) after download.*
+- `npm install`
+
+- `npm run dist:l`
+
 
 **Windows**
 
-[**Download**](https://github.com/user/repo/releases/latest) the `.exe` file.
+Only windows environment (due to `sharp` package).
+
+- Clone repo
+
+- `npm install`
+
+- `npm run dist:w`
 
 ---
 
@@ -71,8 +76,8 @@ Built with [Electron](https://electronjs.org).
 ### Run
 
 ```
-$ npm install
-$ npm start
+npm install
+npm start
 ```
 
 ### Publish

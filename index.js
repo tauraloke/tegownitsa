@@ -99,7 +99,9 @@ let db = new sqlite3.Database("db.sqlite3");
 console.log("Loading sqlite fuzzy extension...");
 db.loadExtension(
 	process.platform == "win32"
-		? ".\\resources\\app.asar.unpacked\\libs\\sqlite\\fuzzy.dll"
+		? app.isPackaged
+			? ".\\resources\\app.asar.unpacked\\libs\\sqlite\\fuzzy.dll"
+			: ".\\libs\\sqlite\\fuzzy.dll"
 		: "./libs/sqlite/fuzzy"
 );
 
