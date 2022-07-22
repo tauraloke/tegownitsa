@@ -114,6 +114,27 @@ db.query = function (query, params) {
 	});
 };
 
+const fs = require("fs");
+//const Promise = require("bluebird");
+const phash = require("sharp-phash");
+const assert = require("assert");
+const dist = require("sharp-phash/distance");
+const img1 = fs.readFileSync("./Lenna.png");
+const img2 = fs.readFileSync("./Lenna.jpg");
+const img3 = fs.readFileSync("./Lenna-sepia.jpg");
+const img4 = fs.readFileSync("./Lenna-not.png");
+Promise.all([phash(img1), phash(img2), phash(img3), phash(img4)]).then(
+	([hash1, hash2, hash3, hash4]) => {
+		// hash returned is 64 characters length string with 0 and 1 only
+		console.log("dist 1 2", dist(hash1, hash2));
+		console.log("dist 2 3", dist(hash2, hash3));
+		console.log("dist 3 1", dist(hash3, hash1));
+		console.log("dist 1 4", dist(hash1, hash4));
+		console.log("dist 2 4", dist(hash2, hash4));
+		console.log("dist 3 4", dist(hash3, hash4));
+	}
+);
+
 ipcMain.handle("executeQuery", async (event, query, params) => {
 	console.log("1:", await db.query("select levenshtein('101', '111')"));
 	console.log("2:", await db.query("select levenshtein('111', '111')"));

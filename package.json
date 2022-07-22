@@ -26,6 +26,8 @@
 		"electron-unhandled": "^3.0.2",
 		"electron-updater": "^4.3.8",
 		"electron-util": "^0.15.1",
+		"sharp": "^0.30.7",
+		"sharp-phash": "^2.0.0",
 		"sqlite3": "^5.0.9"
 	},
 	"devDependencies": {
@@ -47,7 +49,8 @@
 	"build": {
 		"appId": "com.electron.Tegownitsa",
 		"asarUnpack": [
-			"libs/sqlite/fuzzy.dll"
+			"libs/sqlite/fuzzy.dll",
+			"**/node_modules/sharp/**"
 		],
 		"mac": {
 			"category": "public.app-category.social-networking",
