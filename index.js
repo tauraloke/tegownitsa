@@ -139,10 +139,10 @@ Promise.all([phash(img1), phash(img2), phash(img3), phash(img4)]).then(
 );
 */
 ipcMain.handle("executeQuery", async (event, query, params) => {
-	/*console.log("1:", await db.query("select levenshtein('101', '111')")); TODO: USE AND REMOVE
+	console.log("1:", await db.query("select levenshtein('101', '111')")); //TODO: USE AND REMOVE
 	console.log("2:", await db.query("select levenshtein('111', '111')"));
 	console.log("3:", await db.query("select hamming(5, 4)"));
-	console.log("4:", await db.query("select hamming(4, 4)"));*/
+	console.log("4:", await db.query("select hamming(4, 4)"));
 	return await db.query(query, params);
 });
 
