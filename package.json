@@ -46,6 +46,9 @@
 	},
 	"build": {
 		"appId": "com.electron.Tegownitsa",
+		"asarUnpack": [
+			"libs/sqlite/fuzzy.dll"
+		],
 		"mac": {
 			"category": "public.app-category.social-networking",
 			"darkModeSupport": true

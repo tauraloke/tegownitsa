@@ -96,6 +96,13 @@ app.on("activate", async () => {
 
 const sqlite3 = require("sqlite3").verbose();
 let db = new sqlite3.Database("db.sqlite3");
+console.log("Loading sqlite fuzzy extension...");
+db.loadExtension(
+	process.platform == "win32"
+		? ".\\resources\\app.asar.unpacked\\libs\\sqlite\\fuzzy.dll"
+		: "./libs/sqlite/fuzzy"
+);
+
 db.query = function (query, params) {
 	return new Promise(function (resolve, reject) {
 		db.get(query, params, function (err, row) {
@@ -108,6 +115,10 @@ db.query = function (query, params) {
 };
 
 ipcMain.handle("executeQuery", async (event, query, params) => {
+	console.log("1:", await db.query("select levenshtein('101', '111')"));
+	console.log("2:", await db.query("select levenshtein('111', '111')"));
+	console.log("3:", await db.query("select hamming(5, 4)"));
+	console.log("4:", await db.query("select hamming(4, 4)"));
 	return await db.query(query, params);
 });
 
