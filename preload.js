@@ -20,12 +20,27 @@ contextBridge.exposeInMainWorld("sqliteApi", {
 			throw error;
 		}
 	},
-	ajax: async (query, fetch, value) => {
+	ajax: async () => {
 		try {
 			return await ipcRenderer.invoke("netRequest");
 		} catch (error) {
 			console.error(error);
 			throw error;
 		}
+	},
+});
+
+contextBridge.exposeInMainWorld("fileApi", {
+	openFolder: async (event, path) => {
+		try {
+			return await ipcRenderer.invoke("openFolder", path);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	addFilesFromFolder: (path) => {
+		console.log("fdrgghfgfb", path);
+		return path;
 	},
 });

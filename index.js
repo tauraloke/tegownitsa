@@ -1,6 +1,6 @@
 "use strict";
 const path = require("path");
-const { app, BrowserWindow, Menu, ipcMain } = require("electron");
+const { app, BrowserWindow, Menu, ipcMain, dialog } = require("electron");
 /// const {autoUpdater} = require('electron-updater');
 const { is } = require("electron-util");
 const unhandled = require("electron-unhandled");
@@ -160,4 +160,10 @@ ipcMain.handle("netRequest", async (event) => {
 		});
 	});
 	request.end();
+});
+
+ipcMain.handle("openFolder", async (event, path) => {
+	return await dialog.showOpenDialog({
+		properties: ["openDirectory"],
+	});
 });
