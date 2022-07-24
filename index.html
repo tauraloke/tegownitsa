@@ -19,12 +19,12 @@
 		async function ajaxQuery() {
 			await window.sqliteApi.ajax();
 		}
-		async function openFolder() {
+		async function openFolder(event) {
 			let folder = await window.fileApi.openFolder();
 			if (!(folder && folder.filePaths && folder.filePaths[0])) return false;
 			let path = folder.filePaths[0];
-			window.fileApi.addFilesFromFolder(path);
 			console.log(`Loading folder ${path}`);
+			window.fileApi.addFilesFromFolder(path);
 			document.getElementById("folderPath").textContent = path;
 		}
 	</script>

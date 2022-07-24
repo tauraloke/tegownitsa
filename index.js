@@ -86,6 +86,7 @@ app.on("activate", async () => {
 (async () => {
 	await app.whenReady();
 	Menu.setApplicationMenu(menu);
+	initDatabase();
 	mainWindow = await createMainWindow();
 
 	const favoriteAnimal = config.get("favoriteAnimal");
@@ -116,6 +117,41 @@ db.query = function (query, params) {
 	});
 };
 
+async function initDatabase() {
+	// make tables if not exists...
+	await db.run(
+		"CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, fullpath TEXT, source_filename TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at INTEGER, imagehash INTEGER)"
+	);
+}
+
+ipcMain.handle("executeQuery", async (event, query, values) => {
+	return await db.query(query, values);
+});
+
+ipcMain.handle("openFolder", async (event, path) => {
+	return await dialog.showOpenDialog({
+		properties: ["openDirectory"],
+	});
+});
+
+// SAMPLES TODO: USE AND REMOVE
+ipcMain.handle("netRequest", async (event) => {
+	// TODO: USE AND REMOVE
+	const { net } = require("electron");
+	const request = net.request("https://github.com");
+	request.on("response", (response) => {
+		console.log(`STATUS: ${response.statusCode}`);
+		console.log(`HEADERS: ${JSON.stringify(response.headers)}`);
+		response.on("data", (chunk) => {
+			console.log(`BODY: ${chunk}`);
+		});
+		response.on("end", () => {
+			console.log("No more data in response.");
+		});
+	});
+	request.end();
+});
+
 /* TODO: USE AND REMOVE
 const fs = require("fs");
 //const Promise = require("bluebird");
@@ -138,32 +174,8 @@ Promise.all([phash(img1), phash(img2), phash(img3), phash(img4)]).then(
 	}
 );
 */
-ipcMain.handle("executeQuery", async (event, query, params) => {
-	/*console.log("1:", await db.query("select levenshtein('101', '111')")); TODO: USE AND REMOVE
+
+/*console.log("1:", await db.query("select levenshtein('101', '111')")); TODO: USE AND REMOVE
 	console.log("2:", await db.query("select levenshtein('111', '111')"));
 	console.log("3:", await db.query("select hamming(5, 4)"));
 	console.log("4:", await db.query("select hamming(4, 4)"));*/
-	return await db.query(query, params);
-});
-
-ipcMain.handle("netRequest", async (event) => {
-	const { net } = require("electron");
-	const request = net.request("https://github.com");
-	request.on("response", (response) => {
-		console.log(`STATUS: ${response.statusCode}`);
-		console.log(`HEADERS: ${JSON.stringify(response.headers)}`);
-		response.on("data", (chunk) => {
-			console.log(`BODY: ${chunk}`);
-		});
-		response.on("end", () => {
-			console.log("No more data in response.");
-		});
-	});
-	request.end();
-});
-
-ipcMain.handle("openFolder", async (event, path) => {
-	return await dialog.showOpenDialog({
-		properties: ["openDirectory"],
-	});
-});
