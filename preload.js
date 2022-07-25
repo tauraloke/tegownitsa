@@ -114,7 +114,7 @@ contextBridge.exposeInMainWorld("fileApi", {
 		fs.unlinkSync(filePath);
 	},
 	saveTempFileFromClipboard: () => {
-		let image = clipboard.readImage();
+		let image = clipboard.readImage("clipboard");
 		console.log(image);
 		if (image.isEmpty()) {
 			console.log(43434343);
