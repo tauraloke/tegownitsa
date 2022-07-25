@@ -40,8 +40,8 @@
 			if (!tmpFilePath) {
 				return false;
 			}
-			window.fileApi.addFile(tmpFilePath);
-			window.fileApi.removeFile(tmpFilePath);
+			await window.fileApi.addFile(tmpFilePath);
+			await window.fileApi.removeFile(tmpFilePath);
 			showActionStroke(`File has imported from a clipboard.`);
 		}
 		function showActionStroke(message) {
