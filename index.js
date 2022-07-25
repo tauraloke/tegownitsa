@@ -120,7 +120,7 @@ db.query = function (query, params) {
 async function initDatabase() {
 	// make tables if not exists...
 	await db.run(
-		"CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, fullpath TEXT, source_filename TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at INTEGER, imagehash INTEGER)"
+		"CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, fullpath TEXT, source_filename TEXT, width INTEGER, height INTEGER, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at INTEGER, imagehash INTEGER)"
 	);
 }
 
@@ -131,6 +131,12 @@ ipcMain.handle("executeQuery", async (event, query, values) => {
 ipcMain.handle("openFolder", async (event, path) => {
 	return await dialog.showOpenDialog({
 		properties: ["openDirectory"],
+	});
+});
+
+ipcMain.handle("openFile", async (event, path) => {
+	return await dialog.showOpenDialog({
+		properties: ["openFile"],
 	});
 });
 

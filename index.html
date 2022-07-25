@@ -25,7 +25,27 @@
 			let path = folder.filePaths[0];
 			console.log(`Loading folder ${path}`);
 			window.fileApi.addFilesFromFolder(path);
-			document.getElementById("folderPath").textContent = path;
+			showActionStroke(`Folder ${path} has imported.`);
+		}
+		async function openFile(event) {
+			let file = await window.fileApi.openFile();
+			if (!(file && file.filePaths && file.filePaths[0])) return false;
+			let path = file.filePaths[0];
+			console.log(`Chosen file ${path}`);
+			window.fileApi.addFile(path);
+			showActionStroke(`File ${path} has imported.`);
+		}
+		async function importFromClipboard() {
+			const tmpFilePath = await window.fileApi.saveTempFileFromClipboard();
+			if (!tmpFilePath) {
+				return false;
+			}
+			window.fileApi.addFile(path);
+			//window.fileApi.removeFile(path);
+			showActionStroke(`File has imported from a clipboard.`);
+		}
+		function showActionStroke(message) {
+			document.getElementById("actionStroke").textContent = message;
 		}
 	</script>
 	<body>
@@ -34,13 +54,17 @@
 				<h1>Electron boilerplate</h1>
 				<p></p>
 			</header>
-			<section class="main"></section>
-			<footer></footer>
+			<section class="main">
+				test
+				<button onclick="sqlQuery()">SQLite</button>
+				<button onclick="ajaxQuery()">Ajax</button>
+				<button onclick="openFolder()">Import folder</button>
+				<button onclick="openFile()">Import file</button>
+				<button onclick="importFromClipboard()">Import from clipboard</button>
+			</section>
+			<footer>
+				<div id="actionStroke"></div>
+			</footer>
 		</div>
-		test
-		<button onclick="sqlQuery()">SQLite</button>
-		<button onclick="ajaxQuery()">Ajax</button>
-		<button onclick="openFolder()">Folder</button>
-		<div id="folderPath"></div>
 	</body>
 </html>

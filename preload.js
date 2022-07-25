@@ -1,13 +1,55 @@
-const { contextBridge, ipcRenderer } = require("electron");
+const { contextBridge, ipcRenderer, clipboard } = require("electron");
 const path = require("path");
 const fs = require("fs");
+const sharp = require("sharp");
 const phash = require("sharp-phash");
+
+const storageDir = path.join(__dirname, "storage");
 
 function randomDigit() {
 	return Math.floor(Math.random() * 10);
 }
 
-const storageDir = path.join(__dirname, "storage");
+function importFileToStorage(absolutePath) {
+	if (!fs.statSync(absolutePath).isFile()) {
+		return;
+	}
+	console.log("Loading file: ", absolutePath);
+	const storageDirPathForFile = path.join(
+		storageDir,
+		randomDigit().toString(),
+		randomDigit().toString()
+	);
+	fs.mkdir(storageDirPathForFile, { recursive: true }, (err) => {
+		if (err) throw err;
+		const newFilePathInStorage = path.join(
+			storageDirPathForFile,
+			new Date().getTime() +
+				randomDigit() +
+				randomDigit() +
+				path.extname(absolutePath)
+		);
+		const fileImage = fs.readFileSync(absolutePath);
+		phash(fileImage)
+			.then(async (imagehash) => {
+				fs.copyFile(absolutePath, newFilePathInStorage, () => {});
+				const image = await sharp(fileImage);
+				const metadata = await image.metadata();
+				ipcRenderer.invoke(
+					"executeQuery",
+					"INSERT INTO files (fullpath, source_filename, imagehash, width, height) VALUES (?, ?, ?, ? , ?)",
+					[
+						newFilePathInStorage,
+						path.basename(absolutePath),
+						parseInt(imagehash, 2),
+						metadata.width,
+						metadata.height,
+					]
+				);
+			})
+			.catch((err) => console.log(err));
+	});
+}
 
 window.addEventListener("DOMContentLoaded", async () => {
 	const replaceText = (selector, text) => {
@@ -48,44 +90,47 @@ contextBridge.exposeInMainWorld("fileApi", {
 			throw error;
 		}
 	},
+	openFile: async (event, dirPath) => {
+		try {
+			return await ipcRenderer.invoke("openFile", dirPath);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
 	addFilesFromFolder: (dirPath) => {
 		fs.readdir(dirPath, (err, files) => {
 			files.forEach((filePath) => {
 				let absolutePath = path.join(dirPath, filePath);
-				if (!fs.statSync(absolutePath).isFile()) {
-					return;
-				}
-				console.log(absolutePath);
-				storageDirPathForFile = path.join(
-					storageDir,
-					randomDigit().toString(),
-					randomDigit().toString()
-				);
-				fs.mkdir(storageDirPathForFile, { recursive: true }, (err) => {
-					if (err) throw err;
-					let newFilePathInStorage = path.join(
-						storageDirPathForFile,
-						new Date().getTime() +
-							randomDigit() +
-							randomDigit() +
-							path.extname(filePath)
-					);
-					const fileImage = fs.readFileSync(absolutePath);
-					phash(fileImage)
-						.then((imagehash) => {
-							fs.copyFile(absolutePath, newFilePathInStorage, () => {});
-							console.log([newFilePathInStorage, filePath, imagehash]);
-							ipcRenderer.invoke(
-								"executeQuery",
-								"INSERT INTO files (fullpath, source_filename, imagehash) VALUES (?, ?, ?)",
-								[newFilePathInStorage, filePath, parseInt(imagehash, 2)]
-							);
-						})
-						.catch((err) => console.log(err));
-				});
+				importFileToStorage(absolutePath);
 			});
 		});
-		console.log("fdrgghfgfb", dirPath);
 		return dirPath;
+	},
+	addFile: (filePath) => {
+		return importFileToStorage(filePath);
+	},
+	removeFile: (filePath) => {
+		fs.unlinkSync(filePath);
+	},
+	saveTempFileFromClipboard: () => {
+		let image = clipboard.readImage();
+		console.log(image)
+		if (image.isEmpty()) {
+			console.log(43434343)
+			return false;
+		}
+		const storageDirPathForFile = path.join(storageDir, "tmp");
+		const tmpFolderCreated = fs.mkdirSync(storageDirPathForFile, {
+			recursive: true,
+		});
+		console.log(tmpFolderCreated)
+		if (!tmpFolderCreated) {
+			return false;
+		}
+		let tmpFilePath = path.join(storageDirPathForFile, "from_clipboard.png");
+		fs.createWriteStream(tmpFilePath).write(image.toPNG());
+		console.log(45454)
+		return tmpFilePath;
 	},
 });
