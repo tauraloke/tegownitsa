@@ -115,22 +115,18 @@ contextBridge.exposeInMainWorld("fileApi", {
 	},
 	saveTempFileFromClipboard: () => {
 		let image = clipboard.readImage();
-		console.log(image)
+		console.log(image);
 		if (image.isEmpty()) {
-			console.log(43434343)
+			console.log(43434343);
 			return false;
 		}
 		const storageDirPathForFile = path.join(storageDir, "tmp");
-		const tmpFolderCreated = fs.mkdirSync(storageDirPathForFile, {
+		fs.mkdirSync(storageDirPathForFile, {
 			recursive: true,
 		});
-		console.log(tmpFolderCreated)
-		if (!tmpFolderCreated) {
-			return false;
-		}
 		let tmpFilePath = path.join(storageDirPathForFile, "from_clipboard.png");
 		fs.createWriteStream(tmpFilePath).write(image.toPNG());
-		console.log(45454)
+		console.log(45454);
 		return tmpFilePath;
 	},
 });
