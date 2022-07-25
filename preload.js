@@ -125,7 +125,7 @@ contextBridge.exposeInMainWorld("fileApi", {
 			recursive: true,
 		});
 		let tmpFilePath = path.join(storageDirPathForFile, "from_clipboard.png");
-		fs.writeFileSync(tmpFilePath).write(image.toPNG());
+		fs.writeFileSync(tmpFilePath, image.toPNG());
 		console.log(45454);
 		return tmpFilePath;
 	},
