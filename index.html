@@ -29,15 +29,18 @@
 		}
 		async function openFile(event) {
 			let file = await window.fileApi.openFile();
-			if (!(file && file.filePaths && file.filePaths[0])) return false;
+			if (!(file && file.filePaths && file.filePaths[0])) {
+				return false;
+			}
 			let path = file.filePaths[0];
 			console.log(`Chosen file ${path}`);
-			window.fileApi.addFile(path);
+			await window.fileApi.addFile(path);
 			showActionStroke(`File ${path} has imported.`);
 		}
 		async function importFromClipboard() {
 			const tmpFilePath = await window.fileApi.saveTempFileFromClipboard();
 			if (!tmpFilePath) {
+				showActionStroke(`Clipboard is empty.`);
 				return false;
 			}
 			await window.fileApi.addFile(tmpFilePath);
