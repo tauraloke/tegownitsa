@@ -158,6 +158,16 @@ ipcMain.handle("netRequest", async (event) => {
 	request.end();
 });
 
+const Tesseract = require('tesseract.js');
+
+Tesseract.recognize(
+  'https://tesseract.projectnaptha.com/img/eng_bw.png',
+  'eng',
+  { logger: m => console.log(m) }
+).then(({ data: { text } }) => {
+  console.log(text);
+})
+
 /* TODO: USE AND REMOVE
 const fs = require("fs");
 //const Promise = require("bluebird");

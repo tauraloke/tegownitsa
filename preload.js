@@ -111,7 +111,6 @@ contextBridge.exposeInMainWorld("fileApi", {
 	},
 	saveTempFileFromClipboard: () => {
 		let image = clipboard.readImage("clipboard");
-		console.log(image);
 		if (image.isEmpty()) {
 			return false;
 		}
