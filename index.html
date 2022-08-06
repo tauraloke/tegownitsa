@@ -50,6 +50,14 @@
 		function showActionStroke(message) {
 			document.getElementById("actionStroke").textContent = message;
 		}
+		async function ocr() {
+			const result = await window.ocrApi.recognize(
+				//"https://tesseract.projectnaptha.com/img/eng_bw.png",
+				"/home/tauraloke/projects/rq_market/easyocr/t/__raiden_shogun_yae_miko_and_yae_miko_genshin_impact_drawn_by_beiyi__sample-9e87caaa3a0b301cd2fe3d3f6342fab3.jpg",
+				["eng"]
+			);
+			console.log(result);
+		}
 	</script>
 	<body>
 		<div class="container">
@@ -64,6 +72,7 @@
 				<button onclick="openFolder()">Import folder</button>
 				<button onclick="openFile()">Import file</button>
 				<button onclick="importFromClipboard()">Import from clipboard</button>
+				<button onclick="ocr()">OCR</button>
 			</section>
 			<footer>
 				<div id="actionStroke"></div>

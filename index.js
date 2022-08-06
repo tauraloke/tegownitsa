@@ -8,6 +8,7 @@ const debug = require("electron-debug");
 const contextMenu = require("electron-context-menu");
 const config = require("./config.js");
 const menu = require("./menu.js");
+const { createWorker, PSM } = require("tesseract.js");
 
 unhandled();
 debug();
@@ -140,6 +141,20 @@ ipcMain.handle("openFile", async (event, path) => {
 	});
 });
 
+ipcMain.handle("recognize", async (event, imagePath, languages) => {
+	const worker = createWorker();
+	await worker.load();
+	await worker.loadLanguage(languages.join("+"));
+	await worker.initialize(languages.join("+"));
+	await worker.setParameters({
+		tessedit_pageseg_mode: PSM.SPARSE_TEXT,
+	});
+	const result = await worker.recognize(imagePath);
+	await worker.terminate();
+	return result;
+});
+
+
 // SAMPLES TODO: USE AND REMOVE
 ipcMain.handle("netRequest", async (event) => {
 	// TODO: USE AND REMOVE
@@ -158,15 +173,6 @@ ipcMain.handle("netRequest", async (event) => {
 	request.end();
 });
 
-const Tesseract = require('tesseract.js');
-
-Tesseract.recognize(
-  'https://tesseract.projectnaptha.com/img/eng_bw.png',
-  'eng',
-  { logger: m => console.log(m) }
-).then(({ data: { text } }) => {
-  console.log(text);
-})
 
 /* TODO: USE AND REMOVE
 const fs = require("fs");

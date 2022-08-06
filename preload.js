@@ -77,6 +77,17 @@ contextBridge.exposeInMainWorld("sqliteApi", {
 	},
 });
 
+contextBridge.exposeInMainWorld("ocrApi", {
+	recognize: async (imagePath, languages) => {
+		try {
+			return await ipcRenderer.invoke("recognize", imagePath, languages);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+});
+
 contextBridge.exposeInMainWorld("fileApi", {
 	openFolder: async (event, dirPath) => {
 		try {
