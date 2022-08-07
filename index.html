@@ -50,13 +50,44 @@
 		function showActionStroke(message) {
 			document.getElementById("actionStroke").textContent = message;
 		}
-		async function ocr() {
-			const result = await window.ocrApi.recognize(
+		const CAPTION_NOT_FOUND = "[NO CAPTION FOUND]";
+		async function scanStorage() {
+			/*const result = await window.ocrApi.recognize(
 				//"https://tesseract.projectnaptha.com/img/eng_bw.png",
 				"/home/tauraloke/projects/rq_market/easyocr/t/__raiden_shogun_yae_miko_and_yae_miko_genshin_impact_drawn_by_beiyi__sample-9e87caaa3a0b301cd2fe3d3f6342fab3.jpg",
-				["eng"]
+				["eng", "rus", "jpn"]
 			);
-			console.log(result);
+			console.log(result);*/
+
+			let files = await window.sqliteApi.queryAll("SELECT * FROM files;");
+			for (index in files) {
+				let file = files[index];
+				if (window.sqliteApi.fileIsNotScanned(file)) {
+					try {
+						console.log("Scan file: ", file);
+						let recognized = await window.ocrApi.recognize(file["fullpath"], [
+							"eng",
+							"rus",
+							"jpn",
+						]);
+						console.log("Recognized: ", recognized);
+						let caption = recognized.data.blocks
+							.filter((b) => b.text.trim() != "" && b.confidence > 70)
+							.map((b) => b.text.replace(/[\n\t\r]/g, " "))
+							.join("\n");
+						if (caption == "") {
+							caption = CAPTION_NOT_FOUND;
+						}
+						console.log(`#${file["id"]}: Scanned text: ${caption}`);
+						await window.sqliteApi.query(
+							"UPDATE files SET caption=? WHERE id=?;",
+							[caption, file["id"]]
+						);
+					} catch (e) {
+						console.error(e);
+					}
+				}
+			}
 		}
 	</script>
 	<body>
@@ -72,7 +103,7 @@
 				<button onclick="openFolder()">Import folder</button>
 				<button onclick="openFile()">Import file</button>
 				<button onclick="importFromClipboard()">Import from clipboard</button>
-				<button onclick="ocr()">OCR</button>
+				<button onclick="scanStorage()">Scan storage</button>
 			</section>
 			<footer>
 				<div id="actionStroke"></div>

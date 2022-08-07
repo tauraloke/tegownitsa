@@ -107,6 +107,16 @@ db.loadExtension(
 		: "./libs/sqlite/fuzzy"
 );
 
+db.queryAll = function (query, params) {
+	return new Promise(function (resolve, reject) {
+		db.all(query, params, function (err, row) {
+			if (err) reject("Read error: " + err.message);
+			else {
+				resolve(row);
+			}
+		});
+	});
+};
 db.query = function (query, params) {
 	return new Promise(function (resolve, reject) {
 		db.get(query, params, function (err, row) {
@@ -121,12 +131,16 @@ db.query = function (query, params) {
 async function initDatabase() {
 	// make tables if not exists...
 	await db.run(
-		"CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, fullpath TEXT, source_filename TEXT, width INTEGER, height INTEGER, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at INTEGER, imagehash INTEGER)"
+		"CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, fullpath TEXT, source_filename TEXT, width INTEGER, height INTEGER, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at INTEGER, imagehash INTEGER, caption TEXT)"
 	);
 }
 
 ipcMain.handle("executeQuery", async (event, query, values) => {
 	return await db.query(query, values);
+});
+
+ipcMain.handle("executeQueryAll", async (event, query, values) => {
+	return await db.queryAll(query, values);
 });
 
 ipcMain.handle("openFolder", async (event, path) => {
@@ -141,19 +155,19 @@ ipcMain.handle("openFile", async (event, path) => {
 	});
 });
 
-ipcMain.handle("recognize", async (event, imagePath, languages) => {
+ipcMain.handle("recognize", async (event, imagePath, languages = []) => {
+	console.log("Scan file ", imagePath);
 	const worker = createWorker();
 	await worker.load();
 	await worker.loadLanguage(languages.join("+"));
 	await worker.initialize(languages.join("+"));
 	await worker.setParameters({
-		tessedit_pageseg_mode: PSM.SPARSE_TEXT,
+		tessedit_pageseg_mode: PSM.AUTO,
 	});
 	const result = await worker.recognize(imagePath);
-	await worker.terminate();
+	//await worker.terminate();
 	return result;
 });
-
 
 // SAMPLES TODO: USE AND REMOVE
 ipcMain.handle("netRequest", async (event) => {
@@ -172,7 +186,6 @@ ipcMain.handle("netRequest", async (event) => {
 	});
 	request.end();
 });
-
 
 /* TODO: USE AND REMOVE
 const fs = require("fs");

@@ -5,6 +5,7 @@ const sharp = require("sharp");
 const phash = require("sharp-phash");
 
 const storageDir = path.join(__dirname, "storage");
+const CAPTION_YET_NOT_SCANNED = "[YET NOT SCANNED]";
 
 function randomDigit() {
 	return Math.floor(Math.random() * 10);
@@ -35,13 +36,14 @@ async function importFileToStorage(absolutePath) {
 	const metadata = await image.metadata();
 	ipcRenderer.invoke(
 		"executeQuery",
-		"INSERT INTO files (fullpath, source_filename, imagehash, width, height) VALUES (?, ?, ?, ? , ?)",
+		"INSERT INTO files (fullpath, source_filename, imagehash, width, height, caption) VALUES (?, ?, ?, ?, ?, ?)",
 		[
 			newFilePathInStorage,
 			path.basename(absolutePath),
 			parseInt(imagehash, 2),
 			metadata.width,
 			metadata.height,
+			CAPTION_YET_NOT_SCANNED,
 		]
 	);
 	return newFilePathInStorage;
@@ -59,13 +61,25 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 contextBridge.exposeInMainWorld("sqliteApi", {
-	query: async (query, fetch, values) => {
+	query: async (query, values) => {
+		console.log(values);
 		try {
 			return await ipcRenderer.invoke("executeQuery", query, values);
 		} catch (error) {
 			console.error(error);
 			throw error;
 		}
+	},
+	queryAll: async (query, values) => {
+		try {
+			return await ipcRenderer.invoke("executeQueryAll", query, values);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	fileIsNotScanned: (file) => {
+		return file["caption"] == CAPTION_YET_NOT_SCANNED;
 	},
 	ajax: async () => {
 		try {
