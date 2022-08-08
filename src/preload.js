@@ -17,6 +17,7 @@ async function importFileToStorage(absolutePath) {
 	}
 	console.log("Loading file: ", absolutePath);
 	const storageRootDir = await ipcRenderer.invoke("getStorageDirectoryPath");
+	console.log('storage root', storageRootDir)
 	const storageDirPathForFile = path.join(
 		storageRootDir,
 		randomDigit().toString(),
