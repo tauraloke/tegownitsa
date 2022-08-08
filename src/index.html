@@ -6,6 +6,7 @@
 		<link rel="stylesheet" href="index.css" />
 	</head>
 	<script>
+		// TODO: use and remove
 		async function sqlQuery() {
 			console.log(window.sqliteApi);
 			await window.sqliteApi.query(
@@ -16,6 +17,7 @@
 			);
 			console.log(await window.sqliteApi.query("SELECT * FROM users;"));
 		}
+		// TODO: use and remove
 		async function ajaxQuery() {
 			await window.sqliteApi.ajax();
 		}
@@ -69,7 +71,7 @@
 							"eng",
 							"rus",
 							"jpn",
-						]);
+						]); // TODO: move languages to app settings
 						console.log("Recognized: ", recognized);
 						let caption = recognized.data.blocks
 							.filter((b) => b.text.trim() != "" && b.confidence > 70)

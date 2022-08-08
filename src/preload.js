@@ -6,6 +6,7 @@ const phash = require("sharp-phash");
 
 const storageDir = path.join(__dirname, "storage");
 const CAPTION_YET_NOT_SCANNED = "[YET NOT SCANNED]";
+const FUZZY_LEVENSTEIN_THRESHOLD = 7;
 
 function randomDigit() {
 	return Math.floor(Math.random() * 10);
@@ -81,6 +82,16 @@ contextBridge.exposeInMainWorld("sqliteApi", {
 	fileIsNotScanned: (file) => {
 		return file["caption"] == CAPTION_YET_NOT_SCANNED;
 	},
+	fuzzySearch: async (absoluteFilePath) => {
+		const fileImage = fs.readFileSync(absoluteFilePath);
+		const imagehash = await phash(fileImage);
+		return await ipcRenderer.invoke(
+			"executeQueryAll",
+			"SELECT * FROM files WHERE hamming(?, imagehash) <= ?",
+			[imagehash, FUZZY_LEVENSTEIN_THRESHOLD]
+		);
+	},
+	// TODO: remove
 	ajax: async () => {
 		try {
 			return await ipcRenderer.invoke("netRequest");
