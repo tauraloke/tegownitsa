@@ -1,4 +1,4 @@
-const { ipcMain, dialog } = require("electron");
+const { app, ipcMain, dialog } = require("electron");
 const { createWorker, PSM } = require("tesseract.js");
 const path = require("path");
 
@@ -31,11 +31,10 @@ ipcMain.handle("openFile", async (event, path) => {
 });
 
 ipcMain.handle("getStorageDirectoryPath", async () => {
-	let currentDirPath = __dirname;
-	if (currentDirPath.match("app.asar")) {
-		currentDirPath = path.join(...currentDirPath.split(path.sep).slice(0, -2));
-	}
-	currentDirPath = path.join(currentDirPath, "storage");
+	let currentDirPath = path.join(
+		require("path").dirname(app.getPath("exe")),
+		"storage"
+	);
 	return config.get("storage_dir") || currentDirPath;
 });
 

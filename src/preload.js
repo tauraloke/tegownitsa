@@ -17,7 +17,7 @@ async function importFileToStorage(absolutePath) {
 	}
 	console.log("Loading file: ", absolutePath);
 	const storageRootDir = await ipcRenderer.invoke("getStorageDirectoryPath");
-	console.log('storage root', storageRootDir)
+	console.log("storage root", storageRootDir);
 	const storageDirPathForFile = path.join(
 		storageRootDir,
 		randomDigit().toString(),
@@ -32,7 +32,13 @@ async function importFileToStorage(absolutePath) {
 			path.extname(absolutePath)
 	);
 	const fileImage = fs.readFileSync(absolutePath);
-	const imagehash = await phash(fileImage);
+	let imagehash = null;
+	try {
+		imagehash = await phash(fileImage);
+	} catch (e) {
+		console.log(`${absolutePath} is not image file`);
+		return false;
+	}
 	fs.copyFile(absolutePath, newFilePathInStorage, () => {});
 	const image = await sharp(fileImage);
 	const metadata = await image.metadata();
