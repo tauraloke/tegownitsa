@@ -4,7 +4,6 @@ const fs = require("fs");
 const sharp = require("sharp");
 const phash = require("sharp-phash");
 
-const storageDir = path.join(__dirname, "storage");
 const CAPTION_YET_NOT_SCANNED = "[YET NOT SCANNED]";
 const FUZZY_LEVENSTEIN_THRESHOLD = 7;
 
@@ -17,8 +16,9 @@ async function importFileToStorage(absolutePath) {
 		return;
 	}
 	console.log("Loading file: ", absolutePath);
+	const storageRootDir = await ipcRenderer.invoke("getStorageDirectoryPath");
 	const storageDirPathForFile = path.join(
-		storageDir,
+		storageRootDir,
 		randomDigit().toString(),
 		randomDigit().toString()
 	);
@@ -145,12 +145,13 @@ contextBridge.exposeInMainWorld("fileApi", {
 	removeFile: async (filePath) => {
 		await fs.unlinkSync(filePath);
 	},
-	saveTempFileFromClipboard: () => {
+	saveTempFileFromClipboard: async () => {
 		let image = clipboard.readImage("clipboard");
 		if (image.isEmpty()) {
 			return false;
 		}
-		const storageDirPathForFile = path.join(storageDir, "tmp");
+		const storageRootDir = await ipcRenderer.invoke("getStorageDirectoryPath");
+		const storageDirPathForFile = path.join(storageRootDir, "tmp");
 		fs.mkdirSync(storageDirPathForFile, {
 			recursive: true,
 		});

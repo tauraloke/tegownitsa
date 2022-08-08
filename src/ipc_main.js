@@ -1,9 +1,9 @@
 const { ipcMain, dialog } = require("electron");
 const { createWorker, PSM } = require("tesseract.js");
+const path = require("path");
 
 const { getDb } = require("./db.js");
 const config = require("./config.js");
-
 
 let db = null;
 (async () => {
@@ -28,6 +28,10 @@ ipcMain.handle("openFile", async (event, path) => {
 	return await dialog.showOpenDialog({
 		properties: ["openFile"],
 	});
+});
+
+ipcMain.handle("getStorageDirectoryPath", async () => {
+	return config.get("storage_dir") || path.join(__dirname, "storage");
 });
 
 ipcMain.handle("recognize", async (event, imagePath, languages = []) => {
