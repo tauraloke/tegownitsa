@@ -1,4 +1,5 @@
 const sqlite3 = require("sqlite3").verbose();
+const { app } = require("electron");
 
 let dbc = null;
 
