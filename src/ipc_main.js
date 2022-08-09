@@ -1,3 +1,5 @@
+// core calls from index.js to IPC interferency
+
 const { app, ipcMain, dialog } = require("electron");
 const { createWorker, PSM } = require("tesseract.js");
 const path = require("path");
@@ -50,6 +52,14 @@ ipcMain.handle("recognize", async (event, imagePath, languages = []) => {
 	const result = await worker.recognize(imagePath);
 	await worker.terminate(); // TODO: проверить, что сканирование нескольких файлов будет успешно.
 	return result;
+});
+
+ipcMain.handle("addTag", async (event, file_id, title, locale = []) => {
+	// TODO
+});
+
+ipcMain.handle("removeTag", async (event, file_id, title, locale = []) => {
+	// TODO
 });
 
 // TODO: USE AND REMOVE

@@ -1,3 +1,5 @@
+// middle layer
+
 const { contextBridge, ipcRenderer, clipboard } = require("electron");
 const path = require("path");
 const fs = require("fs");
