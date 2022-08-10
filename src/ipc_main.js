@@ -54,12 +54,81 @@ ipcMain.handle("recognize", async (event, imagePath, languages = []) => {
 	return result;
 });
 
-ipcMain.handle("addTag", async (event, file_id, title, locale = []) => {
-	// TODO
+ipcMain.handle("findFilesByTag", async (event, title, locale = null) => {
+	if (locale) {
+		return await db.queryAll(
+			"SELECT * FROM files LEFT JOIN file_tags ON file_tags.file_id = file.id LEFT JOIN tag_locales ON tag_locales.tag_id = file_tags.tag_id WHERE tag_locales.title = ? AND tag_locales.locale = ?",
+			[title, locale]
+		);
+	} else {
+		return await db.queryAll(
+			"SELECT * FROM files LEFT JOIN file_tags ON file_tags.file_id = file.id LEFT JOIN tag_locales ON tag_locales.tag_id = file_tags.tag_id WHERE tag_locales.title = ?",
+			[title]
+		);
+	}
 });
 
-ipcMain.handle("removeTag", async (event, file_id, title, locale = []) => {
-	// TODO
+ipcMain.handle("addTag", async (event, file_id, title, locale, source_type) => {
+	console.log(event, file_id, title, locale, source_type); // TODO: remove
+	let tag_id = null;
+	let tag = await db.query(
+		"SELECT id from tags LEFT JOIN tag_locales WHERE tag_locales.title=? AND tag_locales.locale=?",
+		[title, locale]
+	);
+	if (tag) {
+		tag_id = tag["id"];
+	} else {
+		tag_id = await db.run("INSERT INTO tags VALUES ()"); // TODO: спорное выражение, нужно отладить
+		await db.query(
+			"INSERT INTO tag_locales (tag_id, title, locale) VALUES (?, ?, ?)",
+			[tag_id, title, locale]
+		);
+	}
+	await db.query(
+		"INSERT INTO file_tags (file_id, tag_id, source_type) VALUES (?, ?, ?)",
+		[file_id, tag_id, source_type]
+	);
+	await db.query(
+		"UPDATE tags SET file_count = file_count + 1 WHERE file_id = ? AND tag_id = ? AND source_type = ?",
+		[file_id, tag_id, source_type]
+	);
+});
+
+ipcMain.handle(
+	"removeTag",
+	async (event, file_id, title, locale, source_type) => {
+		let tag = await db.query(
+			"SELECT id from tags LEFT JOIN tag_locales WHERE tag_locales.title=? AND tag_locales.locale=?",
+			[title, locale]
+		);
+		if (!tag) {
+			return false;
+		}
+		let tag_id = tag["id"];
+		await db.query(
+			"UPDATE tags SET file_count = file_count - 1 WHERE file_id = ? AND tag_id = ? AND source_type = ?",
+			[file_id, tag_id, source_type]
+		);
+		await db.query(
+			"DELETE FROM file_tags WHERE file_id = ? AND tag_id = ? AND source_type = ?",
+			[file_id, tag_id, source_type]
+		);
+		return true;
+	}
+);
+
+ipcMain.handle("replaceTagLocale", async (event, locale, title, tag_id) => {
+	if ((title = "")) {
+		await db.query("DELETE FROM tag_locales WHERE tag_id=? AND locale=?", [
+			tag_id,
+			locale,
+		]);
+		return false;
+	}
+	await db.query(
+		"UPDATE tag_locales SET title = ? WHERE tag_id=? AND locale=?",
+		[title, tag_id, locale]
+	);
 });
 
 // TODO: USE AND REMOVE

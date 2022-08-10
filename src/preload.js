@@ -100,6 +100,55 @@ contextBridge.exposeInMainWorld("sqliteApi", {
 			[imagehash, FUZZY_LEVENSTEIN_THRESHOLD]
 		);
 	},
+	findFilesByTag: async (title, locale = null) => {
+		try {
+			return await ipcRenderer.invoke("findFilesByTag", title, locale);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	addTag: async (file_id, title, locale, source_type) => {
+		try {
+			return await ipcRenderer.invoke(
+				"addTag",
+				file_id,
+				title,
+				locale,
+				source_type
+			);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	removeTag: async (file_id, title, locale, source_type) => {
+		try {
+			return await ipcRenderer.invoke(
+				"removeTag",
+				file_id,
+				title,
+				locale,
+				source_type
+			);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	replaceTagLocale: async (locale, title, tag_id) => {
+		try {
+			return await ipcRenderer.invoke(
+				"replaceTagLocale",
+				locale,
+				title,
+				tag_id
+			);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
 	// TODO: remove
 	ajax: async () => {
 		try {
