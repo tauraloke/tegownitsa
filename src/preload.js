@@ -92,6 +92,7 @@ contextBridge.exposeInMainWorld("sqliteApi", {
 		return file["caption"] == CAPTION_YET_NOT_SCANNED;
 	},
 	fuzzySearch: async (absoluteFilePath) => {
+		// TODO: написать на фронтэнде функционал поиска дублей и отладить
 		const fileImage = fs.readFileSync(absoluteFilePath);
 		const imagehash = await phash(fileImage);
 		return await ipcRenderer.invoke(
@@ -103,6 +104,30 @@ contextBridge.exposeInMainWorld("sqliteApi", {
 	findFilesByTag: async (title, locale = null) => {
 		try {
 			return await ipcRenderer.invoke("findFilesByTag", title, locale);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	findFilesByTagId: async (tag_id) => {
+		try {
+			return await ipcRenderer.invoke("findFilesByTagId", tag_id);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	findTagsByFile: async (file_id) => {
+		try {
+			return await ipcRenderer.invoke("findTagsByFile", file_id);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	getAllTags: async (event) => {
+		try {
+			return await ipcRenderer.invoke("getAllTags");
 		} catch (error) {
 			console.error(error);
 			throw error;

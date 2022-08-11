@@ -7,18 +7,61 @@
 	</head>
 	<script>
 		// Front layer
+		const CAPTION_NOT_FOUND = "[NO CAPTION FOUND]";
 
-		// TODO: use and remove
-		async function sqlQuery() {
-			console.log(window.sqliteApi);
-			await window.sqliteApi.query(
-				"CREATE TABLE IF NOT EXISTS users (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,NAME TEXT NOT NULL)"
-			);
-			await window.sqliteApi.query(
-				'INSERT INTO users ("name") values("Kiri");'
-			);
-			console.log(await window.sqliteApi.query("SELECT * FROM users;"));
+		function showActionStroke(message) {
+			console.log("STATE: ", message);
+			document.getElementById("actionStroke").textContent = message;
 		}
+		function showTags(tags) {
+			tags.forEach((tag) => {
+				let p = document.createElement("p");
+				p.setAttribute("data-id", tag["id"]);
+				let title = Object.values(tag["locales"]).join(" / ");
+				p.innerHTML = `<a>${title}</a>`;
+				document.getElementById("tags").appendChild(p);
+			});
+		}
+		function showFiles(files) {
+			files.forEach((file) => {
+				let div = document.createElement("div");
+				div.setAttribute("data-id", file["id"]);
+				div.className = "gallery_block"; //TODO: спорно, нужно отладить
+				div.innerHTML = `<img src='${file["full_path"]}' /><p class='filename'>${file["source_filename"]}</p>`;
+				document.getElementById("files").appendChild(div);
+			});
+		}
+		function searchString() {
+			return document.getElementById("search_string").value;
+		}
+		async function searchFilesByTag() {
+			showActionStroke(`Start search by tag`);
+			let tag_title = searchString()
+			let files = await window.sqliteApi.findFilesByTag(tag_title);
+			showFiles(files);
+			showActionStroke(`Found ${files.length} results by tag ${tag}`);
+		}
+		async function searchFilesByCaption() {
+			let files = await window.sqliteApi.queryAll(
+				"SELECT * FROM files WHERE INSTR(caption, ?)",
+				[searchString()]
+			);
+			showFiles(files);
+		}
+		async function showFileInfo() {
+			//TODO: write body
+		}
+
+		async function searchFilesByTagId(event) {
+			showActionStroke(`Start search by tag id`);
+			if (event.path && event.path[0] && event.path[0].tagName == "A") {
+				let tag_id = event.path[0].getAttribute("data-id");
+				let files = await window.sqliteApi.findFilesByTagId(tag_id);
+				showFiles(files);
+				showActionStroke(`Found ${files.length} results by tag id ${tag_id}`);
+			}
+		}
+
 		// TODO: use and remove
 		async function ajaxQuery() {
 			await window.sqliteApi.ajax();
@@ -51,10 +94,12 @@
 			await window.fileApi.removeFile(tmpFilePath);
 			showActionStroke(`File has imported from a clipboard.`);
 		}
-		function showActionStroke(message) {
-			document.getElementById("actionStroke").textContent = message;
+		async function showAllTags() {
+			showTags(await window.sqliteApi.getAllTags());
 		}
-		const CAPTION_NOT_FOUND = "[NO CAPTION FOUND]";
+		async function findFilesByTag(file_id) {
+			showTags(await window.sqliteApi.findFilesByTag(file_id));
+		}
 		async function scanStorage() {
 			/*const result = await window.ocrApi.recognize(
 				//"https://tesseract.projectnaptha.com/img/eng_bw.png",
@@ -101,13 +146,22 @@
 				<p></p>
 			</header>
 			<section class="main">
-				test
 				<button onclick="sqlQuery()">SQLite</button>
 				<button onclick="ajaxQuery()">Ajax</button>
 				<button onclick="openFolder()">Import folder</button>
 				<button onclick="openFile()">Import file</button>
 				<button onclick="importFromClipboard()">Import from clipboard</button>
 				<button onclick="scanStorage()">Scan storage</button>
+				<button onclick="showAllTags()">Show all tags</button>
+				<div id="search_form">
+					<input type="text" id="search_string" />
+					Find
+					<button onclick="searchFilesByTag()">by tag</button>
+					<button onclick="searchFilesByCaption()">by captions</button>
+				</div>
+				<div id="tags" onclick="searchFilesByTagId(event)"></div>
+				<div id="files" onclick="showFileInfo(event)"></div>
+				<div id="file_info"></div>
 			</section>
 			<footer>
 				<div id="actionStroke"></div>
