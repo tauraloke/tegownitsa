@@ -49,13 +49,13 @@ async function initDatabase({ dbPath }) {
 
 	// make tables if not exists...
 	await dbConnection.run(
-		"CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, fullpath TEXT, source_filename TEXT, width INTEGER, height INTEGER, imagehash INTEGER, caption TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP)"
+		"CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, fullpath TEXT, source_filename TEXT, width INTEGER, height INTEGER, imagehash INTEGER, caption TEXT COLLATE NOCASE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP)"
 	);
 	await dbConnection.run(
 		"CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, file_count INTEGER DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP)"
 	);
 	await dbConnection.run(
-		"CREATE TABLE IF NOT EXISTS tag_locales (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, tag_id INTEGER, title TEXT, locale VARCHAR(2), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP)"
+		"CREATE TABLE IF NOT EXISTS tag_locales (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, tag_id INTEGER, title TEXT COLLATE NOCASE, locale VARCHAR(2), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP)"
 	);
 	await dbConnection.run(
 		"CREATE TABLE IF NOT EXISTS file_tags (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, file_id INTEGER, tag_id INTEGER, source_type INTEGER, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP)"

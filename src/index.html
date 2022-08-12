@@ -47,7 +47,7 @@
 			let caption = searchString();
 			showActionStroke(`Start search by caption '${caption}'`);
 			let files = await window.sqliteApi.queryAll(
-				"SELECT * FROM files WHERE INSTR(caption, ?)",
+				"SELECT * FROM files WHERE caption LIKE '%' || ? || '%'",
 				[caption]
 			);
 			showFiles(files);
