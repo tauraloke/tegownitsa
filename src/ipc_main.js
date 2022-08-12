@@ -57,12 +57,12 @@ ipcMain.handle("recognize", async (event, imagePath, languages = []) => {
 ipcMain.handle("findFilesByTag", async (event, title, locale = null) => {
 	if (locale) {
 		return await db.queryAll(
-			"SELECT * FROM files LEFT JOIN file_tags ON file_tags.file_id = file.id LEFT JOIN tag_locales ON tag_locales.tag_id = file_tags.tag_id WHERE tag_locales.title = ? AND tag_locales.locale = ?",
+			"SELECT * FROM files LEFT JOIN file_tags ON file_tags.file_id = files.id LEFT JOIN tag_locales ON tag_locales.tag_id = file_tags.tag_id WHERE tag_locales.title = ? AND tag_locales.locale = ?",
 			[title, locale]
 		);
 	} else {
 		return await db.queryAll(
-			"SELECT * FROM files LEFT JOIN file_tags ON file_tags.file_id = file.id LEFT JOIN tag_locales ON tag_locales.tag_id = file_tags.tag_id WHERE tag_locales.title = ?",
+			"SELECT * FROM files LEFT JOIN file_tags ON file_tags.file_id = files.id LEFT JOIN tag_locales ON tag_locales.tag_id = file_tags.tag_id WHERE tag_locales.title = ?",
 			[title]
 		);
 	}

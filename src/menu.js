@@ -36,8 +36,8 @@ const helpSubmenu = [
 ${debugInfo()}`;
 
 			openNewGitHubIssue({
-				user: "sindresorhus",
-				repo: "electron-boilerplate",
+				user: "tauraloke",
+				repo: "tegownitsa",
 				body,
 			});
 		},

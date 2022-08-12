@@ -14,6 +14,7 @@
 			document.getElementById("actionStroke").textContent = message;
 		}
 		function showTags(tags) {
+			document.getElementById("tags").innerHTML = "";
 			tags.forEach((tag) => {
 				let p = document.createElement("p");
 				p.setAttribute("data-id", tag["id"]);
@@ -23,11 +24,12 @@
 			});
 		}
 		function showFiles(files) {
+			document.getElementById("files").innerHTML = "";
 			files.forEach((file) => {
 				let div = document.createElement("div");
 				div.setAttribute("data-id", file["id"]);
 				div.className = "gallery_block"; //TODO: спорно, нужно отладить
-				div.innerHTML = `<img src='${file["full_path"]}' /><p class='filename'>${file["source_filename"]}</p>`;
+				div.innerHTML = `<img src='${file["fullpath"]}' /><p class='filename'>${file["source_filename"]}</p>`;
 				document.getElementById("files").appendChild(div);
 			});
 		}
@@ -36,19 +38,23 @@
 		}
 		async function searchFilesByTag() {
 			showActionStroke(`Start search by tag`);
-			let tag_title = searchString()
+			let tag_title = searchString();
 			let files = await window.sqliteApi.findFilesByTag(tag_title);
 			showFiles(files);
-			showActionStroke(`Found ${files.length} results by tag ${tag}`);
+			showActionStroke(`Found ${files.length} results by tag '${tag_title}'`);
 		}
 		async function searchFilesByCaption() {
+			let caption = searchString();
+			showActionStroke(`Start search by caption '${caption}'`);
 			let files = await window.sqliteApi.queryAll(
 				"SELECT * FROM files WHERE INSTR(caption, ?)",
-				[searchString()]
+				[caption]
 			);
 			showFiles(files);
+			showActionStroke(`Found ${files.length} results by caption '${caption}'`);
 		}
 		async function showFileInfo() {
+			document.getElementById("file_info").innerHTML = "";
 			//TODO: write body
 		}
 
@@ -101,13 +107,6 @@
 			showTags(await window.sqliteApi.findFilesByTag(file_id));
 		}
 		async function scanStorage() {
-			/*const result = await window.ocrApi.recognize(
-				//"https://tesseract.projectnaptha.com/img/eng_bw.png",
-				"/home/tauraloke/projects/rq_market/easyocr/t/__raiden_shogun_yae_miko_and_yae_miko_genshin_impact_drawn_by_beiyi__sample-9e87caaa3a0b301cd2fe3d3f6342fab3.jpg",
-				["eng", "rus", "jpn"]
-			);
-			console.log(result);*/
-
 			let files = await window.sqliteApi.queryAll("SELECT * FROM files;");
 			for (index in files) {
 				let file = files[index];
@@ -142,10 +141,6 @@
 	<body>
 		<div class="container">
 			<header>
-				<h1>Electron boilerplate</h1>
-				<p></p>
-			</header>
-			<section class="main">
 				<button onclick="sqlQuery()">SQLite</button>
 				<button onclick="ajaxQuery()">Ajax</button>
 				<button onclick="openFolder()">Import folder</button>
@@ -159,6 +154,8 @@
 					<button onclick="searchFilesByTag()">by tag</button>
 					<button onclick="searchFilesByCaption()">by captions</button>
 				</div>
+			</header>
+			<section class="main">
 				<div id="tags" onclick="searchFilesByTagId(event)"></div>
 				<div id="files" onclick="showFileInfo(event)"></div>
 				<div id="file_info"></div>

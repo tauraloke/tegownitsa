@@ -7,7 +7,6 @@ const unhandled = require("electron-unhandled");
 const debug = require("electron-debug");
 const contextMenu = require("electron-context-menu");
 
-const config = require("./src/config.js");
 const menu = require("./src/menu.js");
 
 unhandled();
@@ -84,16 +83,11 @@ app.on("activate", async () => {
 	}
 });
 
-let db = null;
-
 (async () => {
 	await app.whenReady();
 	Menu.setApplicationMenu(menu);
 	mainWindow = await createMainWindow();
-	const favoriteAnimal = config.get("favoriteAnimal");
-	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('header p').textContent = 'Your favorite animal is ${favoriteAnimal}'`
-	);
+	mainWindow.webContents.executeJavaScript(`searchFilesByCaption()`);
 })();
 
 // Connect IPC handlers and load DB
