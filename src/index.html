@@ -8,6 +8,9 @@
 	<script>
 		// Front layer
 		const CAPTION_NOT_FOUND = "[NO CAPTION FOUND]";
+		const SOURCE_TYPE_MANUAl = 0;
+		const SOURCE_TYPE_IQDB = 1;
+		const SOURCE_TYPE_SAUCENAO = 2;
 		let files = [];
 		let currentFile = null;
 		let tags = [];
@@ -18,14 +21,42 @@
 		}
 		function showTags(_tags) {
 			document.getElementById("tags").innerHTML = "";
+			if (currentFile && currentFile["id"]) {
+				_renderFileTags(_tags);
+			} else {
+				_renderCollectionTags(_tags);
+			}
+
+			tags = _tags;
+		}
+		function _renderFileTags(_tags) {
+			let form = document.createElement("p");
+			form.innerHTML =
+				`<input type='text' value='' placeholder='type tag' id='add_tag_title' />` +
+				`<input type='text' value='en' id='add_tag_locale'>` +
+				`<button class='add_tag'>add tag</button>`;
+			document.getElementById("tags").appendChild(form);
+
 			_tags.forEach((tag) => {
 				let p = document.createElement("p");
 				p.setAttribute("data-id", tag["id"]);
 				let title = Object.values(tag["locales"]).join(" / ");
-				p.innerHTML = `<a>${title}</a>`;
+				p.innerHTML =
+					`<a class='tag_search'>${title}</a>` +
+					` (${tag["file_count"]})` +
+					` <button class='remove_tag' data-file-tag-id='${tag["file_tag_id"]}'>-</button>`;
 				document.getElementById("tags").appendChild(p);
 			});
-			tags = _tags;
+		}
+		function _renderCollectionTags(_tags) {
+			_tags.forEach((tag) => {
+				let p = document.createElement("p");
+				p.setAttribute("data-id", tag["id"]);
+				let title = Object.values(tag["locales"]).join(" / ");
+				p.innerHTML =
+					`<a class='tag_search'>${title}</a>` + ` (${tag["file_count"]})`;
+				document.getElementById("tags").appendChild(p);
+			});
 		}
 		function showFiles(_files) {
 			document.getElementById("files").innerHTML = "";
@@ -33,7 +64,9 @@
 				let div = document.createElement("div");
 				div.setAttribute("data-id", file["id"]);
 				div.className = "gallery_block";
-				div.innerHTML = `<img src='${file["fullpath"]}' /><p class='filename'>${file["source_filename"]}</p>`;
+				div.innerHTML =
+					`<img src='${file["fullpath"]}' />` +
+					`<p class='filename'>${file["source_filename"]}</p>`;
 				document.getElementById("files").appendChild(div);
 			});
 			files = _files;
@@ -57,16 +90,19 @@
 		function searchString() {
 			return document.getElementById("search_string").value;
 		}
-		async function searchFilesByTag() {
+		function setSearchString(value) {
+			document.getElementById("search_string").value = value;
+		}
+		async function searchFilesByTag(tag_title) {
 			hideFileInfo();
-			showActionStroke(`Start search by tag`);
-			let tag_title = searchString();
+			showActionStroke(`Start search by tag '${tag_title}'`);
 			let files = await window.sqliteApi.findFilesByTag(tag_title);
 			showFiles(files);
 			showActionStroke(`Found ${files.length} results by tag '${tag_title}'`);
 		}
 		async function searchFilesByCaption() {
 			hideFileInfo();
+			showAllTags();
 			let caption = searchString();
 			showActionStroke(`Start search by caption '${caption}'`);
 			let files = await window.sqliteApi.queryAll(
@@ -84,17 +120,46 @@
 			let file_id = parseInt(block.getAttribute("data-id"));
 			file = files.find((f) => f["id"] == file_id);
 			showFileInfo(file);
-			await findFilesByTag(file_id);
+			await findTagsByFile(file_id);
 		}
-
-		async function searchFilesByTagId(event) {
-			showActionStroke(`Start search by tag id`);
-			if (event.path && event.path[0] && event.path[0].tagName == "A") {
-				let tag_id = event.path[0].getAttribute("data-id");
-				let files = await window.sqliteApi.findFilesByTagId(tag_id);
-				showFiles(files);
-				showActionStroke(`Found ${files.length} results by tag id ${tag_id}`);
+		async function tagsClick(event) {
+			let tagSearchTag = event.path.find((a) => a.className == "tag_search");
+			if (tagSearchTag) {
+				let tag_title = tagSearchTag.innerHTML.split(' / ')[0];
+				setSearchString(tag_title);
+				searchFilesByTag(tag_title);
+				return;
 			}
+			let tagRemoveTag = event.path.find((a) => a.className == "remove_tag");
+			if (tagRemoveTag && currentFile && currentFile["id"]) {
+				_removeTag(
+					currentFile["id"],
+					tagRemoveTag.getAttribute("data-file-tag-id")
+				);
+			}
+			let tagAddTag = event.path.find((a) => a.className == "add_tag");
+			if (tagAddTag) {
+				_addTagToFile(event);
+			}
+		}
+		async function _addTagToFile(event) {
+			if (!currentFile && !currentFile["id"]) {
+				return false;
+			}
+			let title = document.getElementById("add_tag_title").value;
+			let locale = document.getElementById("add_tag_locale").value;
+			let source_type = SOURCE_TYPE_MANUAl;
+			let file_id = currentFile["id"];
+			await window.sqliteApi.addTag(file_id, title, locale, source_type);
+			await findTagsByFile(file_id);
+			showActionStroke(`Added tag '${title}'`);
+		}
+		async function _removeTag(file_id, file_tag_id) {
+			await window.sqliteApi.removeTag(file_tag_id);
+			showActionStroke(
+				`Removed file-to-tag link #${file_tag_id} from file #${file_id}`
+			);
+			await findTagsByFile(file_id);
 		}
 		async function updateCaption() {
 			if (!currentFile || !currentFile["id"]) {
@@ -141,8 +206,8 @@
 		async function showAllTags() {
 			showTags(await window.sqliteApi.getAllTags());
 		}
-		async function findFilesByTag(file_id) {
-			showTags(await window.sqliteApi.findFilesByTag(file_id));
+		async function findTagsByFile(file_id) {
+			showTags(await window.sqliteApi.findTagsByFile(file_id));
 		}
 		async function scanStorage() {
 			let files = await window.sqliteApi.queryAll("SELECT * FROM files;");
@@ -188,12 +253,12 @@
 				<div id="search_form">
 					<input type="text" id="search_string" />
 					Find
-					<button onclick="searchFilesByTag()">by tag</button>
+					<button onclick="searchFilesByTag(searchString())">by tag</button>
 					<button onclick="searchFilesByCaption()">by captions</button>
 				</div>
 			</header>
 			<section class="main">
-				<div id="tags" onclick="searchFilesByTagId(event)"></div>
+				<div id="tags" onclick="tagsClick(event)"></div>
 				<div id="files" onclick="filesClick(event)"></div>
 				<div id="file_info" style="display: none">
 					<div id="file_info_header"></div>

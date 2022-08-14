@@ -88,6 +88,7 @@ app.on("activate", async () => {
 	Menu.setApplicationMenu(menu);
 	mainWindow = await createMainWindow();
 	mainWindow.webContents.executeJavaScript(`searchFilesByCaption()`);
+	mainWindow.webContents.executeJavaScript(`showAllTags()`);
 })();
 
 // Connect IPC handlers and load DB

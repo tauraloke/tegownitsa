@@ -147,15 +147,9 @@ contextBridge.exposeInMainWorld("sqliteApi", {
 			throw error;
 		}
 	},
-	removeTag: async (file_id, title, locale, source_type) => {
+	removeTag: async (file_tag_id) => {
 		try {
-			return await ipcRenderer.invoke(
-				"removeTag",
-				file_id,
-				title,
-				locale,
-				source_type
-			);
+			return await ipcRenderer.invoke("removeTag", file_tag_id);
 		} catch (error) {
 			console.error(error);
 			throw error;

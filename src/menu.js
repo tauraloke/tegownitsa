@@ -18,11 +18,11 @@ const showPreferences = () => {
 const helpSubmenu = [
 	openUrlMenuItem({
 		label: "Website",
-		url: "https://github.com/sindresorhus/electron-boilerplate",
+		url: "https://github.com/tauraloke/tegownitsa",
 	}),
 	openUrlMenuItem({
 		label: "Source Code",
-		url: "https://github.com/sindresorhus/electron-boilerplate",
+		url: "https://github.com/tauraloke/tegownitsa",
 	}),
 	{
 		label: "Report an Issue…",
@@ -51,7 +51,7 @@ if (!is.macos) {
 		},
 		aboutMenuItem({
 			icon: path.join(__dirname, "static", "icon.png"),
-			text: "Created by Your Name",
+			text: "Created by Tauraloke Esteru and Github contributors",
 		})
 	);
 }
