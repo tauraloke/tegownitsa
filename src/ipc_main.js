@@ -149,8 +149,11 @@ ipcMain.handle("removeTag", async (event, file_tag_id) => {
 });
 
 ipcMain.handle("replaceTagLocale", async (event, locale, title, tag_id) => {
-	if ((title = "")) {
-		await db.query("DELETE FROM tag_locales WHERE tag_id=? AND locale=?", [
+	if (!locale) {
+		return false;
+	}
+	if (title == "") {
+		await db.run("DELETE FROM tag_locales WHERE tag_id=? AND locale=?", [
 			tag_id,
 			locale,
 		]);
@@ -161,12 +164,12 @@ ipcMain.handle("replaceTagLocale", async (event, locale, title, tag_id) => {
 		[tag_id, locale]
 	);
 	if (checkLocale) {
-		await db.query(
+		await db.run(
 			"UPDATE tag_locales SET title = ? WHERE tag_id=? AND locale=?",
 			[title, tag_id, locale]
 		);
 	} else {
-		await db.query(
+		await db.run(
 			"INSERT INTO tag_locales (tag_id, title, locale) VALUES (?, ?, ?)",
 			[tag_id, title, locale]
 		);

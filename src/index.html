@@ -14,6 +14,7 @@
 		let files = [];
 		let currentFile = null;
 		let tags = [];
+		let currentTag = null;
 
 		function showActionStroke(message) {
 			console.log("STATE: ", message);
@@ -33,7 +34,7 @@
 			let form = document.createElement("p");
 			form.innerHTML =
 				`<input type='text' value='' placeholder='type tag' id='add_tag_title' />` +
-				`<input type='text' value='en' id='add_tag_locale'>` +
+				`<input type='text' value='en' id='add_tag_locale' placeholder='en' maxlength='2'>` +
 				`<button class='add_tag'>add tag</button>`;
 			document.getElementById("tags").appendChild(form);
 
@@ -43,8 +44,10 @@
 				let title = Object.values(tag["locales"]).join(" / ");
 				p.innerHTML =
 					`<a class='tag_search'>${title}</a>` +
-					` (${tag["file_count"]})` +
-					` <button class='remove_tag' data-file-tag-id='${tag["file_tag_id"]}'>-</button>`;
+					` <span title='files with the tag'>(${tag["file_count"]})</span>` +
+					` <button class='remove_tag' data-file-tag-id='${tag["file_tag_id"]}'>[-]</button>` +
+					` <button class='edit_tag' data-tag-id='${tag["id"]}' title='edit tag'>[e]</button>`;
+
 				document.getElementById("tags").appendChild(p);
 			});
 		}
@@ -54,7 +57,9 @@
 				p.setAttribute("data-id", tag["id"]);
 				let title = Object.values(tag["locales"]).join(" / ");
 				p.innerHTML =
-					`<a class='tag_search'>${title}</a>` + ` (${tag["file_count"]})`;
+					`<a class='tag_search'>${title}</a>` +
+					` <span title='files with the tag'>(${tag["file_count"]})</span>` +
+					` <button class='edit_tag' data-tag-id='${tag["id"]}' title='edit tag'>[e]</button>`;
 				document.getElementById("tags").appendChild(p);
 			});
 		}
@@ -125,7 +130,7 @@
 		async function tagsClick(event) {
 			let tagSearchTag = event.path.find((a) => a.className == "tag_search");
 			if (tagSearchTag) {
-				let tag_title = tagSearchTag.innerHTML.split(' / ')[0];
+				let tag_title = tagSearchTag.innerHTML.split(" / ")[0];
 				setSearchString(tag_title);
 				searchFilesByTag(tag_title);
 				return;
@@ -141,6 +146,10 @@
 			if (tagAddTag) {
 				_addTagToFile(event);
 			}
+			let tagEditTag = event.path.find((a) => a.className == "edit_tag");
+			if (tagEditTag) {
+				_editTag(tagEditTag.getAttribute("data-tag-id"));
+			}
 		}
 		async function _addTagToFile(event) {
 			if (!currentFile && !currentFile["id"]) {
@@ -153,6 +162,28 @@
 			await window.sqliteApi.addTag(file_id, title, locale, source_type);
 			await findTagsByFile(file_id);
 			showActionStroke(`Added tag '${title}'`);
+		}
+		async function _editTag(id) {
+			let tag = tags.find((t) => t.id == id);
+			if (!tag) {
+				showActionStroke(`Cannot find tag #'${id}' in cache...`);
+				return false;
+			}
+			let formHTML = "";
+			let locales = tag["locales"];
+			locales[""] = "";
+			for (key in locales) {
+				formHTML +=
+					`<div class='row'>` +
+					`<input type='text' class='title' value='${locales[key]}' title='Remove text for removing locale' />` +
+					`<input type='text' class='locale' value='${key}' placeholder='jp' maxlength='2' />` +
+					`</div>`;
+			}
+			formHTML += `<div><button id='tag_edit_form_submit'>Update</button></div>`;
+			document.getElementById("tag_edit_form_container").style.display =
+				"block";
+			document.getElementById("tag_edit_form_container").innerHTML = formHTML;
+			currentTag = tag;
 		}
 		async function _removeTag(file_id, file_tag_id) {
 			await window.sqliteApi.removeTag(file_tag_id);
@@ -173,6 +204,39 @@
 				currentFile["id"],
 			]);
 			showActionStroke(`Caption updated for file #${file["id"]}`);
+		}
+		async function tagEditFormClick(event) {
+			if (!event.path.find((t) => t.id == "tag_edit_form_submit")) {
+				return false;
+			}
+			if (!currentTag || !currentTag["id"]) {
+				return false;
+			}
+			let tagEditFormContainer = document.getElementById(
+				"tag_edit_form_container"
+			);
+			let data = {};
+			let locales = tagEditFormContainer.getElementsByClassName("locale");
+			let titles = tagEditFormContainer.getElementsByClassName("title");
+			for (i in locales) {
+				if (
+					locales[i] === undefined ||
+					titles[i] === undefined ||
+					locales[i].value === undefined
+				) {
+					continue;
+				}
+				await window.sqliteApi.replaceTagLocale(
+					locales[i].value,
+					titles[i].value,
+					currentTag["id"]
+				);
+			}
+
+			showActionStroke(`updated tag #${currentTag["id"]}`);
+			tagEditFormContainer.innerHTML = "";
+			tagEditFormContainer.style.block = "none";
+			currentTag = null;
 		}
 
 		async function openFolder(event) {
@@ -258,6 +322,10 @@
 				</div>
 			</header>
 			<section class="main">
+				<div
+					id="tag_edit_form_container"
+					onclick="tagEditFormClick(event)"
+				></div>
 				<div id="tags" onclick="tagsClick(event)"></div>
 				<div id="files" onclick="filesClick(event)"></div>
 				<div id="file_info" style="display: none">
