@@ -1,6 +1,6 @@
 "use strict";
 const path = require("path");
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, shell } = require("electron");
 /// const {autoUpdater} = require('electron-updater');
 const { is } = require("electron-util");
 const unhandled = require("electron-unhandled");
@@ -89,6 +89,11 @@ app.on("activate", async () => {
 	mainWindow = await createMainWindow();
 	mainWindow.webContents.executeJavaScript(`searchFilesByCaption()`);
 	mainWindow.webContents.executeJavaScript(`showAllTags()`);
+
+	mainWindow.webContents.on("new-window", function (e, url) {
+		e.preventDefault();
+		shell.openExternal(url);
+	});
 })();
 
 // Connect IPC handlers and load DB

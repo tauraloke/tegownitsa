@@ -8,9 +8,7 @@
 	<script>
 		// Front layer
 		const CAPTION_NOT_FOUND = "[NO CAPTION FOUND]";
-		const SOURCE_TYPE_MANUAl = 0;
-		const SOURCE_TYPE_IQDB = 1;
-		const SOURCE_TYPE_SAUCENAO = 2;
+
 		let files = [];
 		let currentFile = null;
 		let tags = [];
@@ -82,6 +80,24 @@
 			document.getElementById(
 				"file_info_caption_container"
 			).innerHTML = `<textarea id="file_info_caption">${file["caption"]}</textarea>`;
+
+			let exifBlock = "";
+			if (file["exif_create_date"]) {
+				let dateCreate = new Date(
+					file["exif_create_date"] * 1000
+				).toLocaleString("ru");
+				exifBlock += `<div>Create date: ${dateCreate}</div>`;
+			}
+			if (file["exif_latitude"] && file["exif_longitude"]) {
+				let coords = `<a href='https://www.google.com/maps/place/${file["exif_latitude"]},${file["exif_longitude"]}' target='_blank'>${file["exif_latitude"]},${file["exif_longitude"]}</a>`;
+				exifBlock += `<div>Coordinates: ${coords}</div>`;
+			}
+			if (file["exif_make"]) {
+				exifBlock += `<div>Maked by: ${file["exif_make"]} ${file["exif_model"]}</div>`;
+			}
+
+			document.getElementById("file_info_exif").innerHTML = exifBlock;
+
 			document.getElementById("file_info").style.display = "block";
 			currentFile = file;
 		}
@@ -155,7 +171,7 @@
 			}
 			let title = document.getElementById("add_tag_title").value;
 			let locale = document.getElementById("add_tag_locale").value;
-			let source_type = SOURCE_TYPE_MANUAl;
+			let source_type = window.sourceTypes.get("MANUAL");
 			let file_id = currentFile["id"];
 			await window.sqliteApi.addTag(file_id, title, locale, source_type);
 			await findTagsByFile(file_id);
@@ -170,7 +186,7 @@
 			let formHTML = "";
 			let locales = tag["locales"];
 			locales[""] = "";
-			for (key in locales) {
+			for (let key in locales) {
 				formHTML +=
 					`<div class='row'>` +
 					`<input type='text' class='title' value='${locales[key]}' title='Remove text for removing locale' />` +
@@ -216,7 +232,7 @@
 			let data = {};
 			let locales = tagEditFormContainer.getElementsByClassName("locale");
 			let titles = tagEditFormContainer.getElementsByClassName("title");
-			for (i in locales) {
+			for (let i in locales) {
 				if (
 					locales[i] === undefined ||
 					titles[i] === undefined ||
@@ -242,8 +258,9 @@
 			if (!(folder && folder.filePaths && folder.filePaths[0])) return false;
 			let path = folder.filePaths[0];
 			console.log(`Loading folder ${path}`);
-			window.fileApi.addFilesFromFolder(path);
+			await window.fileApi.addFilesFromFolder(path);
 			showActionStroke(`Folder ${path} has imported.`);
+			await searchFilesByCaption();
 		}
 		async function openFile(event) {
 			let file = await window.fileApi.openFile();
@@ -273,7 +290,7 @@
 		}
 		async function scanStorage() {
 			let files = await window.sqliteApi.queryAll("SELECT * FROM files;");
-			for (index in files) {
+			for (let index in files) {
 				let file = files[index];
 				if (window.sqliteApi.fileIsNotScanned(file)) {
 					try {
@@ -331,6 +348,7 @@
 					<div id="file_info_img_container">
 						<img src="" id="file_info_img" />
 					</div>
+					<div id="file_info_exif"></div>
 					<div id="file_info_caption_container"></div>
 					<div id="file_info_update_caption">
 						<button onclick="updateCaption()">Update caption</button>

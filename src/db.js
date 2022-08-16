@@ -28,9 +28,13 @@ function _queryAll(query, params) {
 
 function _query(query, params) {
 	return new Promise(function (resolve, reject) {
-		dbConnection.get(query, params, function (err, row) {
+		dbConnection.get(query, params, function (err, row, stmt) {
 			if (err) reject("Read error: " + err.message);
 			else {
+				console.log(this)
+				console.log(row)
+				console.log(err)
+				console.log(stmt)
 				resolve(row);
 			}
 		});
@@ -49,7 +53,7 @@ async function initDatabase({ dbPath }) {
 
 	// make tables if not exists...
 	await dbConnection.run(
-		"CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, full_path TEXT, preview_path TEXT, source_filename TEXT, width INTEGER, height INTEGER, imagehash INTEGER, caption TEXT COLLATE NOCASE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP)"
+		"CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, full_path TEXT, preview_path TEXT, source_filename TEXT, width INTEGER, height INTEGER, imagehash INTEGER, caption TEXT COLLATE NOCASE, exif_make TEXT, exif_model TEXT, exif_latitude REAL, exif_longitude REAl, exif_create_date TIMESTAMP, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP)"
 	);
 	await dbConnection.run(
 		"CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, file_count INTEGER DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP)"

@@ -15,6 +15,7 @@
 		"lint": "xo",
 		"test": "npm run lint",
 		"start": "electron .",
+		"dev:clean": "rm -rf ./node_modules/electron/dist/storage/ && rm ./db.sqlite3",
 		"pack": "electron-builder --dir",
 		"dist": "electron-builder --linux --windows",
 		"dist:l": "electron-builder --linux",

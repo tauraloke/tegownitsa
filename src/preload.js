@@ -5,10 +5,16 @@ const path = require("path");
 const fs = require("fs");
 const sharp = require("sharp");
 const phash = require("sharp-phash");
+const exifParser = require("exif-parser");
+const sourceTypes = require("./source_type.json");
 
 const CAPTION_YET_NOT_SCANNED = "[YET NOT SCANNED]";
 const FUZZY_LEVENSTEIN_THRESHOLD = 7;
 const PREVIEW_PREFIX = "preview_";
+
+window.addEventListener("DOMContentLoaded", async () => {
+	// any js code here
+});
 
 function randomDigit() {
 	return Math.floor(Math.random() * 10);
@@ -51,10 +57,16 @@ async function importFileToStorage(absolutePath) {
 		PREVIEW_PREFIX + filename
 	);
 	image.resize(100).toFile(newPreviewPathInStorage);
+	let fileBuffer = fs.readFileSync(absolutePath);
 
-	ipcRenderer.invoke(
+	// save file row to DB
+	let exif = {};
+	try {
+		exif = exifParser.create(fileBuffer).parse(fileBuffer).tags;
+	} catch (e) {}
+	await ipcRenderer.invoke(
 		"executeQuery",
-		"INSERT INTO files (full_path, preview_path, source_filename, imagehash, width, height, caption) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		"INSERT INTO files (full_path, preview_path, source_filename, imagehash, width, height, caption, exif_make, exif_model, exif_latitude, exif_longitude, exif_create_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
 		[
 			newFilePathInStorage,
 			newPreviewPathInStorage,
@@ -63,15 +75,54 @@ async function importFileToStorage(absolutePath) {
 			metadata.width,
 			metadata.height,
 			CAPTION_YET_NOT_SCANNED,
+			exif.Make,
+			exif.Model,
+			exif.GPSLatitude,
+			exif.GPSLongitude,
+			exif.CreateDate,
 		]
 	);
 
+	// try to extract exif tags
+	let file_id = (
+		await ipcRenderer.invoke(
+			"executeQuery",
+			"SELECT MAX(id) AS file_id FROM files"
+		)
+	).file_id;
+	if (!file_id) {
+		return false;
+	}
+
+	let tags = [];
+	if (exif.Artist) {
+		tags.push(`creator:${exif.Artist}`);
+	} else {
+		if (exif.XPAuthor) {
+			let author = Buffer.from(exif.XPAuthor)
+				.toString("utf16le")
+				.replace(/\0/, "");
+			tags.push(`creator:${author}`);
+		}
+	}
+	if (exif.XPKeywords) {
+		let XPKeywords = Buffer.from(exif.XPKeywords)
+			.toString("utf16le")
+			.replace(/\0/, "")
+			.split(";");
+		tags.push(...XPKeywords);
+	}
+	tags = tags.filter((v, i, a) => a.indexOf(v) === i); // unique values
+	let locale = "en"; // just default
+
+	//save keywords
+	let source_type = sourceTypes.EXIF;
+	for (let i in tags) {
+		await ipcRenderer.invoke("addTag", file_id, tags[i], locale, source_type);
+	}
+
 	return newFilePathInStorage;
 }
-
-window.addEventListener("DOMContentLoaded", async () => {
-	// any js code here
-});
 
 contextBridge.exposeInMainWorld("sqliteApi", {
 	query: async (query, values) => {
@@ -211,11 +262,11 @@ contextBridge.exposeInMainWorld("fileApi", {
 		}
 	},
 	addFilesFromFolder: (dirPath) => {
-		fs.readdir(dirPath, (err, files) => {
-			files.forEach((filePath) => {
-				let absolutePath = path.join(dirPath, filePath);
-				importFileToStorage(absolutePath);
-			});
+		fs.readdir(dirPath, async (err, files) => {
+			for (let i in files) {
+				let absolutePath = path.join(dirPath, files[i]);
+				await importFileToStorage(absolutePath);
+			}
 		});
 		return dirPath;
 	},
@@ -238,5 +289,11 @@ contextBridge.exposeInMainWorld("fileApi", {
 		let tmpFilePath = path.join(storageDirPathForFile, "from_clipboard.png");
 		fs.writeFileSync(tmpFilePath, image.toPNG());
 		return tmpFilePath;
+	},
+});
+
+contextBridge.exposeInMainWorld("sourceTypes", {
+	get: (name) => {
+		return sourceTypes[name];
 	},
 });
