@@ -69,9 +69,7 @@
 				let div = document.createElement("div");
 				div.setAttribute("data-id", file["id"]);
 				div.className = "gallery_block";
-				div.innerHTML =
-					`<img src='${file["fullpath"]}' />` +
-					`<p class='filename'>${file["source_filename"]}</p>`;
+				div.innerHTML = `<img src='${file["preview_path"]}' title='${file["source_filename"]}' />`;
 				document.getElementById("files").appendChild(div);
 			});
 			files = _files;
@@ -80,7 +78,7 @@
 			document.getElementById("file_info").style.display = "none";
 			document.getElementById("file_info_header").innerHTML =
 				file["source_filename"];
-			document.getElementById("file_info_img").src = file["fullpath"];
+			document.getElementById("file_info_img").src = file["full_path"];
 			document.getElementById(
 				"file_info_caption_container"
 			).innerHTML = `<textarea id="file_info_caption">${file["caption"]}</textarea>`;
@@ -280,7 +278,7 @@
 				if (window.sqliteApi.fileIsNotScanned(file)) {
 					try {
 						console.log("Scan file: ", file);
-						let recognized = await window.ocrApi.recognize(file["fullpath"], [
+						let recognized = await window.ocrApi.recognize(file["full_path"], [
 							"eng",
 							"rus",
 							"jpn",

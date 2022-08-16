@@ -8,6 +8,7 @@ const phash = require("sharp-phash");
 
 const CAPTION_YET_NOT_SCANNED = "[YET NOT SCANNED]";
 const FUZZY_LEVENSTEIN_THRESHOLD = 7;
+const PREVIEW_PREFIX = "preview_";
 
 function randomDigit() {
 	return Math.floor(Math.random() * 10);
@@ -25,14 +26,13 @@ async function importFileToStorage(absolutePath) {
 		randomDigit().toString(),
 		randomDigit().toString()
 	);
-	fs.mkdirSync(storageDirPathForFile, { recursive: true });
-	const newFilePathInStorage = path.join(
-		storageDirPathForFile,
+	const filename =
 		new Date().getTime() +
-			randomDigit() +
-			randomDigit() +
-			path.extname(absolutePath)
-	);
+		randomDigit() +
+		randomDigit() +
+		path.extname(absolutePath);
+	fs.mkdirSync(storageDirPathForFile, { recursive: true });
+	const newFilePathInStorage = path.join(storageDirPathForFile, filename);
 	const fileImage = fs.readFileSync(absolutePath);
 	let imagehash = null;
 	try {
@@ -44,11 +44,20 @@ async function importFileToStorage(absolutePath) {
 	fs.copyFile(absolutePath, newFilePathInStorage, () => {});
 	const image = await sharp(fileImage);
 	const metadata = await image.metadata();
+
+	// make preview
+	const newPreviewPathInStorage = path.join(
+		storageDirPathForFile,
+		PREVIEW_PREFIX + filename
+	);
+	image.resize(100).toFile(newPreviewPathInStorage);
+
 	ipcRenderer.invoke(
 		"executeQuery",
-		"INSERT INTO files (fullpath, source_filename, imagehash, width, height, caption) VALUES (?, ?, ?, ?, ?, ?)",
+		"INSERT INTO files (full_path, preview_path, source_filename, imagehash, width, height, caption) VALUES (?, ?, ?, ?, ?, ?, ?)",
 		[
 			newFilePathInStorage,
+			newPreviewPathInStorage,
 			path.basename(absolutePath),
 			parseInt(imagehash, 2),
 			metadata.width,
@@ -56,6 +65,7 @@ async function importFileToStorage(absolutePath) {
 			CAPTION_YET_NOT_SCANNED,
 		]
 	);
+
 	return newFilePathInStorage;
 }
 
