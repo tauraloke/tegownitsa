@@ -31,10 +31,6 @@ function _query(query, params) {
 		dbConnection.get(query, params, function (err, row, stmt) {
 			if (err) reject("Read error: " + err.message);
 			else {
-				console.log(this)
-				console.log(row)
-				console.log(err)
-				console.log(stmt)
 				resolve(row);
 			}
 		});
