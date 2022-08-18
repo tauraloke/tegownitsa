@@ -192,9 +192,9 @@ ipcMain.handle("replaceTagLocale", async (event, locale, title, tag_id) => {
 });
 
 // TODO: USE AND REMOVE
-ipcMain.handle("netRequest", async (event) => {
+ipcMain.handle("loadPage", async (event, url) => {
 	const { net } = require("electron");
-	const request = net.request("https://github.com");
+	const request = net.request(url);
 	request.on("response", (response) => {
 		console.log(`STATUS: ${response.statusCode}`);
 		console.log(`HEADERS: ${JSON.stringify(response.headers)}`);

@@ -7,6 +7,7 @@ const sharp = require("sharp");
 const phash = require("sharp-phash");
 const exifParser = require("exif-parser");
 const sourceTypes = require("./source_type.json");
+const cheerio = require('cheerio')
 
 const CAPTION_YET_NOT_SCANNED = "[YET NOT SCANNED]";
 const FUZZY_LEVENSTEIN_THRESHOLD = 7;
@@ -226,6 +227,32 @@ contextBridge.exposeInMainWorld("sqliteApi", {
 	ajax: async () => {
 		try {
 			return await ipcRenderer.invoke("netRequest");
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+});
+
+contextBridge.exposeInMainWorld("network", {
+	lookUpIQDBFile: async (file_path) => {
+		console.log(file_path); // TODO: remove
+	},
+	loadPage: async (url) => {
+		try {
+			await ipcRenderer.invoke("loadPage", url);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	parseDanbooruPage: async (url) => {
+		console.log(url); // TODO: remove
+		try {
+			let response = await ipcRenderer.invoke("loadPage", url);
+			let $ = cheerio.load(response)
+			$('#tag-list .artist-tag-list li').text()
+
 		} catch (error) {
 			console.error(error);
 			throw error;

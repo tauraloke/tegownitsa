@@ -375,6 +375,91 @@
 			showActionStroke(`${dups.length} pairs found`);
 			hideFileInfo();
 		}
+
+		class Job {
+			constructor(cooldown_low, cooldown_top) {
+				this.cooldown_low = cooldown_low * 1000;
+				this.cooldown_top = cooldown_top * 1000;
+				this.active = false;
+				this.timer = null;
+				this.tasks = [];
+			}
+			nextCooldown() {
+				return Math.floor(
+					this.cooldown_low +
+						Math.random() * (this.cooldown_top - this.cooldown_low)
+				);
+			}
+			start() {
+				this.active = true;
+				this.runNextTask();
+				this.planNextStep();
+				return true;
+			}
+			stop() {
+				this.active = false;
+				clearTimeout(this.timer);
+				this.timer = null;
+				return true;
+			}
+			runNextTask() {
+				let _nextTask = this.tasks.shift();
+				if (typeof _nextTask === "function") {
+					_nextTask();
+				} else {
+					this.stop();
+				}
+			}
+			planNextStep() {
+				this.timer = setTimeout(() => {
+					this.step();
+				}, this.nextCooldown());
+			}
+			step() {
+				if (!this.active) {
+					return false;
+				}
+				this.runNextTask();
+				this.planNextStep();
+				return true;
+			}
+			addTask(task = () => {}) {
+				this.tasks.push(task);
+				if (!this.active) {
+					this.start();
+				}
+				return true;
+			}
+		}
+
+		let jobs = {
+			iqdb: new Job(10, 15),
+			danbooru: new Job(10, 15),
+		};
+
+		async function loadTagsFromIQDB() {
+			for (let i in files) {
+				let file = files[i];
+				jobs.iqdb.addTask(async () => {
+					let response = await window.network.lookUpIQDBFile(
+						file["preview_url"]
+					);
+					console.log(response);
+					if (response.ok && response.data && response.data[1]) {
+						let bestMatch = response.data[1];
+						if (result.data[1].sourceUrl.match(/danbooru\.donmai\.us/)) {
+							jobs.danbooru.addTask(async () => {
+								await window.network.parseDanbooruPage(
+									result.data[1].sourceUrl
+								);
+							});
+						}
+					}
+				});
+			}
+
+			//TODO: для выбранных файлов files сделать очередь задач на загрузки информации с IQDB с кулдауном 25-30 секунд. Выполнение задач в этой очереди генерирует пополнение задач на загрузку с бур, по очереди на каждую буру с кулдауном 25-30 секунд.
+		}
 	</script>
 	<body>
 		<div class="container">
@@ -388,6 +473,7 @@
 				</button>
 				<button onclick="showAllTags()">Show all tags</button>
 				<button onclick="lookUpDups()">Find duplicates</button>
+				<button onclick="loadTagsFromIQDB()">Load tags from IQDB</button>
 				<div id="search_form">
 					<input type="text" id="search_string" />
 					Find
