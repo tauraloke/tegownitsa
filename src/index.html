@@ -288,8 +288,7 @@
 		async function findTagsByFile(file_id) {
 			showTags(await window.sqliteApi.findTagsByFile(file_id));
 		}
-		async function scanStorage() {
-			let files = await window.sqliteApi.queryAll("SELECT * FROM files;");
+		async function scanSelectedFiles() {
 			for (let index in files) {
 				let file = files[index];
 				if (window.sqliteApi.fileIsNotScanned(file)) {
@@ -323,11 +322,11 @@
 	<body>
 		<div class="container">
 			<header>
-				<button onclick="sqlQuery()">SQLite</button>
 				<button onclick="openFolder()">Import folder</button>
 				<button onclick="openFile()">Import file</button>
 				<button onclick="importFromClipboard()">Import from clipboard</button>
-				<button onclick="scanStorage()">Scan storage</button>
+				<button onclick="scanSelectedFiles()">Scan these files</button>
+				<button onclick="enreachSelectedFilesByTags()">Find tags for these files</button>
 				<button onclick="showAllTags()">Show all tags</button>
 				<div id="search_form">
 					<input type="text" id="search_string" />
