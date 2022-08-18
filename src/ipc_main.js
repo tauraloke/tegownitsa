@@ -148,6 +148,21 @@ ipcMain.handle("removeTag", async (event, file_tag_id) => {
 	return true;
 });
 
+ipcMain.handle("removeFileRow", async (event, file_id) => {
+	if (!file_id) {
+		return false;
+	}
+	let file = await db.query("SELECT * FROM files WHERE id=?", [
+		file_id,
+	]);
+	if (!file) {
+		return false;
+	}
+	await db.run("DELETE FROM files WHERE id=?", [file_id]);
+	await db.run("DELETE FROM file_tags WHERE file_id=?", [file_id]);
+	return file;
+});
+
 ipcMain.handle("replaceTagLocale", async (event, locale, title, tag_id) => {
 	if (!locale) {
 		return false;

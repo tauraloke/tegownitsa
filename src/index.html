@@ -67,7 +67,26 @@
 				let div = document.createElement("div");
 				div.setAttribute("data-id", file["id"]);
 				div.className = "gallery_block";
-				div.innerHTML = `<img src='${file["preview_path"]}' title='${file["source_filename"]}' />`;
+				div.innerHTML = `<img src='${file["preview_path"]}' title='${file["source_filename"]}' class='gallery_image' data-id='${file["id"]}' />`;
+				document.getElementById("files").appendChild(div);
+			});
+			files = _files;
+		}
+		function showDupFiles(_files) {
+			document.getElementById("files").innerHTML = "";
+			_files.forEach((file) => {
+				let div = document.createElement("div");
+				div.setAttribute("data-id", file["id"]);
+				div.className = "gallery_block";
+				let similarity = Math.floor((1 - file["distance"] / 63) * 100);
+				div.innerHTML =
+					`<img src='${file["preview_path"]}' class='gallery_image' data-id='${file["id"]}' />` +
+					`(${file["width"]}x${file["height"]})` +
+					`<button class='delete_file' data-id='${file["id"]}' title='drop first file'>[d]</button>` +
+					`<img src='${file["f2_preview_path"]}' />` +
+					`(${file["f2_width"]}x${file["f2_height"]})` +
+					`<button class='delete_file' data-id='${file["f2_id"]}' title='drop second file'>[d]</button>` +
+					` (sim. ${similarity})%`;
 				document.getElementById("files").appendChild(div);
 			});
 			files = _files;
@@ -119,27 +138,49 @@
 			showFiles(files);
 			showActionStroke(`Found ${files.length} results by tag '${tag_title}'`);
 		}
-		async function searchFilesByCaption() {
+		async function searchFilesByCaption(caption = "") {
 			hideFileInfo();
 			showAllTags();
-			let caption = searchString();
 			showActionStroke(`Start search by caption '${caption}'`);
 			let files = await window.sqliteApi.queryAll(
-				"SELECT * FROM files WHERE caption LIKE '%' || ? || '%'",
-				[caption]
+				"SELECT * FROM files WHERE caption LIKE '%' || ? || '%' OR source_filename LIKE '%' || ? || '%'",
+				[caption, caption]
 			);
 			showFiles(files);
 			showActionStroke(`Found ${files.length} results by caption '${caption}'`);
 		}
 		async function filesClick(event) {
-			let block = event.path.find((b) => b.className == "gallery_block");
-			if (!block) {
-				return false;
+			let block = event.path.find((b) => b.className == "gallery_image");
+			if (block) {
+				return await _clickFindTagsByFile(
+					parseInt(block.getAttribute("data-id"))
+				);
 			}
-			let file_id = parseInt(block.getAttribute("data-id"));
+			let tagDeletion = event.path.find((b) => b.className == "delete_file");
+			if (tagDeletion) {
+				_clickDeleteFileById(tagDeletion.getAttribute("data-id"));
+			}
+		}
+		async function _clickFindTagsByFile(file_id) {
 			file = files.find((f) => f["id"] == file_id);
 			showFileInfo(file);
 			await findTagsByFile(file_id);
+			return;
+		}
+		async function _clickDeleteFileById(file_id) {
+			if (!window.confirm("Are you sure to delete?")) {
+				return false;
+			}
+			let removedFile = await window.fileApi.removeFileById(file_id);
+			if (removedFile) {
+				showActionStroke(
+					`File #${file_id} ${removedFile["full_path"]} have been removed from a storage`
+				);
+				files = files.filter((f) => f.id != file_id && f.f2_id != file_id);
+				showDupFiles(files);
+			} else {
+				showActionStroke(`Something wrong in deletion file #${file_id}`);
+			}
 		}
 		async function tagsClick(event) {
 			let tagSearchTag = event.path.find((a) => a.className == "tag_search");
@@ -318,6 +359,15 @@
 				}
 			}
 		}
+		async function lookUpDups(threshold = 7) {
+			let dups = await window.sqliteApi.queryAll(
+				"SELECT files.*, files2.id AS f2_id, files2.preview_path AS f2_preview_path, files2.width AS f2_width, files2.height AS f2_height, hamming(files.imagehash, files2.imagehash) AS distance FROM files JOIN files AS files2 ON files.id > files2.id WHERE distance < ?",
+				[threshold]
+			);
+			showDupFiles(dups);
+			showActionStroke(`${dups.length} pairs found`);
+			hideFileInfo();
+		}
 	</script>
 	<body>
 		<div class="container">
@@ -326,13 +376,18 @@
 				<button onclick="openFile()">Import file</button>
 				<button onclick="importFromClipboard()">Import from clipboard</button>
 				<button onclick="scanSelectedFiles()">Scan these files</button>
-				<button onclick="enreachSelectedFilesByTags()">Find tags for these files</button>
+				<button onclick="enreachSelectedFilesByTags()">
+					Find tags for these files
+				</button>
 				<button onclick="showAllTags()">Show all tags</button>
+				<button onclick="lookUpDups()">Find duplicates</button>
 				<div id="search_form">
 					<input type="text" id="search_string" />
 					Find
 					<button onclick="searchFilesByTag(searchString())">by tag</button>
-					<button onclick="searchFilesByCaption()">by captions</button>
+					<button onclick="searchFilesByCaption(searchString())">
+						by captions
+					</button>
 				</div>
 			</header>
 			<section class="main">

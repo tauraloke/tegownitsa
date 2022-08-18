@@ -71,7 +71,7 @@ async function importFileToStorage(absolutePath) {
 			newFilePathInStorage,
 			newPreviewPathInStorage,
 			path.basename(absolutePath),
-			parseInt(imagehash, 2),
+			imagehash,
 			metadata.width,
 			metadata.height,
 			CAPTION_YET_NOT_SCANNED,
@@ -289,6 +289,20 @@ contextBridge.exposeInMainWorld("fileApi", {
 		let tmpFilePath = path.join(storageDirPathForFile, "from_clipboard.png");
 		fs.writeFileSync(tmpFilePath, image.toPNG());
 		return tmpFilePath;
+	},
+	removeFileById: async (file_id) => {
+		try {
+			let file = await ipcRenderer.invoke("removeFileRow", file_id);
+			if (!file) {
+				return false;
+			}
+			fs.unlink(file["full_path"], () => {});
+			fs.unlink(file["preview_path"], () => {});
+			return file;
+		} catch (e) {
+			console.log(e);
+			return false;
+		}
 	},
 });
 
