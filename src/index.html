@@ -83,7 +83,7 @@
 					`<img src='${file["preview_path"]}' class='gallery_image' data-id='${file["id"]}' />` +
 					`(${file["width"]}x${file["height"]})` +
 					`<button class='delete_file' data-id='${file["id"]}' title='drop first file'>[d]</button>` +
-					`<img src='${file["f2_preview_path"]}' />` +
+					`<img src='${file["f2_preview_path"]}' class='gallery_image' data-id='${file["f2_id"]}' />` +
 					`(${file["f2_width"]}x${file["f2_height"]})` +
 					`<button class='delete_file' data-id='${file["f2_id"]}' title='drop second file'>[d]</button>` +
 					` (sim. ${similarity})%`;
@@ -152,17 +152,23 @@
 		async function filesClick(event) {
 			let block = event.path.find((b) => b.className == "gallery_image");
 			if (block) {
-				return await _clickFindTagsByFile(
-					parseInt(block.getAttribute("data-id"))
-				);
+				return await _clickShowFile(parseInt(block.getAttribute("data-id")));
 			}
 			let tagDeletion = event.path.find((b) => b.className == "delete_file");
 			if (tagDeletion) {
 				_clickDeleteFileById(tagDeletion.getAttribute("data-id"));
 			}
 		}
-		async function _clickFindTagsByFile(file_id) {
+		async function _clickShowFile(file_id) {
 			file = files.find((f) => f["id"] == file_id);
+			if (!file) {
+				file = await window.sqliteApi.query("SELECT * FROM files WHERE id=?", [
+					file_id,
+				]);
+			}
+			if (!file) {
+				return false;
+			}
 			showFileInfo(file);
 			await findTagsByFile(file_id);
 			return;
@@ -178,6 +184,7 @@
 				);
 				files = files.filter((f) => f.id != file_id && f.f2_id != file_id);
 				showDupFiles(files);
+				hideFileInfo();
 			} else {
 				showActionStroke(`Something wrong in deletion file #${file_id}`);
 			}

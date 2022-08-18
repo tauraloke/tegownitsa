@@ -31,6 +31,7 @@
 		"electron-util": "^0.15.1",
 		"exif-parser": "^0.1.12",
 		"install": "^0.13.0",
+		"iqdb-client": "^2.0.0",
 		"npm": "^8.17.0",
 		"sharp": "^0.30.7",
 		"sharp-phash": "^2.0.0",
