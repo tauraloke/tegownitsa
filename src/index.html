@@ -36,6 +36,7 @@
 				`<button class='add_tag'>add tag</button>`;
 			document.getElementById("tags").appendChild(form);
 
+			let groups = {};
 			_tags.forEach((tag) => {
 				let p = document.createElement("p");
 				p.setAttribute("data-id", tag["id"]);
@@ -46,10 +47,24 @@
 					` <button class='remove_tag' data-file-tag-id='${tag["file_tag_id"]}'>[-]</button>` +
 					` <button class='edit_tag' data-tag-id='${tag["id"]}' title='edit tag'>[e]</button>`;
 
-				document.getElementById("tags").appendChild(p);
+				if (!groups[tag["namespace_id"]]) {
+					groups[tag["namespace_id"]] = document.createElement("div");
+					let namespaceTitle = window.tagNamespaces.getById(
+						tag["namespace_id"]
+					);
+					groups[
+						tag["namespace_id"]
+					].innerHTML = `<h4 class='tag_group_title'>${namespaceTitle}</h4>`;
+				}
+
+				groups[tag["namespace_id"]].appendChild(p);
 			});
+			for (let i in groups) {
+				document.getElementById("tags").append(groups[i]);
+			}
 		}
 		function _renderCollectionTags(_tags) {
+			let groups = {};
 			_tags.forEach((tag) => {
 				let p = document.createElement("p");
 				p.setAttribute("data-id", tag["id"]);
@@ -58,8 +73,22 @@
 					`<a class='tag_search'>${title}</a>` +
 					` <span title='files with the tag'>(${tag["file_count"]})</span>` +
 					` <button class='edit_tag' data-tag-id='${tag["id"]}' title='edit tag'>[e]</button>`;
-				document.getElementById("tags").appendChild(p);
+
+				if (!groups[tag["namespace_id"]]) {
+					groups[tag["namespace_id"]] = document.createElement("div");
+					let namespaceTitle = window.tagNamespaces.getById(
+						tag["namespace_id"]
+					);
+					groups[
+						tag["namespace_id"]
+					].innerHTML = `<h4 class='tag_group_title'>${namespaceTitle}</h4>`;
+				}
+
+				groups[tag["namespace_id"]].appendChild(p);
 			});
+			for (let i in groups) {
+				document.getElementById("tags").append(groups[i]);
+			}
 		}
 		function showFiles(_files) {
 			document.getElementById("files").innerHTML = "";
@@ -435,9 +464,33 @@
 		let jobs = {
 			iqdb: new Job(10, 15),
 			danbooru: new Job(10, 15),
+			konachan: new Job(10, 15),
 		};
 
+		function capitalize(str) {
+			return str[0].toUpperCase() + str.substring(1);
+		}
+
+		function addJobTask(resource_name, locale, url, file) {
+			jobs.danbooru.addTask(async () => {
+				let capResourceName = capitalize(resource_name);
+				let tags = await window.network["extractTagsFrom" + capResourceName](
+					url
+				);
+				let source_type = window.sourceTypes.get(resource_name.toUpperCase());
+				for (let i in tags) {
+					let title = tags[i];
+					await window.sqliteApi.addTag(file["id"], title, locale, source_type);
+				}
+				console.log(
+					`Added tags to file #${file["id"]} from ${capResourceName}`,
+					tags
+				);
+			});
+		}
+
 		async function loadTagsFromIQDB() {
+			showActionStroke(`Start loading tags for ${files.length} files`);
 			for (let i in files) {
 				let file = files[i];
 				jobs.iqdb.addTask(async () => {
@@ -447,29 +500,17 @@
 					if (response.ok && response.data && response.data[1]) {
 						let bestMatch = response.data[1];
 						if (response.data[1].sourceUrl.match(/danbooru\.donmai\.us/)) {
-							jobs.danbooru.addTask(async () => {
-								let tags = await window.network.extractTagsFromDanbooru(
-									response.data[1].sourceUrl
-								);
-								let locale = "en";
-								let source_type = window.sourceTypes.get("DANBOORU");
-								for (let i in tags) {
-									let title = tags[i];
-									await window.sqliteApi.addTag(
-										file["id"],
-										title,
-										locale,
-										source_type
-									);
-								}
-								console.log(`Added tags to file #${file["id"]}`, tags);
-							});
+							addJobTask("danbooru", "en", response.data[1].sourceUrl, file);
+						}
+						if (response.data[1].sourceUrl.match(/konachan\.com/)) {
+							addJobTask("konachan", "en", response.data[1].sourceUrl, file);
+						}
+						if (response.data[1].sourceUrl.match(/yande\.re/)) {
+							addJobTask("yandere", "en", response.data[1].sourceUrl, file);
 						}
 					}
 				});
 			}
-
-			//TODO: для выбранных файлов files сделать очередь задач на загрузки информации с IQDB с кулдауном 25-30 секунд. Выполнение задач в этой очереди генерирует пополнение задач на загрузку с бур, по очереди на каждую буру с кулдауном 25-30 секунд.
 		}
 	</script>
 	<body>

@@ -6,17 +6,26 @@ const fs = require("fs");
 const sharp = require("sharp");
 const phash = require("sharp-phash");
 const exifParser = require("exif-parser");
-const sourceTypes = require("./source_type.json");
-const cheerio = require("cheerio");
 const iqdb = require("iqdb-client");
 
+const sourceTypes = require("./source_type.json");
+const tagNamespaces = require("./tag_namespaces.json");
+const booruParser = require("./booru_parsers.js");
+
 const CAPTION_YET_NOT_SCANNED = "[YET NOT SCANNED]";
-const FUZZY_LEVENSTEIN_THRESHOLD = 7;
 const PREVIEW_PREFIX = "preview_";
 
 window.addEventListener("DOMContentLoaded", async () => {
 	// any js code here
 });
+
+function swap(hash) {
+	var result = {};
+	for (let key in hash) {
+		result[hash[key]] = key;
+	}
+	return result;
+}
 
 function randomDigit() {
 	return Math.floor(Math.random() * 10);
@@ -28,7 +37,7 @@ async function importFileToStorage(absolutePath) {
 	}
 	console.log("Loading file: ", absolutePath);
 	const storageRootDir = await ipcRenderer.invoke("getStorageDirectoryPath");
-	console.log("storage root", storageRootDir);
+	console.log("Storage root", storageRootDir);
 	const storageDirPathForFile = path.join(
 		storageRootDir,
 		randomDigit().toString(),
@@ -128,7 +137,6 @@ async function importFileToStorage(absolutePath) {
 
 contextBridge.exposeInMainWorld("sqliteApi", {
 	query: async (query, values) => {
-		console.log(values);
 		try {
 			return await ipcRenderer.invoke("executeQuery", query, values);
 		} catch (error) {
@@ -146,16 +154,6 @@ contextBridge.exposeInMainWorld("sqliteApi", {
 	},
 	fileIsNotScanned: (file) => {
 		return file["caption"] == CAPTION_YET_NOT_SCANNED;
-	},
-	fuzzySearch: async (absoluteFilePath) => {
-		// TODO: написать на фронтэнде функционал поиска дублей и отладить
-		const fileImage = fs.readFileSync(absoluteFilePath);
-		const imagehash = await phash(fileImage);
-		return await ipcRenderer.invoke(
-			"executeQueryAll",
-			"SELECT * FROM files WHERE hamming(?, imagehash) <= ?",
-			[imagehash, FUZZY_LEVENSTEIN_THRESHOLD]
-		);
 	},
 	findFilesByTag: async (title, locale = null) => {
 		try {
@@ -224,15 +222,6 @@ contextBridge.exposeInMainWorld("sqliteApi", {
 			throw error;
 		}
 	},
-	// TODO: remove
-	ajax: async () => {
-		try {
-			return await ipcRenderer.invoke("netRequest");
-		} catch (error) {
-			console.error(error);
-			throw error;
-		}
-	},
 });
 
 contextBridge.exposeInMainWorld("network", {
@@ -260,34 +249,55 @@ contextBridge.exposeInMainWorld("network", {
 				//mockup
 				response = fs.readFileSync("./mockups/danbooru.html");
 			}
-			let $ = cheerio.load(response);
-			let tags = [];
-			$(".artist-tag-list li").each(function (i, el) {
-				if (el && el.attribs && el.attribs["data-tag-name"]) {
-					tags.push("creator:" + el.attribs["data-tag-name"]);
-				}
-			});
-			$(".general-tag-list li").each(function (i, el) {
-				if (el && el.attribs && el.attribs["data-tag-name"]) {
-					tags.push(el.attribs["data-tag-name"]);
-				}
-			});
-			$(".copyright-tag-list li").each(function (i, el) {
-				if (el && el.attribs && el.attribs["data-tag-name"]) {
-					tags.push("series:" + el.attribs["data-tag-name"]);
-				}
-			});
-			$(".character-tag-list li").each(function (i, el) {
-				if (el && el.attribs && el.attribs["data-tag-name"]) {
-					tags.push("character:" + el.attribs["data-tag-name"]);
-				}
-			});
-			$(".meta-tag-list li").each(function (i, el) {
-				if (el && el.attribs && el.attribs["data-tag-name"]) {
-					tags.push("meta:" + el.attribs["data-tag-name"]);
-				}
-			});
-			return tags;
+			return new booruParser.MoebooruParser(
+				".%namespace%-tag-list li",
+				"data-tag-name"
+			).extractTags(response);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	extractTagsFromKonachan: async (url) => {
+		try {
+			if (url.match("^//")) {
+				url = `https:${url}`;
+			}
+			let response = null;
+			try {
+				// TODO: remove mockup
+				response = await ipcRenderer.invoke("loadPage", url);
+			} catch {
+				//mockup
+				response = fs.readFileSync("./mockups/konachan.html");
+			}
+			return new booruParser.MoebooruParser(
+				"li.tag-type-%namespace%",
+				"data-name"
+			).extractTags(response);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	extractTagsFromYandere: async (url) => {
+		try {
+			if (url.match("^//")) {
+				url = `https:${url}`;
+			}
+			let response = null;
+			try {
+				// TODO: remove mockup
+				console.log(url);
+				response = await ipcRenderer.invoke("loadPage", url);
+			} catch {
+				//mockup
+				response = fs.readFileSync("./mockups/yandere.html");
+			}
+			return new booruParser.YandereParser(
+				".tag-type-%namespace%",
+				"data-name"
+			).extractTags(response);
 		} catch (error) {
 			console.error(error);
 			throw error;
@@ -371,5 +381,12 @@ contextBridge.exposeInMainWorld("fileApi", {
 contextBridge.exposeInMainWorld("sourceTypes", {
 	get: (name) => {
 		return sourceTypes[name];
+	},
+});
+
+contextBridge.exposeInMainWorld("tagNamespaces", {
+	getById: (id) => {
+		let hash = swap(tagNamespaces);
+		return hash[id];
 	},
 });

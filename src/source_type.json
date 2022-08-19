@@ -2,5 +2,7 @@
 	"MANUAL": 0,
 	"EXIF": 1,
 	"IQDB": 2,
-	"DANBOORU": 3
+	"DANBOORU": 3,
+	"KONACHAN": 4,
+	"YANDERE": 5
 }

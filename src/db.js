@@ -52,7 +52,7 @@ async function initDatabase({ dbPath }) {
 		"CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, full_path TEXT, preview_path TEXT, source_filename TEXT, width INTEGER, height INTEGER, imagehash CHAR(64), caption TEXT COLLATE NOCASE, exif_make TEXT, exif_model TEXT, exif_latitude REAL, exif_longitude REAl, exif_create_date TIMESTAMP, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP)"
 	);
 	await dbConnection.run(
-		"CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, file_count INTEGER DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP)"
+		"CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, file_count INTEGER DEFAULT 0, namespace_id INTEGER, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP)"
 	);
 	await dbConnection.run(
 		"CREATE TABLE IF NOT EXISTS tag_locales (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, tag_id INTEGER, title TEXT COLLATE NOCASE, locale VARCHAR(2), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP)"

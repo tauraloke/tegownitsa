@@ -7,6 +7,7 @@ const fetch = require("node-fetch");
 
 const { getDb } = require("./db.js");
 const config = require("./config.js");
+const tagNamespaces = require("./tag_namespaces.json");
 
 let db = null;
 (async () => {
@@ -85,6 +86,7 @@ async function getTagList(query, params = []) {
 		tags[row["tag_id"]]["source_type"] ||= row["source_type"];
 		tags[row["tag_id"]]["file_tag_id"] ||= row["file_tag_id"];
 		tags[row["tag_id"]]["file_count"] ||= row["file_count"];
+		tags[row["tag_id"]]["namespace_id"] ||= row["namespace_id"];
 	});
 	return Object.values(tags);
 }
@@ -103,16 +105,29 @@ ipcMain.handle("getAllTags", async (event) => {
 });
 
 ipcMain.handle("addTag", async (event, file_id, title, locale, source_type) => {
-	//TODO: если в теге есть двоеточие, то начальная часть тега сохраняется в неймспейс.
+	title = title.trim();
 	let tag_id = null;
+	let namespaces = Object.keys(tagNamespaces).map((t) => t.toLowerCase());
+	let namespace = "general"; // default
+	for (let i in namespaces) {
+		namespace = namespaces[i];
+		let match = title.match(`^${namespace}:(.*)`);
+		if (match) {
+			title = match[1];
+			break;
+		}
+	}
+	let namespace_id = tagNamespaces[namespace.toUpperCase()] ?? 0;
 	let tag = await db.query(
-		"SELECT tags.id from tags LEFT JOIN tag_locales WHERE tag_locales.title=? AND tag_locales.locale=?",
-		[title, locale]
+		"SELECT tags.id from tags LEFT JOIN tag_locales WHERE tag_locales.title=? AND tag_locales.locale=? AND tags.namespace_id=?",
+		[title, locale, namespace_id]
 	);
 	if (tag) {
 		tag_id = tag["id"];
 	} else {
-		await db.run("INSERT INTO tags (id) VALUES (null)");
+		await db.run("INSERT INTO tags (id, namespace_id) VALUES (null, ?)", [
+			namespace_id,
+		]);
 		tag_id = (await db.query("SELECT last_insert_rowid() AS tag_id")).tag_id;
 		await db.query(
 			"INSERT INTO tag_locales (tag_id, title, locale) VALUES (?, ?, ?)",
