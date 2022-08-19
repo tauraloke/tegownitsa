@@ -3,6 +3,7 @@
 const { app, ipcMain, dialog } = require("electron");
 const { createWorker, PSM } = require("tesseract.js");
 const path = require("path");
+const fetch = require("node-fetch");
 
 const { getDb } = require("./db.js");
 const config = require("./config.js");
@@ -102,6 +103,7 @@ ipcMain.handle("getAllTags", async (event) => {
 });
 
 ipcMain.handle("addTag", async (event, file_id, title, locale, source_type) => {
+	//TODO: если в теге есть двоеточие, то начальная часть тега сохраняется в неймспейс.
 	let tag_id = null;
 	let tag = await db.query(
 		"SELECT tags.id from tags LEFT JOIN tag_locales WHERE tag_locales.title=? AND tag_locales.locale=?",
@@ -152,9 +154,7 @@ ipcMain.handle("removeFileRow", async (event, file_id) => {
 	if (!file_id) {
 		return false;
 	}
-	let file = await db.query("SELECT * FROM files WHERE id=?", [
-		file_id,
-	]);
+	let file = await db.query("SELECT * FROM files WHERE id=?", [file_id]);
 	if (!file) {
 		return false;
 	}
@@ -191,19 +191,6 @@ ipcMain.handle("replaceTagLocale", async (event, locale, title, tag_id) => {
 	}
 });
 
-// TODO: USE AND REMOVE
 ipcMain.handle("loadPage", async (event, url) => {
-	const { net } = require("electron");
-	const request = net.request(url);
-	request.on("response", (response) => {
-		console.log(`STATUS: ${response.statusCode}`);
-		console.log(`HEADERS: ${JSON.stringify(response.headers)}`);
-		response.on("data", (chunk) => {
-			console.log(`BODY: ${chunk}`);
-		});
-		response.on("end", () => {
-			console.log("No more data in response.");
-		});
-	});
-	request.end();
+	return await (await fetch(url)).text();
 });

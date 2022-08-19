@@ -7,7 +7,8 @@ const sharp = require("sharp");
 const phash = require("sharp-phash");
 const exifParser = require("exif-parser");
 const sourceTypes = require("./source_type.json");
-const cheerio = require('cheerio')
+const cheerio = require("cheerio");
+const iqdb = require("iqdb-client");
 
 const CAPTION_YET_NOT_SCANNED = "[YET NOT SCANNED]";
 const FUZZY_LEVENSTEIN_THRESHOLD = 7;
@@ -236,7 +237,7 @@ contextBridge.exposeInMainWorld("sqliteApi", {
 
 contextBridge.exposeInMainWorld("network", {
 	lookUpIQDBFile: async (file_path) => {
-		console.log(file_path); // TODO: remove
+		return await iqdb.searchPic(fs.readFileSync(file_path), { lib: "www" });
 	},
 	loadPage: async (url) => {
 		try {
@@ -246,13 +247,47 @@ contextBridge.exposeInMainWorld("network", {
 			throw error;
 		}
 	},
-	parseDanbooruPage: async (url) => {
-		console.log(url); // TODO: remove
+	extractTagsFromDanbooru: async (url) => {
 		try {
-			let response = await ipcRenderer.invoke("loadPage", url);
-			let $ = cheerio.load(response)
-			$('#tag-list .artist-tag-list li').text()
-
+			if (url.match("^//")) {
+				url = `https:${url}`;
+			}
+			let response = null;
+			try {
+				// TODO: remove mockup
+				response = await ipcRenderer.invoke("loadPage", url);
+			} catch {
+				//mockup
+				response = fs.readFileSync("./mockups/danbooru.html");
+			}
+			let $ = cheerio.load(response);
+			let tags = [];
+			$(".artist-tag-list li").each(function (i, el) {
+				if (el && el.attribs && el.attribs["data-tag-name"]) {
+					tags.push("creator:" + el.attribs["data-tag-name"]);
+				}
+			});
+			$(".general-tag-list li").each(function (i, el) {
+				if (el && el.attribs && el.attribs["data-tag-name"]) {
+					tags.push(el.attribs["data-tag-name"]);
+				}
+			});
+			$(".copyright-tag-list li").each(function (i, el) {
+				if (el && el.attribs && el.attribs["data-tag-name"]) {
+					tags.push("series:" + el.attribs["data-tag-name"]);
+				}
+			});
+			$(".character-tag-list li").each(function (i, el) {
+				if (el && el.attribs && el.attribs["data-tag-name"]) {
+					tags.push("character:" + el.attribs["data-tag-name"]);
+				}
+			});
+			$(".meta-tag-list li").each(function (i, el) {
+				if (el && el.attribs && el.attribs["data-tag-name"]) {
+					tags.push("meta:" + el.attribs["data-tag-name"]);
+				}
+			});
+			return tags;
 		} catch (error) {
 			console.error(error);
 			throw error;

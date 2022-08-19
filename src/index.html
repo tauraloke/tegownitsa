@@ -140,7 +140,7 @@
 		}
 		async function searchFilesByCaption(caption = "") {
 			hideFileInfo();
-			showAllTags();
+			showTags([]);
 			showActionStroke(`Start search by caption '${caption}'`);
 			let files = await window.sqliteApi.queryAll(
 				"SELECT * FROM files WHERE caption LIKE '%' || ? || '%' OR source_filename LIKE '%' || ? || '%'",
@@ -442,16 +442,27 @@
 				let file = files[i];
 				jobs.iqdb.addTask(async () => {
 					let response = await window.network.lookUpIQDBFile(
-						file["preview_url"]
+						file["preview_path"]
 					);
-					console.log(response);
 					if (response.ok && response.data && response.data[1]) {
 						let bestMatch = response.data[1];
-						if (result.data[1].sourceUrl.match(/danbooru\.donmai\.us/)) {
+						if (response.data[1].sourceUrl.match(/danbooru\.donmai\.us/)) {
 							jobs.danbooru.addTask(async () => {
-								await window.network.parseDanbooruPage(
-									result.data[1].sourceUrl
+								let tags = await window.network.extractTagsFromDanbooru(
+									response.data[1].sourceUrl
 								);
+								let locale = "en";
+								let source_type = window.sourceTypes.get("DANBOORU");
+								for (let i in tags) {
+									let title = tags[i];
+									await window.sqliteApi.addTag(
+										file["id"],
+										title,
+										locale,
+										source_type
+									);
+								}
+								console.log(`Added tags to file #${file["id"]}`, tags);
 							});
 						}
 					}

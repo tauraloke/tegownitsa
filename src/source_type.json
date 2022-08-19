@@ -1,6 +1,6 @@
 {
 	"MANUAL": 0,
-	"IQDB": 1,
-	"SAUCENAO": 2,
-	"EXIF": 3
+	"EXIF": 1,
+	"IQDB": 2,
+	"DANBOORU": 3
 }

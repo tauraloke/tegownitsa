@@ -1,6 +1,7 @@
-node_modules
+node_modules/
 yarn.lock
-/dist
+dist/
 *.sqlite3
-storage
+storage/
 *.traineddata
+mockups/
