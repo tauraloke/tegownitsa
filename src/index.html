@@ -465,6 +465,8 @@
 			iqdb: new Job(10, 15),
 			danbooru: new Job(10, 15),
 			konachan: new Job(10, 15),
+			yandere: new Job(10, 15),
+			gelbooru: new Job(10, 15),
 		};
 
 		function capitalize(str) {
@@ -507,6 +509,9 @@
 						}
 						if (response.data[1].sourceUrl.match(/yande\.re/)) {
 							addJobTask("yandere", "en", response.data[1].sourceUrl, file);
+						}
+						if (response.data[1].sourceUrl.match(/gelbooru\.com/)) {
+							addJobTask("gelbooru", "en", response.data[1].sourceUrl, file);
 						}
 					}
 				});

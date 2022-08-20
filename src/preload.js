@@ -294,9 +294,30 @@ contextBridge.exposeInMainWorld("network", {
 				//mockup
 				response = fs.readFileSync("./mockups/yandere.html");
 			}
-			return new booruParser.YandereParser(
-				".tag-type-%namespace%",
-				"data-name"
+			return new booruParser.YandereParser(".tag-type-%namespace%").extractTags(
+				response
+			);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	extractTagsFromGelbooru: async (url) => {
+		try {
+			if (url.match("^//")) {
+				url = `https:${url}`;
+			}
+			let response = null;
+			try {
+				// TODO: remove mockup
+				console.log(url);
+				response = await ipcRenderer.invoke("loadPage", url);
+			} catch {
+				//mockup
+				response = fs.readFileSync("./mockups/gelbooru.html");
+			}
+			return new booruParser.GelbooruParser(
+				".tag-type-%namespace%"
 			).extractTags(response);
 		} catch (error) {
 			console.error(error);

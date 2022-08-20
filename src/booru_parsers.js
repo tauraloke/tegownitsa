@@ -1,7 +1,7 @@
 const cheerio = require("cheerio");
 
 class MoebooruParser {
-	constructor(classTemplate, tagAttr) {
+	constructor(classTemplate, tagAttr = null) {
 		this.classTemplate = classTemplate;
 		this.tagAttr = tagAttr;
 	}
@@ -34,9 +34,6 @@ class MoebooruParser {
 class YandereParser extends MoebooruParser {
 	tagGroupsExtractor(groupName, prefix, $) {
 		let _tags = [];
-		console.log(
-			this.classTemplate.replace("%namespace%", groupName) + " a:nth-of-type(2)"
-		);
 		$(
 			this.classTemplate.replace("%namespace%", groupName) + " a:nth-of-type(2)"
 		).each(function (i, el) {
@@ -44,7 +41,20 @@ class YandereParser extends MoebooruParser {
 				_tags.push(prefix + $(el).text());
 			}
 		});
-		console.log(_tags);
+		return _tags;
+	}
+}
+
+class GelbooruParser extends MoebooruParser {
+	tagGroupsExtractor(groupName, prefix, $) {
+		let _tags = [];
+		$(
+			this.classTemplate.replace("%namespace%", groupName) + " > a"
+		).each(function (i, el) {
+			if (el) {
+				_tags.push(prefix + $(el).text());
+			}
+		});
 		return _tags;
 	}
 }
@@ -52,4 +62,5 @@ class YandereParser extends MoebooruParser {
 module.exports = {
 	MoebooruParser: MoebooruParser,
 	YandereParser: YandereParser,
+	GelbooruParser: GelbooruParser,
 };
