@@ -228,6 +228,12 @@ contextBridge.exposeInMainWorld("sqliteApi", {
 		}
 	},
 	addUrlToFile: async (url, file_id) => {
+		if (!url) {
+			return false;
+		}
+		if (url.match("^//")) {
+			url = "https:" + url;
+		}
 		return await ipcRenderer.invoke("addUrlToFile", url, file_id);
 	},
 });
