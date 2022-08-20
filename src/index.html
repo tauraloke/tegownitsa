@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>Electron boilerplate</title>
+		<title>Tegownitsa</title>
 		<link rel="stylesheet" href="index.css" />
 	</head>
 	<script>
@@ -145,6 +145,17 @@
 			}
 
 			document.getElementById("file_info_exif").innerHTML = exifBlock;
+			if (file.urls && file.urls.length > 0) {
+				document.getElementById("file_info_sources").innerHTML =
+					`<h4>Sources</h4>` +
+					`<ul>` +
+					file.urls
+						.map(
+							(_url) => `<li><a href="${_url}" target="_blank">${_url}</a></li>`
+						)
+						.join("\n") +
+					`</ul>`;
+			}
 
 			document.getElementById("file_info").style.display = "block";
 			currentFile = file;
@@ -198,6 +209,12 @@
 			if (!file) {
 				return false;
 			}
+			file.urls = (
+				await window.sqliteApi.queryAll(
+					"SELECT url FROM file_urls WHERE file_id=?",
+					[file_id]
+				)
+			).map((t) => t.url);
 			showFileInfo(file);
 			await findTagsByFile(file_id);
 			return;
@@ -347,6 +364,7 @@
 			let path = file.filePaths[0];
 			console.log(`Chosen file ${path}`);
 			await window.fileApi.addFile(path);
+			await searchFilesByCaption();
 			showActionStroke(`File ${path} has imported.`);
 		}
 		async function importFromClipboard() {
@@ -357,6 +375,7 @@
 			}
 			await window.fileApi.addFile(tmpFilePath);
 			await window.fileApi.removeFile(tmpFilePath);
+			await searchFilesByCaption();
 			showActionStroke(`File has imported from a clipboard.`);
 		}
 		async function showAllTags() {
@@ -488,6 +507,7 @@
 					let title = tags[i];
 					await window.sqliteApi.addTag(file["id"], title, locale, source_type);
 				}
+				await window.sqliteApi.addUrlToFile(url, file["id"]);
 				console.log(
 					`Added tags to file #${file["id"]} from ${capResourceName}`,
 					tags
@@ -533,13 +553,37 @@
 				});
 			}
 		}
+
+		async function importFileFromUrl() {
+			let url = await window.fileApi.prompt();
+			if (!url) {
+				showActionStroke(`Form is cancelled`);
+				return false;
+			}
+			const tmpFilePath = await window.fileApi.saveTempFileFromUrl(url);
+			if (!tmpFilePath) {
+				showActionStroke(`Can't upload file from ${url}.`);
+				return false;
+			}
+			let { file_id } = await window.fileApi.addFile(tmpFilePath);
+			await window.fileApi.removeFile(tmpFilePath);
+			if (!file_id) {
+				showActionStroke(`Can't copy file from ${url}.`);
+				return false;
+			}
+			await window.sqliteApi.addUrlToFile(url, file_id);
+			showActionStroke(`File has imported from url '${url}'.`);
+		}
 	</script>
 	<body>
 		<div class="container">
 			<header>
 				<button onclick="openFolder()">Import folder</button>
 				<button onclick="openFile()">Import file</button>
-				<button onclick="importFromClipboard()">Import from clipboard</button>
+				<button onclick="importFileFromUrl()">Import file from url</button>
+				<button onclick="importFromClipboard()">
+					Import file from clipboard
+				</button>
 				<button onclick="scanSelectedFiles()">Scan these files</button>
 				<button onclick="enreachSelectedFilesByTags()">
 					Find tags for these files
@@ -573,6 +617,7 @@
 					<div id="file_info_update_caption">
 						<button onclick="updateCaption()">Update caption</button>
 					</div>
+					<div id="file_info_sources"></div>
 				</div>
 			</section>
 			<footer>

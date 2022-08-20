@@ -1,6 +1,11 @@
 // middle layer
 
-const { contextBridge, ipcRenderer, clipboard } = require("electron");
+const {
+	contextBridge,
+	ipcRenderer,
+	clipboard,
+	nativeImage,
+} = require("electron");
 const path = require("path");
 const fs = require("fs");
 const sharp = require("sharp");
@@ -132,7 +137,7 @@ async function importFileToStorage(absolutePath) {
 		await ipcRenderer.invoke("addTag", file_id, tags[i], locale, source_type);
 	}
 
-	return newFilePathInStorage;
+	return { full_path: newFilePathInStorage, file_id: file_id };
 }
 
 contextBridge.exposeInMainWorld("sqliteApi", {
@@ -222,6 +227,9 @@ contextBridge.exposeInMainWorld("sqliteApi", {
 			throw error;
 		}
 	},
+	addUrlToFile: async (url, file_id) => {
+		return await ipcRenderer.invoke("addUrlToFile", url, file_id);
+	},
 });
 
 contextBridge.exposeInMainWorld("network", {
@@ -241,14 +249,7 @@ contextBridge.exposeInMainWorld("network", {
 			if (url.match("^//")) {
 				url = `https:${url}`;
 			}
-			let response = null;
-			try {
-				// TODO: remove mockup
-				response = await ipcRenderer.invoke("loadPage", url);
-			} catch {
-				//mockup
-				response = fs.readFileSync("./mockups/danbooru.html");
-			}
+			let response = await ipcRenderer.invoke("loadPage", url);
 			return new booruParser.MoebooruParser(
 				".%namespace%-tag-list li",
 				"data-tag-name"
@@ -263,14 +264,7 @@ contextBridge.exposeInMainWorld("network", {
 			if (url.match("^//")) {
 				url = `https:${url}`;
 			}
-			let response = null;
-			try {
-				// TODO: remove mockup
-				response = await ipcRenderer.invoke("loadPage", url);
-			} catch {
-				//mockup
-				response = fs.readFileSync("./mockups/konachan.html");
-			}
+			let response = await ipcRenderer.invoke("loadPage", url);
 			return new booruParser.MoebooruParser(
 				"li.tag-type-%namespace%",
 				"data-name"
@@ -285,15 +279,7 @@ contextBridge.exposeInMainWorld("network", {
 			if (url.match("^//")) {
 				url = `https:${url}`;
 			}
-			let response = null;
-			try {
-				// TODO: remove mockup
-				console.log(url);
-				response = await ipcRenderer.invoke("loadPage", url);
-			} catch {
-				//mockup
-				response = fs.readFileSync("./mockups/yandere.html");
-			}
+			let response = await ipcRenderer.invoke("loadPage", url);
 			return new booruParser.YandereParser(".tag-type-%namespace%").extractTags(
 				response
 			);
@@ -307,15 +293,7 @@ contextBridge.exposeInMainWorld("network", {
 			if (url.match("^//")) {
 				url = `https:${url}`;
 			}
-			let response = null;
-			try {
-				// TODO: remove mockup
-				console.log(url);
-				response = await ipcRenderer.invoke("loadPage", url);
-			} catch {
-				//mockup
-				response = fs.readFileSync("./mockups/gelbooru.html");
-			}
+			let response = await ipcRenderer.invoke("loadPage", url);
 			return new booruParser.GelbooruParser(
 				".tag-type-%namespace%"
 			).extractTags(response);
@@ -329,15 +307,7 @@ contextBridge.exposeInMainWorld("network", {
 			if (url.match("^//")) {
 				url = `https:${url}`;
 			}
-			let response = null;
-			try {
-				// TODO: remove mockup
-				console.log(url);
-				response = await ipcRenderer.invoke("loadPage", url);
-			} catch {
-				//mockup
-				response = fs.readFileSync("./mockups/sankaku.html");
-			}
+			let response = await ipcRenderer.invoke("loadPage", url);
 			return new booruParser.GelbooruParser(
 				".tag-type-%namespace%"
 			).extractTags(response);
@@ -351,15 +321,7 @@ contextBridge.exposeInMainWorld("network", {
 			if (url.match("^//")) {
 				url = `https:${url}`;
 			}
-			let response = null;
-			try {
-				// TODO: remove mockup
-				console.log(url);
-				response = await ipcRenderer.invoke("loadPage", url);
-			} catch {
-				//mockup
-				response = fs.readFileSync("./mockups/eshuushuu.html");
-			}
+			let response = await ipcRenderer.invoke("loadPage", url);
 			return new booruParser.EshuushuuParser().extractTags(response);
 		} catch (error) {
 			console.error(error);
@@ -371,15 +333,7 @@ contextBridge.exposeInMainWorld("network", {
 			if (url.match("^//")) {
 				url = `https:${url}`;
 			}
-			let response = null;
-			try {
-				// TODO: remove mockup
-				console.log(url);
-				response = await ipcRenderer.invoke("loadPage", url);
-			} catch {
-				//mockup
-				response = fs.readFileSync("./mockups/zerochan.html");
-			}
+			let response = await ipcRenderer.invoke("loadPage", url);
 			return new booruParser.ZerochanParser().extractTags(response);
 		} catch (error) {
 			console.error(error);
@@ -391,15 +345,7 @@ contextBridge.exposeInMainWorld("network", {
 			if (url.match("^//")) {
 				url = `https:${url}`;
 			}
-			let response = null;
-			try {
-				// TODO: remove mockup
-				console.log(url);
-				response = await ipcRenderer.invoke("loadPage", url);
-			} catch {
-				//mockup
-				response = fs.readFileSync("./mockups/animepictures.html");
-			}
+			let response = await ipcRenderer.invoke("loadPage", url);
 			return new booruParser.AnimePicturesParser().extractTags(response);
 		} catch (error) {
 			console.error(error);
@@ -465,6 +411,28 @@ contextBridge.exposeInMainWorld("fileApi", {
 		fs.writeFileSync(tmpFilePath, image.toPNG());
 		return tmpFilePath;
 	},
+	saveTempFileFromUrl: async (url) => {
+		try {
+			let buffer = Buffer.from(await ipcRenderer.invoke("loadBuffer", url));
+			const storageRootDir = await ipcRenderer.invoke(
+				"getStorageDirectoryPath"
+			);
+			const storageDirPathForFile = path.join(storageRootDir, "tmp");
+			fs.mkdirSync(storageDirPathForFile, {
+				recursive: true,
+			});
+			let tmpFilePath = path.join(
+				storageDirPathForFile,
+				path.parse(url).name + ".png"
+			);
+			let image = await sharp(buffer).toFormat("png").toFile(tmpFilePath);
+			return tmpFilePath;
+		} catch (e) {
+			console.log(e);
+			return false;
+		}
+	},
+
 	removeFileById: async (file_id) => {
 		try {
 			let file = await ipcRenderer.invoke("removeFileRow", file_id);
@@ -476,6 +444,21 @@ contextBridge.exposeInMainWorld("fileApi", {
 			return file;
 		} catch (e) {
 			console.log(e);
+			return false;
+		}
+	},
+	prompt: async () => {
+		try {
+			return await ipcRenderer.invoke("prompt", {
+				title: "input image url here",
+				label: "URL:",
+				value: "",
+				inputAttrs: {
+					type: "url",
+				},
+				type: "input",
+			});
+		} catch (e) {
 			return false;
 		}
 	},

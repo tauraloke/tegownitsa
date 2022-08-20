@@ -4,6 +4,7 @@ const { app, ipcMain, dialog } = require("electron");
 const { createWorker, PSM } = require("tesseract.js");
 const path = require("path");
 const fetch = require("node-fetch");
+const prompt = require("electron-prompt");
 
 const { getDb } = require("./db.js");
 const config = require("./config.js");
@@ -208,4 +209,31 @@ ipcMain.handle("replaceTagLocale", async (event, locale, title, tag_id) => {
 
 ipcMain.handle("loadPage", async (event, url) => {
 	return await (await fetch(url)).text();
+});
+
+ipcMain.handle("loadBuffer", async (event, url) => {
+	return await (await fetch(url)).buffer();
+});
+
+ipcMain.handle("addUrlToFile", async (event, url, file_id) => {
+	let file = await db.query("SELECT * FROM files WHERE id=?", [file_id]);
+	if (!file) {
+		return false;
+	}
+	let dupCheck = await db.query(
+		"SELECT id FROM file_urls WHERE file_id=? AND url=?",
+		[file_id, url]
+	);
+	if (dupCheck) {
+		return false;
+	}
+	await db.run("INSERT INTO file_urls (file_id, url) VALUES (?, ?)", [
+		file_id,
+		url,
+	]);
+	return true;
+});
+
+ipcMain.handle("prompt", async (event, options) => {
+	return await prompt(options);
 });
