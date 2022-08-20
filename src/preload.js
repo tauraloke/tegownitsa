@@ -366,6 +366,46 @@ contextBridge.exposeInMainWorld("network", {
 			throw error;
 		}
 	},
+	extractTagsFromZerochan: async (url) => {
+		try {
+			if (url.match("^//")) {
+				url = `https:${url}`;
+			}
+			let response = null;
+			try {
+				// TODO: remove mockup
+				console.log(url);
+				response = await ipcRenderer.invoke("loadPage", url);
+			} catch {
+				//mockup
+				response = fs.readFileSync("./mockups/zerochan.html");
+			}
+			return new booruParser.ZerochanParser().extractTags(response);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	extractTagsFromAnime_pictures: async (url) => {
+		try {
+			if (url.match("^//")) {
+				url = `https:${url}`;
+			}
+			let response = null;
+			try {
+				// TODO: remove mockup
+				console.log(url);
+				response = await ipcRenderer.invoke("loadPage", url);
+			} catch {
+				//mockup
+				response = fs.readFileSync("./mockups/animepictures.html");
+			}
+			return new booruParser.AnimePicturesParser().extractTags(response);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
 });
 
 contextBridge.exposeInMainWorld("ocrApi", {

@@ -469,6 +469,8 @@
 			gelbooru: new Job(10, 15),
 			sankaku: new Job(10, 15),
 			eshuushuu: new Job(10, 15),
+			zerochan: new Job(10, 15),
+			anime_pictures: new Job(10, 15),
 		};
 
 		function capitalize(str) {
@@ -518,8 +520,14 @@
 						if (bestMatch.sourceUrl.match(/chan\.sankakucomplex\.com/)) {
 							addJobTask("sankaku", "en", bestMatch.sourceUrl, file);
 						}
-						if (bestMatch.sourceUrl.match(/e\-shuushuu\.net/)) {
+						if (bestMatch.sourceUrl.match(/shuushuu\.net/)) {
 							addJobTask("eshuushuu", "en", bestMatch.sourceUrl, file);
+						}
+						if (bestMatch.sourceUrl.match(/zerochan\.net/)) {
+							addJobTask("zerochan", "en", bestMatch.sourceUrl, file);
+						}
+						if (bestMatch.sourceUrl.match(/anime\-pictures\.net/)) {
+							addJobTask("anime_pictures", "en", bestMatch.sourceUrl, file);
 						}
 					}
 				});
