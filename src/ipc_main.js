@@ -111,16 +111,17 @@ ipcMain.handle("addTag", async (event, file_id, title, locale, source_type) => {
 	let namespaces = Object.keys(tagNamespaces).map((t) => t.toLowerCase());
 	let namespace = "general"; // default
 	for (let i in namespaces) {
-		namespace = namespaces[i];
-		let match = title.match(`^${namespace}:(.*)`);
+		let match = title.match(`^${namespaces[i]}:(.*)`);
 		if (match) {
 			title = match[1];
+			namespace = namespaces[i];
 			break;
 		}
 	}
 	let namespace_id = tagNamespaces[namespace.toUpperCase()] ?? 0;
+	await db.run("BEGIN TRANSACTION");
 	let tag = await db.query(
-		"SELECT tags.id from tags LEFT JOIN tag_locales WHERE tag_locales.title=? AND tag_locales.locale=? AND tags.namespace_id=?",
+		"SELECT tags.id from tags LEFT JOIN tag_locales ON tags.id=tag_locales.tag_id WHERE tag_locales.title=? AND tag_locales.locale=? AND tags.namespace_id=?",
 		[title, locale, namespace_id]
 	);
 	if (tag) {
@@ -140,6 +141,7 @@ ipcMain.handle("addTag", async (event, file_id, title, locale, source_type) => {
 		[file_id, tag_id, source_type]
 	);
 	if (checkDup) {
+		await db.run("COMMIT");
 		return false;
 	}
 	await db.query(
@@ -149,6 +151,7 @@ ipcMain.handle("addTag", async (event, file_id, title, locale, source_type) => {
 	await db.query("UPDATE tags SET file_count = file_count + 1 WHERE id = ?", [
 		tag_id,
 	]);
+	await db.run("COMMIT");
 });
 
 ipcMain.handle("removeTag", async (event, file_tag_id) => {
