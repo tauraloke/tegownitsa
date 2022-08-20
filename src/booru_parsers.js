@@ -48,9 +48,31 @@ class YandereParser extends MoebooruParser {
 class GelbooruParser extends MoebooruParser {
 	tagGroupsExtractor(groupName, prefix, $) {
 		let _tags = [];
-		$(
-			this.classTemplate.replace("%namespace%", groupName) + " > a"
-		).each(function (i, el) {
+		$(this.classTemplate.replace("%namespace%", groupName) + " > a").each(
+			function (i, el) {
+				if (el) {
+					_tags.push(prefix + $(el).text());
+				}
+			}
+		);
+		return _tags;
+	}
+}
+
+class EshuushuuParser {
+	constructor() {}
+	extractTags(buffer) {
+		let $ = cheerio.load(buffer);
+		let tags = [];
+		tags.push(...this.tagGroupsExtractor("1", "", $)); // general tags
+		tags.push(...this.tagGroupsExtractor("2", "series:", $));
+		tags.push(...this.tagGroupsExtractor("4", "characters:", $));
+		tags.push(...this.tagGroupsExtractor("3", "creator:", $));
+		return tags;
+	}
+	tagGroupsExtractor(groupName, prefix, $) {
+		let _tags = [];
+		$(`[id^='quicktag${groupName}'] > .tag > a`).each(function (i, el) {
 			if (el) {
 				_tags.push(prefix + $(el).text());
 			}
@@ -63,4 +85,5 @@ module.exports = {
 	MoebooruParser: MoebooruParser,
 	YandereParser: YandereParser,
 	GelbooruParser: GelbooruParser,
+	EshuushuuParser: EshuushuuParser,
 };

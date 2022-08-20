@@ -324,6 +324,48 @@ contextBridge.exposeInMainWorld("network", {
 			throw error;
 		}
 	},
+	extractTagsFromSankaku: async (url) => {
+		try {
+			if (url.match("^//")) {
+				url = `https:${url}`;
+			}
+			let response = null;
+			try {
+				// TODO: remove mockup
+				console.log(url);
+				response = await ipcRenderer.invoke("loadPage", url);
+			} catch {
+				//mockup
+				response = fs.readFileSync("./mockups/sankaku.html");
+			}
+			return new booruParser.GelbooruParser(
+				".tag-type-%namespace%"
+			).extractTags(response);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
+	extractTagsFromEshuushuu: async (url) => {
+		try {
+			if (url.match("^//")) {
+				url = `https:${url}`;
+			}
+			let response = null;
+			try {
+				// TODO: remove mockup
+				console.log(url);
+				response = await ipcRenderer.invoke("loadPage", url);
+			} catch {
+				//mockup
+				response = fs.readFileSync("./mockups/eshuushuu.html");
+			}
+			return new booruParser.EshuushuuParser().extractTags(response);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
 });
 
 contextBridge.exposeInMainWorld("ocrApi", {

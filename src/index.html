@@ -467,6 +467,8 @@
 			konachan: new Job(10, 15),
 			yandere: new Job(10, 15),
 			gelbooru: new Job(10, 15),
+			sankaku: new Job(10, 15),
+			eshuushuu: new Job(10, 15),
 		};
 
 		function capitalize(str) {
@@ -501,17 +503,23 @@
 					);
 					if (response.ok && response.data && response.data[1]) {
 						let bestMatch = response.data[1];
-						if (response.data[1].sourceUrl.match(/danbooru\.donmai\.us/)) {
-							addJobTask("danbooru", "en", response.data[1].sourceUrl, file);
+						if (bestMatch.sourceUrl.match(/danbooru\.donmai\.us/)) {
+							addJobTask("danbooru", "en", bestMatch.sourceUrl, file);
 						}
-						if (response.data[1].sourceUrl.match(/konachan\.com/)) {
-							addJobTask("konachan", "en", response.data[1].sourceUrl, file);
+						if (bestMatch.sourceUrl.match(/konachan\.com/)) {
+							addJobTask("konachan", "en", bestMatch.sourceUrl, file);
 						}
-						if (response.data[1].sourceUrl.match(/yande\.re/)) {
-							addJobTask("yandere", "en", response.data[1].sourceUrl, file);
+						if (bestMatch.sourceUrl.match(/yande\.re/)) {
+							addJobTask("yandere", "en", bestMatch.sourceUrl, file);
 						}
-						if (response.data[1].sourceUrl.match(/gelbooru\.com/)) {
-							addJobTask("gelbooru", "en", response.data[1].sourceUrl, file);
+						if (bestMatch.sourceUrl.match(/gelbooru\.com/)) {
+							addJobTask("gelbooru", "en", bestMatch.sourceUrl, file);
+						}
+						if (bestMatch.sourceUrl.match(/chan\.sankakucomplex\.com/)) {
+							addJobTask("sankaku", "en", bestMatch.sourceUrl, file);
+						}
+						if (bestMatch.sourceUrl.match(/e\-shuushuu\.net/)) {
+							addJobTask("eshuushuu", "en", bestMatch.sourceUrl, file);
 						}
 					}
 				});

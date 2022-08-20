@@ -4,5 +4,8 @@
 	"IQDB": 2,
 	"DANBOORU": 3,
 	"KONACHAN": 4,
-	"YANDERE": 5
+	"YANDERE": 5,
+	"GELBOORU": 6,
+	"SANKAKU": 7,
+	"ESHUUSHUU": 8
 }
