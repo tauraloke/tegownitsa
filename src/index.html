@@ -505,6 +505,7 @@
 				let source_type = window.sourceTypes.get(resource_name.toUpperCase());
 				for (let i in tags) {
 					let title = tags[i];
+					console.log(`add tag ${title} to file ${file['id']}`)
 					await window.sqliteApi.addTag(file["id"], title, locale, source_type);
 				}
 				await window.sqliteApi.addUrlToFile(url, file["id"]);
