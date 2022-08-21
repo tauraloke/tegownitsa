@@ -13,6 +13,7 @@ const config = require("./config.js");
 
 const showPreferences = () => {
 	// Show the app's preferences here
+	console.log("test");
 };
 
 const helpSubmenu = [
@@ -50,8 +51,10 @@ if (!is.macos) {
 			type: "separator",
 		},
 		aboutMenuItem({
-			icon: path.join(__dirname, "static", "icon.png"),
-			text: "Created by Tauraloke Esteru and Github contributors",
+			icon: path.join(__dirname, "../static", "icon.png"),
+			copyright: "Created by Tauraloke Esteru and Github contributors",
+			text: "Yet another image tag manager",
+			website: "https://github.com/tauraloke/tegownitsa",
 		})
 	);
 }
@@ -135,11 +138,45 @@ const otherTemplate = [
 		role: "fileMenu",
 		submenu: [
 			{
-				label: "Custom",
+				label: "Import image from file",
+				icon: path.join(__dirname, "../static", "menu", "file.png"),
+				click(_menuItem, browserWindow, _event) {
+					browserWindow.webContents.executeJavaScript(`openFile()`);
+				},
+			},
+			{
+				label: "Import images from folder",
+				icon: path.join(__dirname, "../static", "menu", "folder.png"),
+				click(_menuItem, browserWindow, _event) {
+					browserWindow.webContents.executeJavaScript(`openFolder()`);
+				},
+			},
+			{
+				label: "Import image from direct URL",
+				icon: path.join(__dirname, "../static", "menu", "url.png"),
+				click(_menuItem, browserWindow, _event) {
+					browserWindow.webContents.executeJavaScript(`importFileFromUrl()`);
+				},
+			},
+			{
+				label: "Import image from clipboard",
+				icon: path.join(__dirname, "../static", "menu", "clipboard.png"),
+				click(_menuItem, browserWindow, _event) {
+					browserWindow.webContents.executeJavaScript(`importFileFromUrl()`);
+				},
 			},
 			{
 				type: "separator",
 			},
+			{
+				icon: path.join(__dirname, "../static", "menu", "exit.png"),
+				role: "quit",
+			},
+		],
+	},
+	{
+		role: "editMenu",
+		submenu: [
 			{
 				label: "Settings",
 				accelerator: "Control+,",
@@ -151,12 +188,26 @@ const otherTemplate = [
 				type: "separator",
 			},
 			{
-				role: "quit",
+				icon: path.join(__dirname, "../static", "menu", "scan.png"),
+				label: "Scan text on current files",
+				click(_menuItem, browserWindow, _event) {
+					browserWindow.webContents.executeJavaScript(`scanSelectedFiles()`);
+				},
+			},
+			{
+				icon: path.join(__dirname, "../static", "menu", "dups.png"),
+				label: "Find duplicates",
+				click(_menuItem, browserWindow, _event) {
+					browserWindow.webContents.executeJavaScript(`lookUpDups()`);
+				},
+			},
+			{
+				label: "Load tags from IQDB for current files",
+				click(_menuItem, browserWindow, _event) {
+					browserWindow.webContents.executeJavaScript(`loadTagsFromIQDB()`);
+				},
 			},
 		],
-	},
-	{
-		role: "editMenu",
 	},
 	{
 		role: "viewMenu",
