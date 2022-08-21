@@ -51,7 +51,7 @@ if (!is.macos) {
 			type: "separator",
 		},
 		aboutMenuItem({
-			icon: path.join(__dirname, "../static", "icon.png"),
+			icon: path.join(__dirname, "../static", 'menu', "url.png"),
 			copyright: "Created by Tauraloke Esteru and Github contributors",
 			text: "Yet another image tag manager",
 			website: "https://github.com/tauraloke/tegownitsa",
@@ -159,8 +159,8 @@ const otherTemplate = [
 				},
 			},
 			{
-				label: "Import image from clipboard",
 				icon: path.join(__dirname, "../static", "menu", "clipboard.png"),
+				label: "Import image from clipboard",
 				click(_menuItem, browserWindow, _event) {
 					browserWindow.webContents.executeJavaScript(`importFileFromUrl()`);
 				},
@@ -169,8 +169,8 @@ const otherTemplate = [
 				type: "separator",
 			},
 			{
-				icon: path.join(__dirname, "../static", "menu", "exit.png"),
 				role: "quit",
+				icon: path.join(__dirname, "../static", "menu", "exit.png"),
 			},
 		],
 	},
@@ -179,6 +179,7 @@ const otherTemplate = [
 		submenu: [
 			{
 				label: "Settings",
+				icon: path.join(__dirname, "../static", "menu", "settings.png"),
 				accelerator: "Control+,",
 				click() {
 					showPreferences();
@@ -188,21 +189,22 @@ const otherTemplate = [
 				type: "separator",
 			},
 			{
-				icon: path.join(__dirname, "../static", "menu", "scan.png"),
 				label: "Scan text on current files",
+				icon: path.join(__dirname, "../static", "menu", "scan.png"),
 				click(_menuItem, browserWindow, _event) {
 					browserWindow.webContents.executeJavaScript(`scanSelectedFiles()`);
 				},
 			},
 			{
-				icon: path.join(__dirname, "../static", "menu", "dups.png"),
 				label: "Find duplicates",
+				icon: path.join(__dirname, "../static", "menu", "dups.png"),
 				click(_menuItem, browserWindow, _event) {
 					browserWindow.webContents.executeJavaScript(`lookUpDups()`);
 				},
 			},
 			{
 				label: "Load tags from IQDB for current files",
+				icon: path.join(__dirname, "../static", "menu", "iqdb.png"),
 				click(_menuItem, browserWindow, _event) {
 					browserWindow.webContents.executeJavaScript(`loadTagsFromIQDB()`);
 				},
