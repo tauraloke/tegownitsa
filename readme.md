@@ -54,3 +54,4 @@ npm start
 - Pagination.
 - Add Saucenao API requests with a private token.
 - Move Tesseract language list to settings.
+- i18n.

@@ -8,6 +8,7 @@ const {
 	openUrlMenuItem,
 	openNewGitHubIssue,
 	debugInfo,
+	showAboutWindow,
 } = require("electron-util");
 const config = require("./config.js");
 
@@ -18,14 +19,17 @@ const showPreferences = () => {
 
 const helpSubmenu = [
 	openUrlMenuItem({
+		icon: path.join(__dirname, "../static", "menu", "website.png"),
 		label: "Website",
 		url: "https://github.com/tauraloke/tegownitsa",
 	}),
 	openUrlMenuItem({
+		icon: path.join(__dirname, "../static", "menu", "source.png"),
 		label: "Source Code",
 		url: "https://github.com/tauraloke/tegownitsa",
 	}),
 	{
+		icon: path.join(__dirname, "../static", "menu", "issue.png"),
 		label: "Report an Issue…",
 		click() {
 			const body = `
@@ -50,12 +54,18 @@ if (!is.macos) {
 		{
 			type: "separator",
 		},
-		aboutMenuItem({
-			icon: path.join(__dirname, "../static", 'menu', "url.png"),
-			copyright: "Created by Tauraloke Esteru and Github contributors",
-			text: "Yet another image tag manager",
-			website: "https://github.com/tauraloke/tegownitsa",
-		})
+		{
+			label: "About Tegownitsa",
+			icon: path.join(__dirname, "../static", "menu", "about.png"),
+			click(_menuItem, _browserWindow, _event) {
+				showAboutWindow({
+					icon: path.join(__dirname, "../static", "icon.png"),
+					copyright: "Created by Tauraloke Esteru and Github contributors",
+					website: "https://github.com/tauraloke/tegownitsa",
+					text: "Yet another image tag manager",
+				});
+			},
+		},
 	);
 }
 
@@ -162,7 +172,7 @@ const otherTemplate = [
 				icon: path.join(__dirname, "../static", "menu", "clipboard.png"),
 				label: "Import image from clipboard",
 				click(_menuItem, browserWindow, _event) {
-					browserWindow.webContents.executeJavaScript(`importFileFromUrl()`);
+					browserWindow.webContents.executeJavaScript(`importFromClipboard()`);
 				},
 			},
 			{
