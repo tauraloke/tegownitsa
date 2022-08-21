@@ -1,7 +1,7 @@
 {
 	"name": "tegownitsa",
 	"productName": "Tegownitsa",
-	"version": "0.1.0",
+	"version": "0.9.0",
 	"description": "Yet another image tag manager",
 	"license": "MIT",
 	"repository": "tauraloke/tegownitsa",
@@ -61,6 +61,9 @@
 			"libs/sqlite/fuzzy.dll",
 			"**/node_modules/sharp/**"
 		],
+		"win": {
+			"icon": "build/icon.png"
+		},
 		"mac": {
 			"category": "public.app-category.social-networking",
 			"darkModeSupport": true
