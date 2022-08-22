@@ -91,9 +91,9 @@ app.on('activate', async () => {
   mainWindow.webContents.executeJavaScript('searchFilesByCaption()');
   mainWindow.webContents.executeJavaScript('showAllTags()');
 
-  mainWindow.webContents.on('new-window', function (e, url) {
-    e.preventDefault();
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);
+    return { action: 'deny' };
   });
 })();
 
