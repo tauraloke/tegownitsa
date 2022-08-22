@@ -1,13 +1,13 @@
 {
-	"MANUAL": 0,
-	"EXIF": 1,
-	"IQDB": 2,
-	"DANBOORU": 3,
-	"KONACHAN": 4,
-	"YANDERE": 5,
-	"GELBOORU": 6,
-	"SANKAKU": 7,
-	"ESHUUSHUU": 8,
-	"ZEROCHAN": 9,
-	"ANIME_PICTURES": 10
+  "MANUAL": 0,
+  "EXIF": 1,
+  "IQDB": 2,
+  "DANBOORU": 3,
+  "KONACHAN": 4,
+  "YANDERE": 5,
+  "GELBOORU": 6,
+  "SANKAKU": 7,
+  "ESHUUSHUU": 8,
+  "ZEROCHAN": 9,
+  "ANIME_PICTURES": 10
 }
