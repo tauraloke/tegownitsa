@@ -1,7 +1,7 @@
 {
   "name": "tegownitsa",
   "productName": "Tegownitsa",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Yet another image tag manager",
   "license": "MIT",
   "repository": "tauraloke/tegownitsa",
@@ -40,7 +40,7 @@
     "tesseract.js": "^2.1.5"
   },
   "devDependencies": {
-    "electron": "^12.0.6",
+    "electron": "^20.0.3",
     "electron-builder": "^23.3.3",
     "eslint": "^8.22.0",
     "eslint-plugin-unicorn": "^43.0.2",
