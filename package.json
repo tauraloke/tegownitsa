@@ -29,7 +29,7 @@
     "electron-store": "^8.0.0",
     "electron-unhandled": "^3.0.2",
     "electron-updater": "^4.3.8",
-    "electron-util": "^0.15.1",
+    "electron-util": "^0.17.2",
     "exif-parser": "^0.1.12",
     "install": "^0.13.0",
     "iqdb-client": "^2.0.0",
