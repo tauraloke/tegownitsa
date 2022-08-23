@@ -34,7 +34,7 @@
     "exif-parser": "^0.1.12",
     "install": "^0.13.0",
     "iqdb-client": "^2.0.0",
-    "npm": "^8.17.0",
+    "npm": "^8.18.0",
     "sharp": "^0.30.7",
     "sharp-phash": "^2.0.0",
     "sqlite3": "^5.0.9",
