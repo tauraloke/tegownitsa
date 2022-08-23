@@ -5,7 +5,7 @@ const Parser = require('../../../src/services/parsers/yandere_parser.js');
 test('Yandere parser extracts tags', async () => {
   let parser = new Parser('');
   parser.getBuffer = () => {
-    return fs.readFileSync(path.join('jest', 'mocks', 'html', 'yandere.html'));
+    return fs.readFileSync(path.join('jest', 'mocks', 'html', 'yandere.txt'));
   };
   let tags = await parser.extractTags();
   expect(tags).toEqual([

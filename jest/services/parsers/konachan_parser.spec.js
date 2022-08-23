@@ -5,7 +5,7 @@ const Parser = require('../../../src/services/parsers/konachan_parser.js');
 test('Konachan parser extracts tags', async () => {
   let parser = new Parser('');
   parser.getBuffer = () => {
-    return fs.readFileSync(path.join('jest', 'mocks', 'html', 'konachan.html'));
+    return fs.readFileSync(path.join('jest', 'mocks', 'html', 'konachan.txt'));
   };
   let tags = await parser.extractTags();
   expect(tags).toEqual([

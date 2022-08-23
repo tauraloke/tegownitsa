@@ -5,7 +5,7 @@ const Parser = require('../../../src/services/parsers/danbooru_parser.js');
 test('Danbooru parser extracts tags', async () => {
   let parser = new Parser('');
   parser.getBuffer = () => {
-    return fs.readFileSync(path.join('jest', 'mocks', 'html', 'danbooru.html'));
+    return fs.readFileSync(path.join('jest', 'mocks', 'html', 'danbooru.txt'));
   };
   let tags = await parser.extractTags();
   expect(tags).toEqual([

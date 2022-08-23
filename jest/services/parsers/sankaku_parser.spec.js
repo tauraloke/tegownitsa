@@ -5,7 +5,7 @@ const Parser = require('../../../src/services/parsers/sankaku_parser.js');
 test('Sankaku parser extracts tags', async () => {
   let parser = new Parser('');
   parser.getBuffer = () => {
-    return fs.readFileSync(path.join('jest', 'mocks', 'html', 'sankaku.html'));
+    return fs.readFileSync(path.join('jest', 'mocks', 'html', 'sankaku.txt'));
   };
   let tags = await parser.extractTags();
   expect(tags).toEqual([

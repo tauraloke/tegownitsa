@@ -5,7 +5,7 @@ const Parser = require('../../../src/services/parsers/gelbooru_parser.js');
 test('Gelbooru parser extracts tags', async () => {
   let parser = new Parser('');
   parser.getBuffer = () => {
-    return fs.readFileSync(path.join('jest', 'mocks', 'html', 'gelbooru.html'));
+    return fs.readFileSync(path.join('jest', 'mocks', 'html', 'gelbooru.txt'));
   };
   let tags = await parser.extractTags();
   expect(tags).toEqual([

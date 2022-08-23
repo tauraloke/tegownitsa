@@ -6,7 +6,7 @@ test('E-Shuushuu parser extracts tags', async () => {
   let parser = new Parser('');
   parser.getBuffer = () => {
     return fs.readFileSync(
-      path.join('jest', 'mocks', 'html', 'eshuushuu.html')
+      path.join('jest', 'mocks', 'html', 'eshuushuu.txt')
     );
   };
   let tags = await parser.extractTags();

@@ -6,7 +6,7 @@ test('Anime-Pictures parser extracts tags', async () => {
   let parser = new Parser('');
   parser.getBuffer = () => {
     return fs.readFileSync(
-      path.join('jest', 'mocks', 'html', 'animepictures.html')
+      path.join('jest', 'mocks', 'html', 'animepictures.txt')
     );
   };
   let tags = await parser.extractTags();
