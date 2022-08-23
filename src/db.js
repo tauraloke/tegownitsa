@@ -83,12 +83,10 @@ async function initDatabase({ dbPath }) {
   return dbConnection;
 }
 
-module.exports = {
-  getDb: async ({ dbPath }) => {
-    if (dbc) {
-      return dbc;
-    }
-    dbc = await initDatabase({ dbPath: dbPath });
+module.exports = async ({ dbPath }) => {
+  if (dbc) {
     return dbc;
   }
+  dbc = await initDatabase({ dbPath: dbPath });
+  return dbc;
 };

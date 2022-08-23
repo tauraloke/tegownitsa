@@ -37,7 +37,7 @@
       document.getElementById('tags').appendChild(form);
 
       let groups = {};
-      _tags.forEach((tag) => {
+      _tags.forEach(async (tag) => {
         let p = document.createElement('p');
         p.setAttribute('data-id', tag['id']);
         let title = Object.values(tag['locales']).join(' / ');
@@ -49,7 +49,7 @@
 
         if (!groups[tag['namespace_id']]) {
           groups[tag['namespace_id']] = document.createElement('div');
-          let namespaceTitle = window.tagNamespaces.getById(
+          let namespaceTitle = await window.constants.getTagNamespaceById(
             tag['namespace_id']
           );
           groups[
@@ -63,9 +63,9 @@
         document.getElementById('tags').append(groups[i]);
       }
     }
-    function _renderCollectionTags(_tags) {
+    async function _renderCollectionTags(_tags) {
       let groups = {};
-      _tags.forEach((tag) => {
+      _tags.forEach(async (tag) => {
         let p = document.createElement('p');
         p.setAttribute('data-id', tag['id']);
         let title = Object.values(tag['locales']).join(' / ');
@@ -76,7 +76,7 @@
 
         if (!groups[tag['namespace_id']]) {
           groups[tag['namespace_id']] = document.createElement('div');
-          let namespaceTitle = window.tagNamespaces.getById(
+          let namespaceTitle = await window.constants.getTagNamespaceById(
             tag['namespace_id']
           );
           groups[
@@ -387,7 +387,7 @@
     async function scanSelectedFiles() {
       for (let index in files) {
         let file = files[index];
-        if (await window.sqliteApi.fileIsNotScanned(file)) {
+        if (await window.ocrApi.fileIsNotScanned(file)) {
           try {
             console.log('Scan file: ', file);
             let recognized = await window.ocrApi.recognize(file['full_path'], [
@@ -498,7 +498,7 @@
           url,
           resource_name
         );
-        let source_type = window.constants.getSourceType(
+        let source_type = await window.constants.getSourceType(
           resource_name.toUpperCase()
         );
         for (let i in tags) {
@@ -564,9 +564,7 @@
         showActionStroke(`Can't upload file from ${url}.`);
         return false;
       }
-      console.log('ready:', tmpFilePath) //TODO: remove
       let { file_id } = await window.fileApi.addFile(tmpFilePath);
-      console.log('ready2:',file_id) //TODO: remove
       await window.fileApi.removeFile(tmpFilePath);
       if (!file_id) {
         showActionStroke(`Can't copy file from ${url}.`);

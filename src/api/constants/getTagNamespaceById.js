@@ -1,5 +1,5 @@
 const tagNamespaces = require('../../tag_namespaces.json');
-const swap = require('../../services/utils.js');
+const { swap } = require('../../services/utils.js');
 
 module.exports = {
   run: async (_event, _db, id) => {

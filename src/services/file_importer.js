@@ -1,18 +1,19 @@
 const fs = require('fs');
 const { app, clipboard } = require('electron');
 const path = require('path');
-const config = require('../config.js');
 const phash = require('sharp-phash');
 const sharp = require('sharp');
 const exifParser = require('exif-parser');
+const fetch = require('node-fetch');
+
+const config = require('../config.js');
 const {
   PREVIEW_PREFIX,
   CAPTION_YET_NOT_SCANNED
 } = require('../constants.json');
 const sourceTypes = require('../source_type.json');
 const { randomDigit } = require('./utils.js');
-const addTag = require('../api_branches/sqlite_api/add_tag.js');
-const fetch = require('node-fetch');
+const addTag = require('../api/sqlite_api/add_tag.js');
 
 class FileImporter {
   constructor(db) {
@@ -111,11 +112,10 @@ class FileImporter {
         exif.CreateDate
       ]
     );
-    let file_id = await this.db.query('SELECT MAX(id) AS file_id FROM files')
-      .file_id;
-    if (!file_id) {
-      return false;
-    }
+    let { file_id } = await this.db.query(
+      'SELECT MAX(id) AS file_id FROM files'
+    );
+    return file_id;
   }
   async importFileToStorage(absolutePath) {
     if (!fs.statSync(absolutePath).isFile()) {
@@ -128,12 +128,15 @@ class FileImporter {
     const filename = this.generateFilename(absolutePath);
     const fileImage = fs.readFileSync(absolutePath);
     let imagehash = await this.getPHash(absolutePath, fileImage);
+    if (!imagehash) {
+      return false;
+    }
 
     fs.mkdirSync(storageDirPathForFile, { recursive: true });
     const newFilePathInStorage = path.join(storageDirPathForFile, filename);
 
     fs.copyFile(absolutePath, newFilePathInStorage, () => {});
-    const image = await sharp(fileImage);
+    const image = sharp(fileImage);
     const metadata = await image.metadata();
 
     // make preview
@@ -144,7 +147,7 @@ class FileImporter {
     image.resize(100).toFile(newPreviewPathInStorage);
 
     let exif = this.getExif(absolutePath);
-    let file_id = this.insertFile(
+    let file_id = await this.insertFile(
       exif,
       newFilePathInStorage,
       newPreviewPathInStorage,

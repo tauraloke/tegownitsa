@@ -7,7 +7,7 @@ module.exports = {
       '..',
       'services',
       'parsers',
-      snake_source_key + '.js'
+      snake_source_key + '_parser.js'
     ));
     return await new sourceClass(url).extractTags();
   }

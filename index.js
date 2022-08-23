@@ -8,6 +8,9 @@ const debug = require('electron-debug');
 const contextMenu = require('electron-context-menu');
 
 const menu = require('./src/menu.js');
+const getDb = require('./src/db.js');
+const config = require('./src/config.js');
+const ApiConnector = require('./src/services/api_connector.js');
 
 unhandled();
 debug();
@@ -98,4 +101,8 @@ app.on('activate', async () => {
 })();
 
 // Connect IPC handlers and load DB
-require('./src/ipc_main.js');
+let db = null;
+(async () => {
+  db = await getDb({ dbPath: config.get('sql_filename_path') });
+  new ApiConnector().connectIpcMainHandlers(db);
+})();
