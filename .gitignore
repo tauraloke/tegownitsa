@@ -4,4 +4,3 @@ dist/
 *.sqlite3
 storage/
 *.traineddata
-mockups/

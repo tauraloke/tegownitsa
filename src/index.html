@@ -265,7 +265,7 @@
       }
       let title = document.getElementById('add_tag_title').value;
       let locale = document.getElementById('add_tag_locale').value;
-      let source_type = window.sourceTypes.get('MANUAL');
+      let source_type = window.constants.getSourceType('MANUAL');
       let file_id = currentFile['id'];
       await window.sqliteApi.addTag(file_id, title, locale, source_type);
       await findTagsByFile(file_id);
@@ -387,7 +387,7 @@
     async function scanSelectedFiles() {
       for (let index in files) {
         let file = files[index];
-        if (window.sqliteApi.fileIsNotScanned(file)) {
+        if (await window.sqliteApi.fileIsNotScanned(file)) {
           try {
             console.log('Scan file: ', file);
             let recognized = await window.ocrApi.recognize(file['full_path'], [
@@ -492,17 +492,15 @@
       anime_pictures: new Job(10, 15)
     };
 
-    function capitalize(str) {
-      return str[0].toUpperCase() + str.substring(1);
-    }
-
     function addJobTask(resource_name, locale, url, file) {
       jobs.danbooru.addTask(async () => {
-        let capResourceName = capitalize(resource_name);
-        let tags = await window.network['extractTagsFrom' + capResourceName](
-          url
+        let tags = await window.network.extractTagsFromSource(
+          url,
+          resource_name
         );
-        let source_type = window.sourceTypes.get(resource_name.toUpperCase());
+        let source_type = window.constants.getSourceType(
+          resource_name.toUpperCase()
+        );
         for (let i in tags) {
           let title = tags[i];
           console.log(`add tag ${title} to file ${file['id']}`);
@@ -510,7 +508,7 @@
         }
         await window.sqliteApi.addUrlToFile(url, file['id']);
         console.log(
-          `Added tags to file #${file['id']} from ${capResourceName}`,
+          `Added tags to file #${file['id']} from ${resource_name}`,
           tags
         );
       });
@@ -521,7 +519,7 @@
       for (let i in files) {
         let file = files[i];
         jobs.iqdb.addTask(async () => {
-          let response = await window.network.lookUpIQDBFile(
+          let response = await window.network.lookupIqdbFile(
             file['preview_path']
           );
           if (response.ok && response.data && response.data[1]) {
@@ -556,7 +554,7 @@
     }
 
     async function importFileFromUrl() {
-      let url = await window.fileApi.prompt();
+      let url = await window.widget.prompt();
       if (!url) {
         showActionStroke(`Form is cancelled`);
         return false;
@@ -566,7 +564,9 @@
         showActionStroke(`Can't upload file from ${url}.`);
         return false;
       }
+      console.log('ready:', tmpFilePath) //TODO: remove
       let { file_id } = await window.fileApi.addFile(tmpFilePath);
+      console.log('ready2:',file_id) //TODO: remove
       await window.fileApi.removeFile(tmpFilePath);
       if (!file_id) {
         showActionStroke(`Can't copy file from ${url}.`);

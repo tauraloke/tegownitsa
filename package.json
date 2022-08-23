@@ -12,8 +12,9 @@
   },
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
+    "jest": "npx jest .",
     "lint": "npx eslint .",
-    "test": "npm run lint",
+    "test": "npm run lint && npm run jest",
     "start": "electron .",
     "dev:clean": "rm -rf ./node_modules/electron/dist/storage/ && rm ./db.sqlite3",
     "pack": "electron-builder --dir",
@@ -44,6 +45,7 @@
     "electron-builder": "^23.3.3",
     "eslint": "^8.22.0",
     "eslint-plugin-unicorn": "^43.0.2",
+    "jest": "^28.1.3",
     "np": "^7.5.0",
     "prettier": "2.7.1",
     "xo": "^0.51.0"
