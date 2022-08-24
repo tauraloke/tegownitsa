@@ -134,6 +134,8 @@ function showFileInfo(file) {
         .map((_url) => `<li><a href="${_url}" target="_blank">${_url}</a></li>`)
         .join('\n') +
       `</ul>`;
+  } else {
+    document.getElementById('file_info_sources').innerHTML = '';
   }
 
   document.getElementById('file_info').style.display = 'block';
