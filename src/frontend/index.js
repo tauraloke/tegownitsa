@@ -15,73 +15,60 @@ function showActionStroke(message) {
 function showTags(_tags) {
   document.getElementById('tags').innerHTML = '';
   if (currentFile && currentFile['id']) {
-    _renderFileTags(_tags);
+    renderTags(_tags, _renderFileTagLine, _renderHeaderFileTagBlock);
   } else {
-    _renderCollectionTags(_tags);
+    renderTags(_tags, _renderCollectionTagLine);
   }
-
   tags = _tags;
 }
-function _renderFileTags(_tags) {
+function _renderFileTagLine(tag) {
+  let title = Object.values(tag['locales']).join(' / ');
+  return (
+    `<a class='tag_search'>${title}</a>` +
+    ` <span title='files with the tag'>(${tag['file_count']})</span>` +
+    ` <button class='remove_tag' data-file-tag-id='${tag['file_tag_id']}'>[-]</button>` +
+    ` <button class='edit_tag' data-tag-id='${tag['id']}' title='edit tag'>[e]</button>`
+  );
+}
+function _renderCollectionTagLine(tag) {
+  let title = Object.values(tag['locales']).join(' / ');
+  return (
+    `<a class='tag_search'>${title}</a>` +
+    ` <span title='files with the tag'>(${tag['file_count']})</span>` +
+    ` <button class='edit_tag' data-tag-id='${tag['id']}' title='edit tag'>[e]</button>`
+  );
+}
+function _renderHeaderFileTagBlock() {
   let form = document.createElement('p');
   form.innerHTML =
     `<input type='text' value='' placeholder='type tag' id='add_tag_title' />` +
     `<input type='text' value='en' id='add_tag_locale' placeholder='en' maxlength='2'>` +
     `<button class='add_tag'>add tag</button>`;
   document.getElementById('tags').appendChild(form);
-
-  let groups = {};
-  _tags.forEach(async (tag) => {
-    let p = document.createElement('p');
-    p.setAttribute('data-id', tag['id']);
-    let title = Object.values(tag['locales']).join(' / ');
-    p.innerHTML =
-      `<a class='tag_search'>${title}</a>` +
-      ` <span title='files with the tag'>(${tag['file_count']})</span>` +
-      ` <button class='remove_tag' data-file-tag-id='${tag['file_tag_id']}'>[-]</button>` +
-      ` <button class='edit_tag' data-tag-id='${tag['id']}' title='edit tag'>[e]</button>`;
-
-    if (!groups[tag['namespace_id']]) {
-      groups[tag['namespace_id']] = document.createElement('div');
-      let namespaceTitle = await window.constants.getTagNamespaceById(
-        tag['namespace_id']
-      );
-      groups[
-        tag['namespace_id']
-      ].innerHTML = `<h4 class='tag_group_title'>${namespaceTitle}</h4>`;
-    }
-
-    groups[tag['namespace_id']].appendChild(p);
-  });
-  for (let i in groups) {
-    document.getElementById('tags').append(groups[i]);
-  }
 }
-async function _renderCollectionTags(_tags) {
-  let groups = {};
-  _tags.forEach(async (tag) => {
-    let p = document.createElement('p');
-    p.setAttribute('data-id', tag['id']);
-    let title = Object.values(tag['locales']).join(' / ');
-    p.innerHTML =
-      `<a class='tag_search'>${title}</a>` +
-      ` <span title='files with the tag'>(${tag['file_count']})</span>` +
-      ` <button class='edit_tag' data-tag-id='${tag['id']}' title='edit tag'>[e]</button>`;
+async function renderTags(_tags, renderTagLine, renderHeaderTagBlock = null) {
+  if (renderHeaderTagBlock) {
+    renderHeaderTagBlock();
+  }
 
+  let groups = {};
+  for (let i = 0; i < _tags.length; i++) {
+    let tag = _tags[i];
     if (!groups[tag['namespace_id']]) {
-      groups[tag['namespace_id']] = document.createElement('div');
       let namespaceTitle = await window.constants.getTagNamespaceById(
         tag['namespace_id']
       );
       groups[
         tag['namespace_id']
-      ].innerHTML = `<h4 class='tag_group_title'>${namespaceTitle}</h4>`;
+      ] = `<h4 class='tag_group_title'>${namespaceTitle}</h4>`;
     }
-
-    groups[tag['namespace_id']].appendChild(p);
-  });
+    groups[tag['namespace_id']] +=
+      `<p data-id="${tag['id']}">` + renderTagLine(tag) + `</p>`;
+  }
   for (let i in groups) {
-    document.getElementById('tags').append(groups[i]);
+    let div = document.createElement('div');
+    div.innerHTML = groups[i];
+    document.getElementById('tags').append(div);
   }
 }
 function showFiles(_files) {
