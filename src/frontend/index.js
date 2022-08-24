@@ -143,6 +143,7 @@ function showFileInfo(file) {
 }
 function hideFileInfo() {
   document.getElementById('file_info').style.display = 'none';
+  document.getElementById('add_tag_title')?.remove();
   currentFile = null;
 }
 
@@ -246,7 +247,7 @@ async function _addTagToFile(event) {
   }
   let title = document.getElementById('add_tag_title').value;
   let locale = document.getElementById('add_tag_locale').value;
-  let source_type = window.constants.getSourceType('MANUAL');
+  let source_type = await window.constants.getSourceType('MANUAL');
   let file_id = currentFile['id'];
   await window.sqliteApi.addTag(file_id, title, locale, source_type);
   await findTagsByFile(file_id);
