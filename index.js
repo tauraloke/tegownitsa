@@ -19,15 +19,6 @@ contextMenu();
 // Note: Must match 'build.appId' in package.json
 app.setAppUserModelId('com.electron.Tegownitsa');
 
-if (!is.development) {
-  const FOUR_HOURS = 1000 * 60 * 60 * 4;
-  setInterval(() => {
-    autoUpdater.checkForUpdates();
-  }, FOUR_HOURS);
-
-  autoUpdater.checkForUpdates();
-}
-
 // Prevent window from being garbage collected
 let mainWindow;
 
@@ -104,3 +95,44 @@ let db = null;
   db = await getDb({ dbPath: config.get('sql_filename_path') });
   new ApiConnector().connectIpcMainHandlers(db);
 })();
+
+if (!is.development) {
+  const FOUR_HOURS = 1000 * 60 * 60 * 4;
+  setInterval(() => {
+    autoUpdater.checkForUpdates();
+  }, FOUR_HOURS);
+
+  autoUpdater.checkForUpdates();
+}
+
+function sendStatusToWindow(text) {
+  console.log(text);
+  mainWindow.webContents.send('message', text);
+}
+autoUpdater.on('checking-for-update', () => {
+  sendStatusToWindow('Checking for update...');
+});
+autoUpdater.on('update-available', (info) => {
+  sendStatusToWindow('Update available.');
+});
+autoUpdater.on('update-not-available', (info) => {
+  sendStatusToWindow('Update not available.');
+});
+autoUpdater.on('error', (err) => {
+  sendStatusToWindow('Error in auto-updater. ' + err);
+});
+autoUpdater.on('download-progress', (progressObj) => {
+  let log_message = 'Download speed: ' + progressObj.bytesPerSecond;
+  log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+  log_message =
+    log_message +
+    ' (' +
+    progressObj.transferred +
+    '/' +
+    progressObj.total +
+    ')';
+  sendStatusToWindow(log_message);
+});
+autoUpdater.on('update-downloaded', (info) => {
+  sendStatusToWindow('Update downloaded');
+});
