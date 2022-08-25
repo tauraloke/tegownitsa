@@ -2,10 +2,12 @@
 
 GUI for a image tag manager in Linux, Windows.
 
+---
+
 ## Install
 
 - Binaries are available here: https://github.com/tauraloke/tegownitsa/releases/
-- Also you can build from sources:
+- Also you can clone the project and build from sources:
 
 ## Build
 
@@ -19,6 +21,7 @@ _Linux, and Windows 7+ are supported (64-bit only)._
 
 - `npm run dist:l`
 
+
 **Windows**
 
 Only windows environment (due to `sharp` package).
@@ -28,6 +31,19 @@ Only windows environment (due to `sharp` package).
 - `npm install`
 
 - `npm run dist:w`
+
+---
+
+## Release
+
+- Update a version and create a new tag by `npm run release`.
+
+- Build linux and windows dists (see above).
+
+- Upload *.Appimage, latest-linux.yml; *.exe, latest.yml, *.exe.blockmap to Github by [creating new release](https://github.com/tauraloke/tegownitsa/releases/new).
+
+New version will be downloaded silently after a next launch of the app and applied after window' exit.
+
 
 ---
 
@@ -41,6 +57,8 @@ npm start
 ```
 
 **WSL useful trick**: run a linux desktop application via `WSL2` + `VcXsrv`.
+
+---
 
 ## Third-party resources
 
