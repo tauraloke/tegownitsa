@@ -112,10 +112,10 @@ function sendStatusToWindow(text) {
 autoUpdater.on('checking-for-update', () => {
   sendStatusToWindow('Checking for update...');
 });
-autoUpdater.on('update-available', (info) => {
+autoUpdater.on('update-available', (_info) => {
   sendStatusToWindow('Update available.');
 });
-autoUpdater.on('update-not-available', (info) => {
+autoUpdater.on('update-not-available', (_info) => {
   sendStatusToWindow('Update not available.');
 });
 autoUpdater.on('error', (err) => {
@@ -133,6 +133,6 @@ autoUpdater.on('download-progress', (progressObj) => {
     ')';
   sendStatusToWindow(log_message);
 });
-autoUpdater.on('update-downloaded', (info) => {
+autoUpdater.on('update-downloaded', (_info) => {
   sendStatusToWindow('Update downloaded');
 });
