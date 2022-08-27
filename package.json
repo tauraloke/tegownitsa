@@ -34,7 +34,6 @@
     "electron-unhandled": "^4.0.1",
     "electron-updater": "^5.2.1",
     "electron-util": "^0.17.2",
-    "esm": "^3.2.25",
     "exif-parser": "^0.1.12",
     "install": "^0.13.0",
     "iqdb-client": "^2.0.0",

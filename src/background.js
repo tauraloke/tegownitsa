@@ -10,6 +10,7 @@ import config from './config.js';
 import menu from './menu.js';
 import path from 'path';
 import contextMenu from 'electron-context-menu';
+import UpdateService from './services/update_service.js';
 
 contextMenu();
 
@@ -18,10 +19,12 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ]);
 
+let win;
+
 async function createWindow() {
   // Create the browser window.
   Menu.setApplicationMenu(menu);
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -107,3 +110,5 @@ let db = null;
   db = await getDb({ dbPath: config.get('sql_filename_path') });
   new ApiConnector().connectIpcMainHandlers(db);
 })();
+
+new UpdateService({ cooldown_hours: 4, mainWindow: win }).connect();

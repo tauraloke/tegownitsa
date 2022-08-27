@@ -146,6 +146,9 @@ export default {
       return this.currentFile.exif_make + ' ' + this.currentFile.exif_model;
     }
   },
+  mounted() {
+    this.files = this.findFilesByCaption();
+  },
   methods: {
     async searchFilesByTag(tag_title) {
       this.currentFile = null;
