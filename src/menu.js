@@ -1,15 +1,16 @@
+/* eslint-disable no-undef */
 'use strict';
-const path = require('path');
-const { app, Menu, shell } = require('electron');
-const {
+import path from 'path';
+import { app, Menu, shell } from 'electron';
+import {
   is,
   appMenu,
   openUrlMenuItem,
   openNewGitHubIssue,
   debugInfo,
   showAboutWindow
-} = require('electron-util');
-const config = require('./config.js');
+} from 'electron-util';
+import config from './config.js';
 
 const showPreferences = () => {
   // Show the app's preferences here
@@ -18,17 +19,17 @@ const showPreferences = () => {
 
 const helpSubmenu = [
   openUrlMenuItem({
-    icon: path.join(__dirname, '../static', 'menu', 'website.png'),
+    icon: path.join(__static, 'menu', 'website.png'),
     label: 'Website',
     url: 'https://github.com/tauraloke/tegownitsa'
   }),
   openUrlMenuItem({
-    icon: path.join(__dirname, '../static', 'menu', 'source.png'),
+    icon: path.join(__static, 'menu', 'source.png'),
     label: 'Source Code',
     url: 'https://github.com/tauraloke/tegownitsa'
   }),
   {
-    icon: path.join(__dirname, '../static', 'menu', 'issue.png'),
+    icon: path.join(__static, 'menu', 'issue.png'),
     label: 'Report an Issue…',
     click() {
       const body = `
@@ -55,10 +56,10 @@ if (!is.macos) {
     },
     {
       label: 'About Tegownitsa',
-      icon: path.join(__dirname, '../static', 'menu', 'about.png'),
+      icon: path.join(__static, 'menu', 'about.png'),
       click(_menuItem, _browserWindow, _event) {
         showAboutWindow({
-          icon: path.join(__dirname, '../static', 'icon.png'),
+          icon: path.join(__static, 'icon.png'),
           copyright: 'Created by Tauraloke Esteru and Github contributors',
           website: 'https://github.com/tauraloke/tegownitsa',
           text: 'Yet another image tag manager'
@@ -148,27 +149,27 @@ const otherTemplate = [
     submenu: [
       {
         label: 'Import image from file',
-        icon: path.join(__dirname, '../static', 'menu', 'file.png'),
+        icon: path.join(__static, 'menu', 'file.png'),
         click(_menuItem, browserWindow, _event) {
           browserWindow.webContents.executeJavaScript('openFile()');
         }
       },
       {
         label: 'Import images from folder',
-        icon: path.join(__dirname, '../static', 'menu', 'folder.png'),
+        icon: path.join(__static, 'menu', 'folder.png'),
         click(_menuItem, browserWindow, _event) {
           browserWindow.webContents.executeJavaScript('openFolder()');
         }
       },
       {
         label: 'Import image from direct URL',
-        icon: path.join(__dirname, '../static', 'menu', 'url.png'),
+        icon: path.join(__static, 'menu', 'url.png'),
         click(_menuItem, browserWindow, _event) {
           browserWindow.webContents.executeJavaScript('importFileFromUrl()');
         }
       },
       {
-        icon: path.join(__dirname, '../static', 'menu', 'clipboard.png'),
+        icon: path.join(__static, 'menu', 'clipboard.png'),
         label: 'Import image from clipboard',
         click(_menuItem, browserWindow, _event) {
           browserWindow.webContents.executeJavaScript('importFromClipboard()');
@@ -179,7 +180,7 @@ const otherTemplate = [
       },
       {
         role: 'quit',
-        icon: path.join(__dirname, '../static', 'menu', 'exit.png')
+        icon: path.join(__static, 'menu', 'exit.png')
       }
     ]
   },
@@ -188,7 +189,7 @@ const otherTemplate = [
     submenu: [
       {
         label: 'Settings',
-        icon: path.join(__dirname, '../static', 'menu', 'settings.png'),
+        icon: path.join(__static, 'menu', 'settings.png'),
         accelerator: 'Control+,',
         click() {
           showPreferences();
@@ -199,21 +200,21 @@ const otherTemplate = [
       },
       {
         label: 'Scan text on current files',
-        icon: path.join(__dirname, '../static', 'menu', 'scan.png'),
+        icon: path.join(__static, 'menu', 'scan.png'),
         click(_menuItem, browserWindow, _event) {
           browserWindow.webContents.executeJavaScript('scanSelectedFiles()');
         }
       },
       {
         label: 'Find duplicates',
-        icon: path.join(__dirname, '../static', 'menu', 'dups.png'),
+        icon: path.join(__static, 'menu', 'dups.png'),
         click(_menuItem, browserWindow, _event) {
           browserWindow.webContents.executeJavaScript('lookUpDups()');
         }
       },
       {
         label: 'Load tags from IQDB for current files',
-        icon: path.join(__dirname, '../static', 'menu', 'iqdb.png'),
+        icon: path.join(__static, 'menu', 'iqdb.png'),
         click(_menuItem, browserWindow, _event) {
           browserWindow.webContents.executeJavaScript('loadTagsFromIQDB()');
         }
@@ -238,4 +239,4 @@ if (is.development) {
   });
 }
 
-module.exports = Menu.buildFromTemplate(template);
+export default Menu.buildFromTemplate(template);

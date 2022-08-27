@@ -1,11 +1,16 @@
 {
+  "root": true,
   "env": {
     "browser": true,
     "commonjs": true,
     "es2021": true,
     "node": true
   },
-  "extends": "eslint:recommended",
+  "extends": [
+    "plugin:vue/vue3-recommended",
+    "plugin:prettier/recommended",
+    "eslint:recommended"
+  ],
   "overrides": [
     {
       "files": ["**/*.spec.js"],
@@ -15,7 +20,8 @@
     }
   ],
   "parserOptions": {
-    "ecmaVersion": "latest"
+    "ecmaVersion": "latest",
+    "parser": "@babel/eslint-parser"
   },
   "rules": {
     "indent": ["error", 2],

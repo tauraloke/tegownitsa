@@ -1,26 +1,17 @@
-const path = require('path');
-const fs = require('fs');
 const ApiFolder = require('./api_folder.js');
 const { camelize } = require('./utils.js');
-const { contextBridge, ipcRenderer, ipcMain } = require('electron');
+const { ipcMain, ipcRenderer, contextBridge } = require('electron');
+const contents = require('../api/contents.json');
 
 class ApiConnector {
-  constructor(api_folder_name = 'api') {
-    this.api_folder_name = api_folder_name;
-  }
+  constructor() {}
   getApiFolders() {
     if (this.api_folders) {
       return this.api_folders;
     }
-    this.api_folders = [];
-    fs.readdirSync(path.join(__dirname, '..', this.api_folder_name), {
-      withFileTypes: true
-    })
-      .filter((dir) => dir.isDirectory())
-      .map((d) => d.name)
-      .forEach((title) => {
-        this.api_folders.push(new ApiFolder(title));
-      });
+    this.api_folders = Object.keys(contents).map(
+      (folder) => new ApiFolder(folder, contents[folder])
+    );
     return this.api_folders;
   }
   connectIpcMainHandlers(db) {
@@ -32,26 +23,31 @@ class ApiConnector {
       });
     });
   }
-  connectIpcPreloadHandlers() {
-    this.getApiFolders().forEach((branch) => {
+  connectPreloadHandlers() {
+    for (let folder in contents) {
       let methods = {};
-      branch.snake_method_names.forEach((snake_method_name) => {
-        let camel_method_name = camelize(snake_method_name);
-        methods[camel_method_name] = async (...args) => {
+      for (let i in contents[folder]) {
+        let snake_method_name = contents[folder][i];
+        methods[camelize(snake_method_name)] = async (...args) => {
           try {
-            return await ipcRenderer.invoke(camel_method_name, ...args);
+            return await ipcRenderer.invoke(
+              camelize(snake_method_name),
+              ...args
+            );
           } catch (error) {
             console.error(
-              `Wrong calling of method ${branch.snake_title}.${snake_method_name} with args`,
+              `Wrong calling of method ${folder}.${camelize(
+                snake_method_name
+              )} with args`,
               args
             );
             console.log('Stacktrace', error);
             throw error;
           }
         };
-      });
-      contextBridge.exposeInMainWorld(camelize(branch.snake_title), methods);
-    });
+      }
+      contextBridge.exposeInMainWorld(camelize(folder), methods);
+    }
   }
 }
 

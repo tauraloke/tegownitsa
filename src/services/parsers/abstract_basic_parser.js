@@ -1,5 +1,5 @@
+const fetchUrl = require('node-fetch').default;
 const cheerio = require('cheerio');
-const fetch = require('node-fetch');
 
 class AbstractBasicParser {
   constructor(url) {
@@ -9,7 +9,7 @@ class AbstractBasicParser {
     this.url = url;
   }
   async getBuffer() {
-    this.buffer ||= await (await fetch(this.url)).text();
+    this.buffer = this.buffer || (await (await fetchUrl(this.url)).text());
     return this.buffer;
   }
   // @Abstract

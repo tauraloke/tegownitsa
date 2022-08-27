@@ -1,14 +1,11 @@
 const sqlite3 = require('sqlite3').verbose();
-const { app } = require('electron');
 
 let dbc = null;
 
 function loadSqliteExtension(dbConnection, name) {
   dbConnection.loadExtension(
     process.platform == 'win32'
-      ? app.isPackaged
-        ? `.\\resources\\app.asar.unpacked\\libs\\sqlite\\${name}.dll`
-        : `.\\libs\\sqlite\\${name}.dll`
+      ? `.\\libs\\sqlite\\${name}.dll`
       : `./libs/sqlite/${name}`
   );
 
@@ -41,12 +38,19 @@ async function _getTagList(query, params = []) {
   let response = await dbc.queryAll(query, params);
   let tags = {};
   response.forEach((row) => {
-    tags[row['tag_id']] ||= { id: row['tag_id'], locales: {} };
+    tags[row['tag_id']] = tags[row['tag_id']] || {
+      id: row['tag_id'],
+      locales: {}
+    };
     tags[row['tag_id']]['locales'][row['locale']] = row['title'];
-    tags[row['tag_id']]['source_type'] ||= row['source_type'];
-    tags[row['tag_id']]['file_tag_id'] ||= row['file_tag_id'];
-    tags[row['tag_id']]['file_count'] ||= row['file_count'];
-    tags[row['tag_id']]['namespace_id'] ||= row['namespace_id'];
+    tags[row['tag_id']]['source_type'] =
+      tags[row['tag_id']]['source_type'] || row['source_type'];
+    tags[row['tag_id']]['file_tag_id'] =
+      tags[row['tag_id']]['file_tag_id'] || row['file_tag_id'];
+    tags[row['tag_id']]['file_count'] =
+      tags[row['tag_id']]['file_count'] || row['file_count'];
+    tags[row['tag_id']]['namespace_id'] =
+      tags[row['tag_id']]['namespace_id'] || row['namespace_id'];
   });
   return Object.values(tags);
 }

@@ -1,22 +1,10 @@
-const fs = require('fs');
-const path = require('path');
-
 class ApiFolder {
-  constructor(snake_title) {
+  constructor(snake_title, snake_method_names) {
     this.snake_title = snake_title;
-    this.snake_method_names = fs
-      .readdirSync(path.join(__dirname, '..', 'api', this.snake_title))
-      .filter((title) => title.match('.js'))
-      .map((title) => title.split('.')[0]);
+    this.snake_method_names = snake_method_names;
   }
   getMethod(snake_method_name) {
-    return require(path.join(
-      __dirname,
-      '..',
-      'api',
-      this.snake_title,
-      snake_method_name + '.js'
-    )).run;
+    return require(`../api/${this.snake_title}/${snake_method_name}.js`).run;
   }
 }
 

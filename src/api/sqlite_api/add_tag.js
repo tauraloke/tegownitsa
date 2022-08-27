@@ -14,7 +14,7 @@ module.exports = {
         break;
       }
     }
-    let namespace_id = tagNamespaces[namespace.toUpperCase()] ?? 0;
+    let namespace_id = tagNamespaces[namespace.toUpperCase()] || 0;
     await db.run('BEGIN TRANSACTION');
     let tag = await db.query(
       'SELECT tags.id from tags LEFT JOIN tag_locales ON tags.id=tag_locales.tag_id WHERE tag_locales.title=? AND tag_locales.locale=? AND tags.namespace_id=?',

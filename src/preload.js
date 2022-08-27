@@ -1,9 +1,9 @@
 // middle layer
 
-const ApiConnector = require('./services/api_connector.js');
+import ApiConnector from './services/api_connector.js';
 
 window.addEventListener('DOMContentLoaded', async () => {
   // any js code here
 });
 
-new ApiConnector().connectIpcPreloadHandlers();
+new ApiConnector().connectPreloadHandlers();

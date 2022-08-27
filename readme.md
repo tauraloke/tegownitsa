@@ -19,7 +19,7 @@ _Linux, and Windows 7+ are supported (64-bit only)._
 
 - `npm install`
 
-- `npm run dist:l`
+- `npm run electron:build`
 
 
 **Windows**
@@ -30,7 +30,7 @@ Only windows environment (due to `sharp` package).
 
 - `npm install`
 
-- `npm run dist:w`
+- `npm run electron:build`
 
 ---
 
