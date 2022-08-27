@@ -1,5 +1,5 @@
-const fetchUrl = require('node-fetch').default;
-const cheerio = require('cheerio');
+import fetchUrl from 'node-fetch';
+import { load } from 'cheerio';
 
 class AbstractBasicParser {
   constructor(url) {
@@ -17,7 +17,7 @@ class AbstractBasicParser {
     throw { error: 'Direct call of an abstract method' };
   }
   async extractTags() {
-    let $ = cheerio.load(await this.getBuffer());
+    let $ = load(await this.getBuffer());
     let tags = [];
     Object.keys(this.getTagGroups()).forEach((name) => {
       let prefix = this.getTagGroups()[name];
@@ -35,4 +35,4 @@ class AbstractBasicParser {
   }
 }
 
-module.exports = AbstractBasicParser;
+export default AbstractBasicParser;

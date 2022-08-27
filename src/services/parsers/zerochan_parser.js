@@ -1,4 +1,4 @@
-const AbstractBasicParser = require('./abstract_basic_parser.js');
+import AbstractBasicParser from './abstract_basic_parser.js';
 
 class ZerochanParser extends AbstractBasicParser {
   getTagGroups() {
@@ -22,4 +22,4 @@ class ZerochanParser extends AbstractBasicParser {
   }
 }
 
-module.exports = ZerochanParser;
+export default ZerochanParser;

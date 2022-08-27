@@ -1,4 +1,5 @@
 // Create index file `api/contents.json` to navigate ApiConnector service around api calls with Webpack.
+// Called as `npm run jsonize:api`, should be CommonJS.
 
 const fs = require('fs');
 const path = require('path');

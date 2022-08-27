@@ -8,4 +8,4 @@ class ApiFolder {
   }
 }
 
-module.exports = ApiFolder;
+export default ApiFolder;

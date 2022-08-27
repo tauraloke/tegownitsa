@@ -1,3 +1,5 @@
+// Frontend class
+
 import sourceTypes from '../config/source_type.json';
 
 export default class Job {

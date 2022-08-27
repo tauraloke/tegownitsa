@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const Parser = require('../../../src/services/parsers/danbooru_parser.js');
+const Parser = require('../../../src/services/parsers/danbooru_parser.js').default;
 
 test('Danbooru parser extracts tags', async () => {
   let parser = new Parser('');

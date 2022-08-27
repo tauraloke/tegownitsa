@@ -1,10 +1,10 @@
 module.exports = {
-  anime_pictures: require('./anime_pictures_parser.js'),
-  danbooru: require('./danbooru_parser.js'),
-  eshuushuu: require('./eshuushuu_parser.js'),
-  gelbooru: require('./gelbooru_parser.js'),
-  konachan: require('./konachan_parser.js'),
-  sankaku: require('./sankaku_parser.js'),
-  yandere: require('./yandere_parser.js'),
-  zerochan: require('./zerochan_parser.js')
+  anime_pictures: require('./anime_pictures_parser.js').default,
+  danbooru: require('./danbooru_parser.js').default,
+  eshuushuu: require('./eshuushuu_parser.js').default,
+  gelbooru: require('./gelbooru_parser.js').default,
+  konachan: require('./konachan_parser.js').default,
+  sankaku: require('./sankaku_parser.js').default,
+  yandere: require('./yandere_parser.js').default,
+  zerochan: require('./zerochan_parser.js').default
 };

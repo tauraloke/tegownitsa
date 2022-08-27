@@ -1,7 +1,7 @@
-const ApiFolder = require('./api_folder.js');
-const { camelize } = require('./utils.js');
-const { ipcMain, ipcRenderer, contextBridge } = require('electron');
-const contents = require('../api/contents.json');
+import ApiFolder from './api_folder.js';
+import { camelize } from './utils.js';
+import { ipcMain, ipcRenderer, contextBridge } from 'electron';
+import contents from '../api/contents.json';
 
 class ApiConnector {
   constructor() {}
@@ -51,4 +51,4 @@ class ApiConnector {
   }
 }
 
-module.exports = ApiConnector;
+export default ApiConnector;

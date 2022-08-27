@@ -1,4 +1,4 @@
-const AbstractBasicParser = require('./abstract_basic_parser.js');
+import AbstractBasicParser from './abstract_basic_parser.js';
 
 class EshuushuuParser extends AbstractBasicParser {
   getTagGroups() {
@@ -20,4 +20,4 @@ class EshuushuuParser extends AbstractBasicParser {
   }
 }
 
-module.exports = EshuushuuParser;
+export default EshuushuuParser;

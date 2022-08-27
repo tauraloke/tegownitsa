@@ -1,7 +1,7 @@
-const { is } = require('electron-util');
-const { autoUpdater } = require('electron-updater');
+import { is } from 'electron-util';
+import { autoUpdater } from 'electron-updater';
 
-class UpdateService {
+export default class UpdateService {
   constructor({ cooldown_hour = 4, mainWindow }) {
     this.cooldown_hour = cooldown_hour;
     this.mainWindow = mainWindow;
@@ -48,5 +48,3 @@ class UpdateService {
     });
   }
 }
-
-module.exports = UpdateService;

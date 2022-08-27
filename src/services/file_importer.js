@@ -1,30 +1,30 @@
-const fs = require('fs');
-const { app, clipboard } = require('electron');
-const path = require('path');
-const phash = require('sharp-phash');
-const sharp = require('sharp');
-const exifParser = require('exif-parser');
-const fetch = require('node-fetch');
+import { readFileSync, statSync, mkdirSync, copyFile, writeFileSync } from 'fs';
+import { app, clipboard } from 'electron';
+import { join, dirname, extname, basename, parse } from 'path';
+import phash from 'sharp-phash';
+import sharp from 'sharp';
+import { create } from 'exif-parser';
+import fetch from 'node-fetch';
 
-const config = require('../config/store.js');
-const {
+import config from '../config/store.js';
+import {
   PREVIEW_PREFIX,
   CAPTION_YET_NOT_SCANNED
-} = require('../config/constants.json');
-const sourceTypes = require('../config/source_type.json');
-const { randomDigit } = require('./utils.js');
-const addTag = require('../api/sqlite_api/add_tag.js');
+} from '../config/constants.json';
+import { EXIF } from '../config/source_type.json';
+import { randomDigit } from './utils.js';
+import { run } from '../api/sqlite_api/add_tag.js';
 
 class FileImporter {
   constructor(db) {
     this.db = db;
   }
   getStorageDirectoryPath() {
-    let currentDirPath = path.join(path.dirname(app.getPath('exe')), 'storage');
+    let currentDirPath = join(dirname(app.getPath('exe')), 'storage');
     return config.get('storage_dir') || currentDirPath;
   }
   generateStorageDirPathForFile() {
-    return path.join(
+    return join(
       this.getStorageDirectoryPath(),
       randomDigit().toString(),
       randomDigit().toString()
@@ -35,7 +35,7 @@ class FileImporter {
       new Date().getTime() +
       randomDigit() +
       randomDigit() +
-      path.extname(absolutePath)
+      extname(absolutePath)
     );
   }
   async extractExifTags(file_id, exif) {
@@ -65,9 +65,9 @@ class FileImporter {
     let locale = 'en'; // just default
 
     //save keywords
-    let source_type = sourceTypes.EXIF;
+    let source_type = EXIF;
     for (let i in tags) {
-      await addTag.run({}, this.db, file_id, tags[i], locale, source_type);
+      await run({}, this.db, file_id, tags[i], locale, source_type);
     }
   }
   async getPHash(absolutePath, fileImage) {
@@ -79,9 +79,9 @@ class FileImporter {
     }
   }
   getExif(absolutePath) {
-    let fileBuffer = fs.readFileSync(absolutePath);
+    let fileBuffer = readFileSync(absolutePath);
     try {
-      return exifParser.create(fileBuffer).parse(fileBuffer).tags;
+      return create(fileBuffer).parse(fileBuffer).tags;
     } catch (_error) {
       console.log('Cannot extract exif');
       return {};
@@ -100,7 +100,7 @@ class FileImporter {
       [
         newFilePathInStorage,
         newPreviewPathInStorage,
-        path.basename(absolutePath),
+        basename(absolutePath),
         imagehash,
         metadata.width,
         metadata.height,
@@ -118,7 +118,7 @@ class FileImporter {
     return file_id;
   }
   async importFileToStorage(absolutePath) {
-    if (!fs.statSync(absolutePath).isFile()) {
+    if (!statSync(absolutePath).isFile()) {
       return;
     }
     console.log('Loading file: ', absolutePath);
@@ -126,21 +126,21 @@ class FileImporter {
     console.log('Storage root', storageRootDir);
     const storageDirPathForFile = this.generateStorageDirPathForFile();
     const filename = this.generateFilename(absolutePath);
-    const fileImage = fs.readFileSync(absolutePath);
+    const fileImage = readFileSync(absolutePath);
     let imagehash = await this.getPHash(absolutePath, fileImage);
     if (!imagehash) {
       return false;
     }
 
-    fs.mkdirSync(storageDirPathForFile, { recursive: true });
-    const newFilePathInStorage = path.join(storageDirPathForFile, filename);
+    mkdirSync(storageDirPathForFile, { recursive: true });
+    const newFilePathInStorage = join(storageDirPathForFile, filename);
 
-    fs.copyFile(absolutePath, newFilePathInStorage, () => {});
+    copyFile(absolutePath, newFilePathInStorage, () => {});
     const image = sharp(fileImage);
     const metadata = await image.metadata();
 
     // make preview
-    const newPreviewPathInStorage = path.join(
+    const newPreviewPathInStorage = join(
       storageDirPathForFile,
       PREVIEW_PREFIX + filename
     );
@@ -162,14 +162,11 @@ class FileImporter {
   async importFileFromUrl(url) {
     let buffer = Buffer.from(await (await fetch(url)).buffer());
     const storageRootDir = this.getStorageDirectoryPath();
-    const storageDirPathForFile = path.join(storageRootDir, 'tmp');
-    fs.mkdirSync(storageDirPathForFile, {
+    const storageDirPathForFile = join(storageRootDir, 'tmp');
+    mkdirSync(storageDirPathForFile, {
       recursive: true
     });
-    let tmpFilePath = path.join(
-      storageDirPathForFile,
-      path.parse(url).name + '.png'
-    );
+    let tmpFilePath = join(storageDirPathForFile, parse(url).name + '.png');
     await sharp(buffer).toFormat('png').toFile(tmpFilePath);
     return tmpFilePath;
   }
@@ -179,20 +176,20 @@ class FileImporter {
       return false;
     }
     const storageRootDir = this.getStorageDirectoryPath();
-    const storageDirPathForFile = path.join(storageRootDir, 'tmp');
-    fs.mkdirSync(storageDirPathForFile, {
+    const storageDirPathForFile = join(storageRootDir, 'tmp');
+    mkdirSync(storageDirPathForFile, {
       recursive: true
     });
-    let tmpFilePath = path.join(
+    let tmpFilePath = join(
       storageDirPathForFile,
       new Date().getTime() +
         randomDigit() +
         randomDigit() +
         '_from_clipboard.png'
     );
-    fs.writeFileSync(tmpFilePath, image.toPNG());
+    writeFileSync(tmpFilePath, image.toPNG());
     return tmpFilePath;
   }
 }
 
-module.exports = FileImporter;
+export default FileImporter;

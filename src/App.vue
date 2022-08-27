@@ -18,7 +18,27 @@
   <section class="main">
     <div v-if="currentTag" id="tag_edit_form_container"></div>
 
-    <div id="tags">{{ tags }}</div>
+    <div id="tags">
+      <form-add-new-tag-to-file v-if="currentFile" :file-id="currentFile?.id" />
+      <div v-for="group in tagsGroupped" :key="group.id" class="tags_namespace">
+        <h4>{{ group.name }}</h4>
+        <div v-for="tag in group.tags" :key="tag?.id">
+          <a
+            :title="tag?.locales"
+            @click="searchFilesByTag(tag?.locales?.[0])"
+            >{{ tag?.locales?.[0] }}</a
+          >
+          <button
+            v-if="tag?.file_tag_id"
+            title="Remove tag from file"
+            @click="removeTagFromFile(tag?.file_tag_id)"
+          >
+            [d]
+          </button>
+          <button title="Edit the tag" @click="editTag(tag?.id)">[e]</button>
+        </div>
+      </div>
+    </div>
 
     <div v-if="files?.length > 0" id="files">
       <div
@@ -76,32 +96,21 @@
 </template>
 
 <script>
+import FormAddNewTagToFile from './components/FormAddNewTagToFile.vue';
+
 import { thisExpression } from '@babel/types';
 import Job from './services/job.js';
 import tagResources from './config/tag_resources.js';
 import tagNamespaces from './config/tag_namespaces.json';
 import { swap } from './services/utils.js';
 const tagNameSpacesById = swap(tagNamespaces);
-//import HelloWorld from './components/HelloWorld.vue';
 const CAPTION_NOT_FOUND = '[NO CAPTION FOUND]';
 const DUPLICATE_HAMMING_THRESHOLD = 7;
-
-let jobs = {
-  iqdb: new Job(10, 15),
-  danbooru: new Job(10, 15),
-  konachan: new Job(10, 15),
-  yandere: new Job(10, 15),
-  gelbooru: new Job(10, 15),
-  sankaku: new Job(10, 15),
-  eshuushuu: new Job(10, 15),
-  zerochan: new Job(10, 15),
-  anime_pictures: new Job(10, 15)
-};
 
 export default {
   name: 'App',
   components: {
-    //HelloWorld
+    FormAddNewTagToFile
   },
   data() {
     return {
@@ -111,7 +120,19 @@ export default {
       duplicatedFiles: null,
       files: [],
       searchString: '',
-      currentTag: null
+      currentTag: null,
+      tagNameSpacesById: tagNameSpacesById,
+      jobs: {
+        iqdb: new Job(10, 15),
+        danbooru: new Job(10, 15),
+        konachan: new Job(10, 15),
+        yandere: new Job(10, 15),
+        gelbooru: new Job(10, 15),
+        sankaku: new Job(10, 15),
+        eshuushuu: new Job(10, 15),
+        zerochan: new Job(10, 15),
+        anime_pictures: new Job(10, 15)
+      }
     };
   },
   computed: {
@@ -153,11 +174,18 @@ export default {
       for (let i = 0; i < this.tags.length; i++) {
         let tag = this.tags[i];
         if (!groups[tag.namespace_id]) {
-          groups[tag.namespace_id] = [];
+          groups[tag.namespace_id] = {
+            name: tagNameSpacesById[tag.namespace_id],
+            id: tag.namespace_id,
+            tags: []
+          };
         }
-        groups[tag.namespace_id].push(tag);
+        console.log(tag.locales);
+        tag.locales = Object.values(tag.locales);
+        groups[tag.namespace_id].tags.push(tag);
       }
-      return groups;
+      console.log(Object.values(groups));
+      return Object.values(groups);
     }
   },
   mounted() {
@@ -165,6 +193,12 @@ export default {
     this.showAllTags();
   },
   methods: {
+    async removeTagFromFile(_file_tag_id) {
+      // TODO
+    },
+    async editTag(_tag_id) {
+      // TODO
+    },
     async searchFilesByTag(tag_title) {
       this.currentFile = null;
       this.statusMessage = `Start search by tag '${tag_title}'`;
@@ -295,7 +329,7 @@ export default {
       this.statusMessage = `Start loading tags for ${this.files.length} files`;
       for (let i = 0; i < this.files.length; i++) {
         let file = this.files[i];
-        jobs.iqdb.addTask(async () => {
+        this.jobs.iqdb.addTask(async () => {
           let response = await window.network.lookupIqdbFile(
             file['preview_path']
           );
@@ -306,7 +340,7 @@ export default {
             );
             if (resource) {
               Job.addJobTask(
-                jobs,
+                this.jobs,
                 resource.name,
                 resource.locale,
                 bestMatch.sourceUrl,

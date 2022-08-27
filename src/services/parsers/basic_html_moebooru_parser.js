@@ -1,6 +1,6 @@
-const BasicMoebooruParser = require('./basic_moebooru_parser.js');
+import BasicMoebooruParser from './basic_moebooru_parser.js';
 
-// Abstract
+// @Abstract
 class BasicHTMLMoebooruParser extends BasicMoebooruParser {
   tagGroupsExtractor(groupName, prefix, $) {
     let _tags = [];
@@ -16,4 +16,4 @@ class BasicHTMLMoebooruParser extends BasicMoebooruParser {
   }
 }
 
-module.exports = BasicHTMLMoebooruParser;
+export default BasicHTMLMoebooruParser;

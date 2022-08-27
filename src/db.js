@@ -87,7 +87,7 @@ async function initDatabase({ dbPath }) {
   return dbConnection;
 }
 
-module.exports = async ({ dbPath }) => {
+export default async ({ dbPath }) => {
   if (dbc) {
     return dbc;
   }

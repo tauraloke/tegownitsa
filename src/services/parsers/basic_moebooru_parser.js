@@ -1,4 +1,4 @@
-const AbstractBasicParser = require('./abstract_basic_parser.js');
+import AbstractBasicParser from './abstract_basic_parser.js';
 
 class BasicMoebooruParser extends AbstractBasicParser {
   getTagGroups() {
@@ -12,4 +12,4 @@ class BasicMoebooruParser extends AbstractBasicParser {
   }
 }
 
-module.exports = BasicMoebooruParser;
+export default BasicMoebooruParser;

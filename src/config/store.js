@@ -1,7 +1,9 @@
-'use strict';
-const Store = require('electron-store');
+// Backend side
 
-module.exports = new Store({
+'use strict';
+import Store from 'electron-store';
+
+export default new Store({
   defaults: {
     sql_filename_path: 'db.sqlite3'
   }

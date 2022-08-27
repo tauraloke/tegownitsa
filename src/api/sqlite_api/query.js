@@ -1,5 +1,3 @@
-module.exports = {
-  run: async (_event, db, query, values) => {
-    return await db.query(query, values);
-  }
-};
+export async function run(_event, db, query, values) {
+  return await db.query(query, values);
+}

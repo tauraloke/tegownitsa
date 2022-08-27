@@ -1,4 +1,4 @@
-const AbstractBasicParser = require('./abstract_basic_parser.js');
+import AbstractBasicParser from './abstract_basic_parser.js';
 
 class AnimePicturesParser extends AbstractBasicParser {
   getTagGroups() {
@@ -24,4 +24,4 @@ class AnimePicturesParser extends AbstractBasicParser {
   }
 }
 
-module.exports = AnimePicturesParser;
+export default AnimePicturesParser;

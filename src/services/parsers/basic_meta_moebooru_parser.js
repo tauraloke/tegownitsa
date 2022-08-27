@@ -1,4 +1,4 @@
-const BasicMoebooruParser = require('./basic_moebooru_parser.js');
+import BasicMoebooruParser from './basic_moebooru_parser.js';
 
 // @Abstract
 class BasicMetaMoebooruParser extends BasicMoebooruParser {
@@ -22,4 +22,4 @@ class BasicMetaMoebooruParser extends BasicMoebooruParser {
   }
 }
 
-module.exports = BasicMetaMoebooruParser;
+export default BasicMetaMoebooruParser;

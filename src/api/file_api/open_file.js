@@ -1,9 +1,7 @@
-const { dialog } = require('electron');
+import { dialog } from 'electron';
 
-module.exports = {
-  run: async (_event, _db) => {
-    return await dialog.showOpenDialog({
-      properties: ['openFile']
-    });
-  }
-};
+export async function run(_event, _db) {
+  return await dialog.showOpenDialog({
+    properties: ['openFile']
+  });
+}

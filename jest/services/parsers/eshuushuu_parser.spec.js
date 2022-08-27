@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const Parser = require('../../../src/services/parsers/eshuushuu_parser.js');
+const Parser = require('../../../src/services/parsers/eshuushuu_parser.js').default;
 
 test('E-Shuushuu parser extracts tags', async () => {
   let parser = new Parser('');

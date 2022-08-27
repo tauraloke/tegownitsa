@@ -1,7 +1,5 @@
-const { CAPTION_YET_NOT_SCANNED } = require('../../config/constants.json');
+import { CAPTION_YET_NOT_SCANNED } from '../../config/constants.json';
 
-module.exports = {
-  run: async (_event, _db, file) => {
-    return file['caption'] == CAPTION_YET_NOT_SCANNED;
-  }
-};
+export async function run(_event, _db, file) {
+  return file['caption'] == CAPTION_YET_NOT_SCANNED;
+}

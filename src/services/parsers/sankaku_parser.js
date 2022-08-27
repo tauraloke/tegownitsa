@@ -1,4 +1,4 @@
-const BasicHTMLMoebooruParser = require('./basic_html_moebooru_parser.js');
+import BasicHTMLMoebooruParser from './basic_html_moebooru_parser.js';
 
 class SankakuParser extends BasicHTMLMoebooruParser {
   getClassTemplate() {
@@ -6,4 +6,4 @@ class SankakuParser extends BasicHTMLMoebooruParser {
   }
 }
 
-module.exports = SankakuParser;
+export default SankakuParser;

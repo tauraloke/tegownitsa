@@ -1,7 +1,5 @@
-const fs = require('fs');
+import { unlinkSync } from 'fs';
 
-module.exports = {
-  run: async (_event, _db, filePath) => {
-    fs.unlinkSync(filePath);
-  }
-};
+export async function run(_event, _db, filePath) {
+  unlinkSync(filePath);
+}

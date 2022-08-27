@@ -1,4 +1,4 @@
-const BasicMetaMoebooruParser = require('./basic_meta_moebooru_parser.js');
+import BasicMetaMoebooruParser from './basic_meta_moebooru_parser.js';
 
 class KonachanParser extends BasicMetaMoebooruParser {
   getClassTemplate() {
@@ -9,4 +9,4 @@ class KonachanParser extends BasicMetaMoebooruParser {
   }
 }
 
-module.exports = KonachanParser;
+export default KonachanParser;

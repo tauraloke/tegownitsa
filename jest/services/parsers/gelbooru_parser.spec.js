@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const Parser = require('../../../src/services/parsers/gelbooru_parser.js');
+const Parser = require('../../../src/services/parsers/gelbooru_parser.js').default;
 
 test('Gelbooru parser extracts tags', async () => {
   let parser = new Parser('');

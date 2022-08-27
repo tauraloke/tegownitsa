@@ -1,4 +1,4 @@
-const BasicHTMLMoebooruParser = require('./basic_html_moebooru_parser.js');
+import BasicHTMLMoebooruParser from './basic_html_moebooru_parser.js';
 
 class GelbooruParser extends BasicHTMLMoebooruParser {
   getClassTemplate() {
@@ -15,4 +15,4 @@ class GelbooruParser extends BasicHTMLMoebooruParser {
   }
 }
 
-module.exports = GelbooruParser;
+export default GelbooruParser;
