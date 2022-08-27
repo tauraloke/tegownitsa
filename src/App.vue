@@ -19,7 +19,11 @@
     <div v-if="currentTag" id="tag_edit_form_container"></div>
 
     <div id="tags">
-      <form-add-new-tag-to-file v-if="currentFile" :file-id="currentFile?.id" />
+      <form-add-new-tag-to-file
+        v-if="currentFile"
+        :file-id="currentFile?.id"
+        @after-add-tag="tags.push($event)"
+      />
       <div v-for="group in tagsGroupped" :key="group.id" class="tags_namespace">
         <h4>{{ group.name }}</h4>
         <div v-for="tag in group.tags" :key="tag?.id">
@@ -180,11 +184,9 @@ export default {
             tags: []
           };
         }
-        console.log(tag.locales);
         tag.locales = Object.values(tag.locales);
         groups[tag.namespace_id].tags.push(tag);
       }
-      console.log(Object.values(groups));
       return Object.values(groups);
     }
   },
