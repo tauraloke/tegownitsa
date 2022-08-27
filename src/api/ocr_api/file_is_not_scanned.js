@@ -1,4 +1,4 @@
-const { CAPTION_YET_NOT_SCANNED } = require('../../constants.json');
+const { CAPTION_YET_NOT_SCANNED } = require('../../config/constants.json');
 
 module.exports = {
   run: async (_event, _db, file) => {

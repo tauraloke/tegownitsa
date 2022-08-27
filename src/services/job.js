@@ -1,3 +1,5 @@
+import sourceTypes from '../config/source_type.json';
+
 export default class Job {
   constructor(cooldown_low, cooldown_top) {
     this.cooldown_low = cooldown_low * 1000;
@@ -55,9 +57,7 @@ export default class Job {
   static addJobTask(jobList, resource_name, locale, url, file) {
     jobList[resource_name].addTask(async () => {
       let tags = await window.network.extractTagsFromSource(url, resource_name);
-      let source_type = await window.constants.getSourceType(
-        resource_name.toUpperCase()
-      );
+      let source_type = sourceTypes[resource_name.toUpperCase()];
       for (let i in tags) {
         let title = tags[i];
         console.log(`add tag ${title} to file ${file['id']}`);

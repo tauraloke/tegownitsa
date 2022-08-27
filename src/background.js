@@ -6,7 +6,7 @@ import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 import ApiConnector from './services/api_connector.js';
 import getDb from './db.js';
-import config from './config.js';
+import config from './config/store.js';
 import menu from './menu.js';
 import path from 'path';
 import contextMenu from 'electron-context-menu';

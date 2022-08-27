@@ -79,6 +79,9 @@
 import { thisExpression } from '@babel/types';
 import Job from './services/job.js';
 import tagResources from './config/tag_resources.js';
+import tagNamespaces from './config/tag_namespaces.json';
+import { swap } from './services/utils.js';
+const tagNameSpacesById = swap(tagNamespaces);
 //import HelloWorld from './components/HelloWorld.vue';
 const CAPTION_NOT_FOUND = '[NO CAPTION FOUND]';
 const DUPLICATE_HAMMING_THRESHOLD = 7;
@@ -144,10 +147,22 @@ export default {
         return null;
       }
       return this.currentFile.exif_make + ' ' + this.currentFile.exif_model;
+    },
+    tagsGroupped() {
+      let groups = [];
+      for (let i = 0; i < this.tags.length; i++) {
+        let tag = this.tags[i];
+        if (!groups[tag.namespace_id]) {
+          groups[tag.namespace_id] = [];
+        }
+        groups[tag.namespace_id].push(tag);
+      }
+      return groups;
     }
   },
   mounted() {
-    this.files = this.findFilesByCaption();
+    this.searchFilesByCaption('');
+    this.showAllTags();
   },
   methods: {
     async searchFilesByTag(tag_title) {

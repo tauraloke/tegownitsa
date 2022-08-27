@@ -6,12 +6,12 @@ const sharp = require('sharp');
 const exifParser = require('exif-parser');
 const fetch = require('node-fetch');
 
-const config = require('../config.js');
+const config = require('../config/store.js');
 const {
   PREVIEW_PREFIX,
   CAPTION_YET_NOT_SCANNED
-} = require('../constants.json');
-const sourceTypes = require('../source_type.json');
+} = require('../config/constants.json');
+const sourceTypes = require('../config/source_type.json');
 const { randomDigit } = require('./utils.js');
 const addTag = require('../api/sqlite_api/add_tag.js');
 

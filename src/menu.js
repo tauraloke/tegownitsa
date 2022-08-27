@@ -10,7 +10,7 @@ import {
   debugInfo,
   showAboutWindow
 } from 'electron-util';
-import config from './config.js';
+import config from './config/store.js';
 
 const showPreferences = () => {
   // Show the app's preferences here

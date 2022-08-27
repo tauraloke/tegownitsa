@@ -1,4 +1,4 @@
-const tagNamespaces = require('../../tag_namespaces.json');
+const tagNamespaces = require('../../config/tag_namespaces.json');
 
 module.exports = {
   run: async (_event, db, file_id, title, locale, source_type) => {
