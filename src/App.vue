@@ -11,6 +11,7 @@
     <v-btn @click="loadTagsFromIQDB()">Load tags from IQDB</v-btn>
 
     <form-search-files
+      ref="form_search_files"
       @by-tags="searchFilesByTags($event)"
       @by-caption="searchFilesByCaption($event)"
     />
@@ -24,38 +25,48 @@
         :file-id="currentFile?.id"
         @after-add-tag="afterAddTagHandler($event)"
       />
-      <div v-for="group in tagsGroupped" :key="group.id" class="tags_namespace">
+
+      <v-sheet
+        v-for="group in tagsGroupped"
+        :key="group.id"
+        elevation="10"
+        rounded="xl"
+        class="tags_namespace"
+      >
         <h4>{{ group.name }}</h4>
-        <div v-for="tag in group.tags" :key="tag?.id">
-          <a
-            :title="tag?.locales.map((l) => l.title)"
-            @click="searchFilesByTag(tag?.locales?.[0]?.title)"
-            >{{ tag?.locales?.[0]?.title }}</a
-          >
-
-          <v-btn
-            class="ma-2"
-            title="Edit the tag"
-            outlined
-            size="x-small"
-            color="info"
-            fab
-            icon="mdi-pencil"
-            @click="editTag(tag?.id)"
-          />
-
-          <v-btn
-            class="ma-2"
-            title="Edit the tag"
-            outlined
-            size="x-small"
-            color="secondary"
-            fab
-            icon="mdi-delete"
-            @click="removeTagFromFile(tag?.file_tag_id)"
-          />
+        <div class="pa-4">
+          <v-chip-group active-class="primary--text" column>
+            <v-chip
+              v-for="tag in group.tags"
+              :key="tag?.id"
+              :title="tag?.locales.map((l) => l.title)"
+              @click="searchFilesByTag(tag?.locales?.[0]?.title)"
+            >
+              {{ tag?.locales?.[0]?.title }}
+              <v-btn
+                class="ma-2"
+                title="Edit the tag"
+                outlined
+                size="x-small"
+                color="info"
+                fab
+                icon="mdi-pencil"
+                @click="editTag(tag?.id)"
+              />
+              <v-btn
+                class="ma-2"
+                title="Edit the tag"
+                outlined
+                size="x-small"
+                color="secondary"
+                fab
+                icon="mdi-delete"
+                @click="removeTagFromFile(tag?.file_tag_id)"
+              />
+            </v-chip>
+          </v-chip-group>
         </div>
-      </div>
+      </v-sheet>
     </div>
 
     <div v-if="files?.length > 0" id="files">
@@ -236,6 +247,9 @@ export default {
     async editTag(_tag_id) {
       // TODO
     },
+    async searchFilesByTag(tag_title) {
+      this.$refs.form_search_files.reset(tag_title);
+    },
     async searchFilesByTags(tags_titles) {
       this.currentFile = null;
       this.statusMessage = `Start search by tag '${tags_titles}'`;
@@ -243,6 +257,7 @@ export default {
       this.statusMessage = `Found ${this.files.length} results by tag '${tags_titles}'`;
     },
     async searchFilesByCaption(caption = '') {
+      console.log(caption);
       this.currentFile = null;
       this.tags = [];
       this.statusMessage = `Start search by caption '${caption}'`;

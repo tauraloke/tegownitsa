@@ -1,9 +1,8 @@
 <template>
-  <form id="tag_edit_form">
-    <input v-model="newTagTitle" type="text" />
-    <input v-model="newTagLocale" type="text" />
-  </form>
-  <button @click="addTagToCurrentFile()">Add</button>
+  <!-- TODO: заменить на всплывающий диалог -->
+  <v-text-field v-model="newTagTitle" label="New tag title" />
+  <v-text-field v-model="newTagLocale" label="locale" />
+  <v-btn icon="mdi-add" @click="addTagToCurrentFile()">Add</v-btn>
 </template>
 
 <script>
@@ -19,7 +18,7 @@ export default {
   },
   emits: { 'after-add-tag': null },
   data() {
-    return { newTagTitle: null, newTagLocale: null };
+    return { newTagTitle: null, newTagLocale: 'en' };
   },
   methods: {
     async addTagToCurrentFile() {

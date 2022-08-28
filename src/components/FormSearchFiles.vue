@@ -1,26 +1,30 @@
 <template>
   <v-container>
-    <v-autocomplete
-      v-model="searchTags"
-      v-model:search="search"
-      :loading="isLoading"
-      :items="entries"
-      hide-no-data
-      hide-selected
-      item-title="title"
-      item-value="title"
-      label="Find"
-      prepend-icon="mdi-database-search"
-      return-object
-      chips
-      closable-chips
-      multiple
-    ></v-autocomplete>
-    <v-btn @click="$emit('by-tags', searchTags.map((t) => t?.title).join(','))"
-      >by tags</v-btn
-    >
-    <v-btn @click="$emit('by-caption', searchCaption)">by captions</v-btn>
-    {{ searchTags }}
+    <v-row>
+      <v-autocomplete
+        v-model="searchTags"
+        v-model:search="search"
+        :loading="isLoading"
+        :items="entries"
+        hide-no-data
+        hide-selected
+        item-title="title"
+        item-value="title"
+        label="Find by tags: print and choose"
+        prepend-icon="mdi-database-search"
+        return-object
+        chips
+        closable-chips
+        multiple
+      ></v-autocomplete>
+    </v-row>
+    <v-row>
+      <v-text-field
+        v-model="searchCaption"
+        label="Find by caption: print and enter"
+        @change="$emit('by-caption', $event?.target?.value)"
+      ></v-text-field>
+    </v-row>
   </v-container>
 </template>
 
@@ -55,12 +59,17 @@ export default {
           console.log('Cannot load autocomplete for tags', error)
         )
         .finally(() => {
-          console.log('call finally');
           this.isLoading = false;
         });
     },
     searchTags(tags) {
       this.$emit('by-tags', tags.map((t) => t?.title).join(','));
+    }
+  },
+  methods: {
+    reset(newValue) {
+      this.search = null;
+      this.searchTags = [{ title: newValue }];
     }
   }
 };
