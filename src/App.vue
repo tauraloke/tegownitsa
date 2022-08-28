@@ -22,15 +22,15 @@
       <form-add-new-tag-to-file
         v-if="currentFile"
         :file-id="currentFile?.id"
-        @after-add-tag="tags.push($event)"
+        @after-add-tag="afterAddTagHandler($event)"
       />
       <div v-for="group in tagsGroupped" :key="group.id" class="tags_namespace">
         <h4>{{ group.name }}</h4>
         <div v-for="tag in group.tags" :key="tag?.id">
           <a
-            :title="tag?.locales"
-            @click="searchFilesByTag(tag?.locales?.[0])"
-            >{{ tag?.locales?.[0] }}</a
+            :title="tag?.locales.map((l) => l.title)"
+            @click="searchFilesByTag(tag?.locales?.[0]?.title)"
+            >{{ tag?.locales?.[0]?.title }}</a
           >
           <button
             v-if="tag?.file_tag_id"
@@ -101,6 +101,7 @@
 
 <script>
 import FormAddNewTagToFile from './components/FormAddNewTagToFile.vue';
+import PromptUrl from './components/PromptUrl.vue';
 
 import { thisExpression } from '@babel/types';
 import Job from './services/job.js';
@@ -114,7 +115,8 @@ const DUPLICATE_HAMMING_THRESHOLD = 7;
 export default {
   name: 'App',
   components: {
-    FormAddNewTagToFile
+    FormAddNewTagToFile,
+    PromptUrl
   },
   data() {
     return {
@@ -184,7 +186,6 @@ export default {
             tags: []
           };
         }
-        tag.locales = Object.values(tag.locales);
         groups[tag.namespace_id].tags.push(tag);
       }
       return Object.values(groups);
@@ -195,6 +196,10 @@ export default {
     this.showAllTags();
   },
   methods: {
+    async afterAddTagHandler(event) {
+      console.log(event);
+      this.tags.push(event);
+    },
     async removeTagFromFile(_file_tag_id) {
       // TODO
     },

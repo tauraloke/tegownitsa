@@ -1,9 +1,9 @@
 <template>
-  <form id="tag_edit_form" @submit="addTagToCurrentFile()">
+  <form id="tag_edit_form">
     <input v-model="newTagTitle" type="text" />
     <input v-model="newTagLocale" type="text" />
-    <button @click="addTagToCurrentFile()">Add</button>
   </form>
+  <button @click="addTagToCurrentFile()">Add</button>
 </template>
 
 <script>
@@ -21,8 +21,6 @@ export default {
   data() {
     return { newTagTitle: null, newTagLocale: null };
   },
-  async mounted() {},
-  unmounted() {},
   methods: {
     async addTagToCurrentFile() {
       let tag = await window.sqliteApi.addTag(

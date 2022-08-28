@@ -1,7 +1,6 @@
 import tagNamespaces from '../../config/tag_namespaces.json';
 
 export async function run(_event, db, file_id, title, locale, source_type) {
-  console.log(file_id, title, locale, source_type); // TODO: remove
   title = title.trim();
   if (!title || !locale || !file_id) {
     return false;
@@ -58,7 +57,7 @@ export async function run(_event, db, file_id, title, locale, source_type) {
 
     return {
       id: tag_id,
-      locales: { [locale]: title },
+      locales: [{ locale, title }],
       file_tag_id: file_tag_id,
       namespace_id: namespace_id
     };

@@ -1,4 +1,5 @@
-const sqlite3 = require('sqlite3').verbose();
+import sqlite3 from 'sqlite3';
+const sqlite3Instance = sqlite3.verbose();
 
 let dbc = null;
 
@@ -40,9 +41,12 @@ async function _getTagList(query, params = []) {
   response.forEach((row) => {
     tags[row['tag_id']] = tags[row['tag_id']] || {
       id: row['tag_id'],
-      locales: {}
+      locales: []
     };
-    tags[row['tag_id']]['locales'][row['locale']] = row['title'];
+    tags[row['tag_id']]['locales'].push({
+      locale: row['locale'],
+      title: row['title']
+    });
     tags[row['tag_id']]['source_type'] =
       tags[row['tag_id']]['source_type'] || row['source_type'];
     tags[row['tag_id']]['file_tag_id'] =
@@ -57,7 +61,7 @@ async function _getTagList(query, params = []) {
 
 async function initDatabase({ dbPath }) {
   console.log('Loading sqlite fuzzy extension...');
-  let dbConnection = new sqlite3.Database(dbPath);
+  let dbConnection = new sqlite3Instance.Database(dbPath);
 
   // load fuzzy search extension
   dbConnection = loadSqliteExtension(dbConnection, 'fuzzy');
