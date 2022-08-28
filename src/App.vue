@@ -1,19 +1,19 @@
 <template>
   <header>
-    <button @click="openFolder()">Import folder</button>
-    <button @click="openFile()">Import file</button>
-    <button @click="importFileFromUrl()">Import file from url</button>
-    <button @click="importFromClipboard()">Import file from clipboard</button>
-    <button @click="scanSelectedFiles()">Scan these files</button>
-    <button @click="showAllTags()">Show all tags</button>
-    <button @click="lookUpDups()">Find duplicates</button>
-    <button @click="loadTagsFromIQDB()">Load tags from IQDB</button>
-    <div id="search_form">
-      <input id="search_string" v-model="searchString" type="text" />
-      Find
-      <button @click="searchFilesByTag(searchString)">by tag</button>
-      <button @click="searchFilesByCaption(searchString)">by captions</button>
-    </div>
+    <v-btn color="light" @click="toggleTheme()">toggle theme</v-btn>
+    <v-btn @click="openFolder()">Import folder</v-btn>
+    <v-btn @click="openFile()">Import file</v-btn>
+    <v-btn @click="importFileFromUrl()">Import file from url</v-btn>
+    <v-btn @click="importFromClipboard()">Import file from clipboard</v-btn>
+    <v-btn @click="scanSelectedFiles()">Scan these files</v-btn>
+    <v-btn @click="showAllTags()">Show all tags</v-btn>
+    <v-btn @click="lookUpDups()">Find duplicates</v-btn>
+    <v-btn @click="loadTagsFromIQDB()">Load tags from IQDB</v-btn>
+
+    <form-search-files
+      @by-tags="searchFilesByTags($event)"
+      @by-caption="searchFilesByCaption($event)"
+    />
   </header>
   <section class="main">
     <div v-if="currentTag" id="tag_edit_form_container"></div>
@@ -32,14 +32,28 @@
             @click="searchFilesByTag(tag?.locales?.[0]?.title)"
             >{{ tag?.locales?.[0]?.title }}</a
           >
-          <button
-            v-if="tag?.file_tag_id"
-            title="Remove tag from file"
+
+          <v-btn
+            class="ma-2"
+            title="Edit the tag"
+            outlined
+            size="x-small"
+            color="info"
+            fab
+            icon="mdi-pencil"
+            @click="editTag(tag?.id)"
+          />
+
+          <v-btn
+            class="ma-2"
+            title="Edit the tag"
+            outlined
+            size="x-small"
+            color="secondary"
+            fab
+            icon="mdi-delete"
             @click="removeTagFromFile(tag?.file_tag_id)"
-          >
-            [d]
-          </button>
-          <button title="Edit the tag" @click="editTag(tag?.id)">[e]</button>
+          />
         </div>
       </div>
     </div>
@@ -89,7 +103,7 @@
         ></textarea>
       </div>
       <div id="file_info_update_caption">
-        <button @click="updateCaption()">Update caption</button>
+        <v-btn @click="updateCaption()">Update caption</v-btn>
       </div>
       <div id="file_info_sources"></div>
     </div>
@@ -100,14 +114,17 @@
 </template>
 
 <script>
-import FormAddNewTagToFile from './components/FormAddNewTagToFile.vue';
-import PromptUrl from './components/PromptUrl.vue';
-
+import { useTheme } from 'vuetify';
 import { thisExpression } from '@babel/types';
+
+import FormAddNewTagToFile from './components/FormAddNewTagToFile.vue';
+import FormSearchFiles from './components/FormSearchFiles.vue';
+
 import Job from './services/job.js';
 import tagResources from './config/tag_resources.js';
 import tagNamespaces from './config/tag_namespaces.json';
 import { swap } from './services/utils.js';
+
 const tagNameSpacesById = swap(tagNamespaces);
 const CAPTION_NOT_FOUND = '[NO CAPTION FOUND]';
 const DUPLICATE_HAMMING_THRESHOLD = 7;
@@ -116,7 +133,19 @@ export default {
   name: 'App',
   components: {
     FormAddNewTagToFile,
-    PromptUrl
+    FormSearchFiles
+  },
+  setup() {
+    const theme = useTheme();
+    return {
+      theme,
+      toggleTheme: () => {
+        console.log(theme.global.name.value, theme.global.current.value.dark);
+        theme.global.name.value = theme.global.current.value.dark
+          ? 'light'
+          : 'dark';
+      }
+    };
   },
   data() {
     return {
@@ -128,6 +157,7 @@ export default {
       searchString: '',
       currentTag: null,
       tagNameSpacesById: tagNameSpacesById,
+      isTagsAutoCompleteLoading: false,
       jobs: {
         iqdb: new Job(10, 15),
         danbooru: new Job(10, 15),
@@ -206,11 +236,11 @@ export default {
     async editTag(_tag_id) {
       // TODO
     },
-    async searchFilesByTag(tag_title) {
+    async searchFilesByTags(tags_titles) {
       this.currentFile = null;
-      this.statusMessage = `Start search by tag '${tag_title}'`;
-      this.files = await window.sqliteApi.findFilesByTag(tag_title);
-      this.statusMessage = `Found ${this.files.length} results by tag '${tag_title}'`;
+      this.statusMessage = `Start search by tag '${tags_titles}'`;
+      this.files = await window.sqliteApi.findFilesByTags(tags_titles);
+      this.statusMessage = `Found ${this.files.length} results by tag '${tags_titles}'`;
     },
     async searchFilesByCaption(caption = '') {
       this.currentFile = null;

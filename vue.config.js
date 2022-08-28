@@ -22,8 +22,7 @@ module.exports = defineConfig({
       builderOptions: {
         appId: 'com.electron.Tegownitsa',
         asarUnpack: ['**/node_modules/sharp/**'],
-        extraFiles:
-          process.platform == 'win32' ? ['./libs/sqlite/fuzzy.dll'] : null,
+        extraFiles: null,
         win: {
           icon: './build/icon.png'
         },
@@ -51,6 +50,9 @@ module.exports = defineConfig({
           category: 'Images;Network;Tags'
         }
       }
+    },
+    vuetify: {
+      // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vuetify-loader
     }
   }
 });
