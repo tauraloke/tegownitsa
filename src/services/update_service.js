@@ -8,7 +8,9 @@ export default class UpdateService {
   }
   sendStatusToWindow(text) {
     console.log(text);
-    this.mainWindow.webContents.send('message', text);
+    if (this.mainWindow && this.mainWindow.webContents) {
+      this.mainWindow.webContents.send('message', text);
+    }
   }
   connect() {
     if (!is.development) {
