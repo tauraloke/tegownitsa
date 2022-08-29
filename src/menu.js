@@ -151,28 +151,28 @@ const otherTemplate = [
         label: 'Import image from file',
         icon: path.join(__static, 'menu', 'file.png'),
         click(_menuItem, browserWindow, _event) {
-          browserWindow.webContents.executeJavaScript('openFile()');
+          browserWindow.webContents.send('execute', 'openFile');
         }
       },
       {
         label: 'Import images from folder',
         icon: path.join(__static, 'menu', 'folder.png'),
         click(_menuItem, browserWindow, _event) {
-          browserWindow.webContents.executeJavaScript('openFolder()');
+          browserWindow.webContents.send('execute', 'openFolder');
         }
       },
       {
         label: 'Import image from direct URL',
         icon: path.join(__static, 'menu', 'url.png'),
         click(_menuItem, browserWindow, _event) {
-          browserWindow.webContents.executeJavaScript('importFileFromUrl()');
+          browserWindow.webContents.send('execute', 'importFileFromUrl');
         }
       },
       {
         icon: path.join(__static, 'menu', 'clipboard.png'),
         label: 'Import image from clipboard',
         click(_menuItem, browserWindow, _event) {
-          browserWindow.webContents.executeJavaScript('importFromClipboard()');
+          browserWindow.webContents.send('execute', 'importFromClipboard');
         }
       },
       {
@@ -202,21 +202,21 @@ const otherTemplate = [
         label: 'Scan text on current files',
         icon: path.join(__static, 'menu', 'scan.png'),
         click(_menuItem, browserWindow, _event) {
-          browserWindow.webContents.executeJavaScript('scanSelectedFiles()');
+          browserWindow.webContents.send('execute', 'scanSelectedFiles');
         }
       },
       {
         label: 'Find duplicates',
         icon: path.join(__static, 'menu', 'dups.png'),
         click(_menuItem, browserWindow, _event) {
-          browserWindow.webContents.executeJavaScript('lookUpDups()');
+          browserWindow.webContents.send('execute', 'lookUpDups');
         }
       },
       {
         label: 'Load tags from IQDB for current files',
         icon: path.join(__static, 'menu', 'iqdb.png'),
         click(_menuItem, browserWindow, _event) {
-          browserWindow.webContents.executeJavaScript('loadTagsFromIQDB()');
+          browserWindow.webContents.send('execute', 'loadTagsFromIQDB');
         }
       }
     ]

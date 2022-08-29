@@ -2,7 +2,9 @@
   <!-- TODO: заменить на всплывающий диалог -->
   <v-text-field v-model="newTagTitle" label="New tag title" />
   <v-text-field v-model="newTagLocale" label="locale" />
-  <v-btn icon="mdi-add" @click="addTagToCurrentFile()">Add</v-btn>
+  <v-btn :disabled="!newTagTitle" color="success" @click="addTagToCurrentFile()"
+    >Add</v-btn
+  >
 </template>
 
 <script>
@@ -22,6 +24,12 @@ export default {
   },
   methods: {
     async addTagToCurrentFile() {
+      if (!this.newTagTitle) {
+        return;
+      }
+      if (!this.newTagLocale) {
+        this.newTagLocale = 'en';
+      }
       let tag = await window.sqliteApi.addTag(
         this.fileId,
         this.newTagTitle,

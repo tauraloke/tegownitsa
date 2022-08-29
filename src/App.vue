@@ -233,6 +233,21 @@ export default {
     }
   },
   mounted() {
+    window.menuApi.executeListener((event, method, ...args) => {
+      let allowedMenuMethods = [
+        'openFile',
+        'openFolder',
+        'importFileFromUrl',
+        'importFromClipboard',
+        'scanSelectedFiles',
+        'lookUpDups',
+        'loadTagsFromIQDB'
+      ];
+      if (method in allowedMenuMethods) {
+        return false;
+      }
+      this[method](...args);
+    });
     this.searchFilesByCaption('');
     this.showAllTags();
   },

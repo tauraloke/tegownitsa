@@ -73,7 +73,7 @@ npm start
   [electron-boilerplate](https://github.com/sindresorhus/electron-boilerplate/),
   `MIT license`.
   - [VueJS](https://vuejs.org/) is a frontend framework. `MIT license`.
-  - [Vuetify](https://vuetifyjs.com/) is UI framefork for Vue applications. `MIT license`.
+  - [Vuetify](https://vuetifyjs.com/) is an UI framefork for Vue applications. `MIT license`.
 
 - API
   - [IQDB](https://iqdb.org/) is independent image search engine and using to
