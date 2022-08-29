@@ -1,4 +1,5 @@
 const { defineConfig } = require('@vue/cli-service');
+
 module.exports = defineConfig({
   transpileDependencies: true,
   configureWebpack: {
@@ -9,7 +10,7 @@ module.exports = defineConfig({
     module: {
       rules: [
         {
-          test: /\.m?js$/,
+          test: /\.mjs$/,
           include: /node_modules/,
           type: 'javascript/auto'
         }
@@ -22,7 +23,8 @@ module.exports = defineConfig({
       builderOptions: {
         appId: 'com.electron.Tegownitsa',
         asarUnpack: ['**/node_modules/sharp/**'],
-        extraFiles: null,
+        extraFiles:
+          process.platform == 'win32' ? ['./libs/sqlite/fuzzy.dll'] : null,
         win: {
           icon: './build/icon.png'
         },

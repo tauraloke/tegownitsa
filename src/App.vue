@@ -135,6 +135,7 @@ import Job from './services/job.js';
 import tagResources from './config/tag_resources.js';
 import tagNamespaces from './config/tag_namespaces.json';
 import { swap } from './services/utils.js';
+import { CAPTION_YET_NOT_SCANNED } from './config/constants.json';
 
 const tagNameSpacesById = swap(tagNamespaces);
 const CAPTION_NOT_FOUND = '[NO CAPTION FOUND]';
@@ -354,32 +355,33 @@ export default {
     async scanSelectedFiles() {
       for (let i = 0; i < this.files.length; i++) {
         let file = this.files[i];
-        if (await window.ocrApi.fileIsNotScanned(file)) {
-          try {
-            console.log('Scan file: ', file);
-            let recognized = await window.ocrApi.recognize(file['full_path'], [
-              'eng',
-              'rus',
-              'jpn'
-            ]); // TODO: move languages to app settings
-            console.log('Recognized: ', recognized);
-            let caption = recognized.data.blocks
-              .filter((b) => b.text.trim() != '' && b.confidence > 70)
-              .map((b) => b.text.replace(/[\n\t\r]/g, ' '))
-              .join('\n');
-            if (caption == '') {
-              caption = CAPTION_NOT_FOUND;
-            }
-            console.log(`#${file['id']}: Scanned text: ${caption}`);
-            await window.sqliteApi.query(
-              'UPDATE files SET caption=? WHERE id=?;',
-              [caption, file['id']]
-            );
-            this.files[i].caption = caption;
-          } catch (e) {
-            console.error(e);
-            this.statusMessage = 'Something wrong with scanning...';
+        if (file?.caption != CAPTION_YET_NOT_SCANNED) {
+          continue;
+        }
+        try {
+          console.log('Scan file: ', file);
+          let recognized = await window.ocrApi.recognize(file['full_path'], [
+            'eng',
+            'rus',
+            'jpn'
+          ]); // TODO: move languages to app settings
+          console.log('Recognized: ', recognized);
+          let caption = recognized.data.blocks
+            .filter((b) => b.text.trim() != '' && b.confidence > 70)
+            .map((b) => b.text.replace(/[\n\t\r]/g, ' '))
+            .join('\n');
+          if (caption == '') {
+            caption = CAPTION_NOT_FOUND;
           }
+          console.log(`#${file['id']}: Scanned text: ${caption}`);
+          await window.sqliteApi.query(
+            'UPDATE files SET caption=? WHERE id=?;',
+            [caption, file['id']]
+          );
+          this.files[i].caption = caption;
+        } catch (e) {
+          console.error(e);
+          this.statusMessage = 'Something wrong with scanning...';
         }
       }
     },

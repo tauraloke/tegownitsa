@@ -23,7 +23,6 @@
   },
   "main": "background.js",
   "dependencies": {
-    "@electron/remote": "^2.0.8",
     "@mdi/font": "5.9.55",
     "core-js": "^3.8.3",
     "electron-context-menu": "^3.5.0",
