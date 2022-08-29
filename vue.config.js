@@ -19,6 +19,7 @@ module.exports = defineConfig({
   },
   pluginOptions: {
     electronBuilder: {
+      externals: ['tesseract.js'],
       preload: 'src/preload.js',
       builderOptions: {
         appId: 'com.electron.Tegownitsa',
