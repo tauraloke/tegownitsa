@@ -37,6 +37,7 @@ async function createWindow() {
       preload: path.join(__dirname, './preload.js')
     }
   });
+  win.maximize();
 
   protocol.registerFileProtocol('file', (request, callback) => {
     const pathname = decodeURI(request.url.replace('file:///', ''));
