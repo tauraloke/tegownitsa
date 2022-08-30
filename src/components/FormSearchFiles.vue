@@ -16,12 +16,14 @@
         chips
         closable-chips
         multiple
+        clearable
       ></v-autocomplete>
     </v-row>
     <v-row>
       <v-text-field
         v-model="searchCaption"
         label="Find by caption: print and enter"
+        clearable
         @change="$emit('by-caption', $event?.target?.value)"
       ></v-text-field>
     </v-row>

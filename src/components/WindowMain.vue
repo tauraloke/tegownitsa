@@ -1,132 +1,171 @@
 <template>
-  <header>
-    <v-btn color="light" @click="toggleTheme()">toggle theme</v-btn>
-    <v-btn @click="openFolder()">Import folder</v-btn>
-    <v-btn @click="openFile()">Import file</v-btn>
-    <v-btn @click="importFileFromUrl()">Import file from url</v-btn>
-    <v-btn @click="importFromClipboard()">Import file from clipboard</v-btn>
-    <v-btn @click="scanSelectedFiles()">Scan these files</v-btn>
-    <v-btn @click="showAllTags()">Show all tags</v-btn>
-    <v-btn @click="lookUpDups()">Find duplicates</v-btn>
-    <v-btn @click="loadTagsFromIQDB()">Load tags from IQDB</v-btn>
+  <v-app>
+    <header>
+      <v-btn color="light" @click="toggleTheme()">toggle theme</v-btn>
+      <v-btn @click="openFolder()">Import folder</v-btn>
+      <v-btn @click="openFile()">Import file</v-btn>
+      <v-btn @click="importFileFromUrl()">Import file from url</v-btn>
+      <v-btn @click="importFromClipboard()">Import file from clipboard</v-btn>
+      <v-btn @click="scanSelectedFiles()">Scan these files</v-btn>
+      <v-btn @click="showAllTags()">Show all tags</v-btn>
+      <v-btn @click="lookUpDups()">Find duplicates</v-btn>
+      <v-btn @click="loadTagsFromIQDB()">Load tags from IQDB</v-btn>
 
-    <form-search-files
-      ref="form_search_files"
-      @by-tags="searchFilesByTags($event)"
-      @by-caption="searchFilesByCaption($event)"
-    />
-  </header>
-  <section class="main">
-    <div v-if="currentTag" id="tag_edit_form_container"></div>
-
-    <div id="tags">
-      <form-add-new-tag-to-file
-        v-if="currentFile"
-        :file-id="currentFile?.id"
-        @after-add-tag="afterAddTagHandler($event)"
+      <form-search-files
+        ref="form_search_files"
+        @by-tags="searchFilesByTags($event)"
+        @by-caption="searchFilesByCaption($event)"
       />
+    </header>
 
-      <v-sheet
-        v-for="group in tagsGroupped"
-        :key="group.id"
-        elevation="10"
-        rounded="xl"
-        class="tags_namespace"
-      >
-        <h4>{{ group.name }}</h4>
-        <div class="pa-4">
-          <v-chip-group active-class="primary--text" column>
-            <v-chip
-              v-for="tag in group.tags"
-              :key="tag?.id"
-              :title="tag?.locales.map((l) => l.title)"
-              @click="searchFilesByTag(tag?.locales?.[0]?.title)"
+    <v-container>
+      <v-row>
+        <v-col cols="12" sm="2">
+          <div v-if="currentTag" id="tag_edit_form_container"></div>
+
+          <div id="tags">
+            <form-add-new-tag-to-file
+              v-if="currentFile"
+              :file-id="currentFile?.id"
+              @after-add-tag="afterAddTagHandler($event)"
+            />
+
+            <h3>Tags</h3>
+
+            <v-sheet
+              v-for="group in tagsGroupped"
+              :key="group.id"
+              elevation="10"
+              rounded="xl"
+              class="tags_namespace"
             >
-              {{ tag?.locales?.[0]?.title }}
-              <v-btn
-                class="ma-2"
-                title="Edit the tag"
-                outlined
-                size="x-small"
-                color="info"
-                fab
-                icon="mdi-pencil"
-                @click="editTag(tag?.id)"
+              <h5>{{ group.name }}</h5>
+              <div class="ma-4">
+                <v-chip-group column>
+                  <v-chip
+                    v-for="tag in group.tags"
+                    :key="tag?.id"
+                    :title="tag?.locales.map((l) => l.title)"
+                    @click="searchFilesByTag(tag?.locales?.[0]?.title)"
+                  >
+                    {{ tag?.locales?.[0]?.title }}
+                    <v-btn
+                      class="ma-2"
+                      title="Edit the tag"
+                      outlined
+                      size="x-small"
+                      color="info"
+                      fab
+                      icon="mdi-pencil"
+                      @click="editTag(tag?.id)"
+                    />
+                    <v-btn
+                      class="ma-2"
+                      title="Edit the tag"
+                      outlined
+                      size="x-small"
+                      color="secondary"
+                      fab
+                      icon="mdi-delete"
+                      @click="removeTagFromFile(tag?.file_tag_id)"
+                    />
+                  </v-chip>
+                </v-chip-group>
+              </div>
+            </v-sheet>
+          </div>
+        </v-col>
+
+        <v-col cols="12" sm="6">
+          <v-row v-if="files?.length > 0" id="files">
+            <v-col
+              v-for="file in files"
+              :key="file.id"
+              class="d-flex child-flex"
+              cols="2"
+            >
+              <v-img
+                :data="{ id: file?.id }"
+                :src="'file://' + file?.preview_path"
+                :title="file?.source_filename"
+                aspect-ratio="1"
+                cover
+                class="bg-grey-lighten-2 pointer-clickable"
+                @click="showFile(file)"
               />
-              <v-btn
-                class="ma-2"
-                title="Edit the tag"
-                outlined
-                size="x-small"
-                color="secondary"
-                fab
-                icon="mdi-delete"
-                @click="removeTagFromFile(tag?.file_tag_id)"
+            </v-col>
+          </v-row>
+
+          <div v-if="duplicatedFiles?.length > 0" id="duplicated_files">
+            {{ duplicatedFiles }}
+          </div>
+        </v-col>
+
+        <v-col cols="12" sm="4">
+          <div v-if="currentFile" id="file_info">
+            <div id="file_info_header">{{ currentFile.source_filename }}</div>
+            <div id="file_info_img_container">
+              <v-img
+                id="file_info_img"
+                contain
+                :src="'file://' + currentFile.full_path"
               />
-            </v-chip>
-          </v-chip-group>
-        </div>
-      </v-sheet>
-    </div>
-
-    <div v-if="files?.length > 0" id="files">
-      <div
-        v-for="file in files"
-        :key="file?.id"
-        :data="{ id: file?.id }"
-        class="gallery_block"
-      >
-        <img
-          :src="'file://' + file?.preview_path"
-          :title="file?.source_filename"
-          class="gallery_image"
-          @click="showFile(file)"
-        />
-      </div>
-    </div>
-
-    <div v-if="duplicatedFiles?.length > 0" id="duplicated_files">
-      {{ duplicatedFiles }}
-    </div>
-
-    <div v-if="currentFile" id="file_info">
-      <div id="file_info_header">{{ currentFile.source_filename }}</div>
-      <div id="file_info_img_container">
-        <img id="file_info_img" :src="'file://' + currentFile.full_path" />
-      </div>
-      <div v-if="exifExists" id="file_info_exif">
-        <div v-if="currentFileDateCreated">
-          Create date: {{ currentFileDateCreated }}
-        </div>
-        <div v-if="currentFileCoords">
-          <a
-            :href="'https://www.google.com/maps/place/' + currentFileCoords"
-            target="_blank"
-            >{{ currentFileCoords }}</a
-          >
-        </div>
-        <div v-if="currentFileModel">Maked by: {{ currentFileModel }}</div>
-      </div>
-      <div id="file_info_caption_container">
-        <textarea
-          id="file_info_caption"
-          v-model="currentFile.caption"
-        ></textarea>
-      </div>
-      <div id="file_info_update_caption">
-        <v-btn @click="updateCaption()">Update caption</v-btn>
-      </div>
-      <div id="file_info_sources"></div>
-    </div>
-  </section>
-  <footer>
-    <div>{{ statusMessage }}</div>
-  </footer>
+            </div>
+            <div v-if="exifExists" id="file_info_exif">
+              <div v-if="currentFileDateCreated">
+                Create date: {{ currentFileDateCreated }}
+              </div>
+              <div v-if="currentFileCoords">
+                <a
+                  :href="
+                    'https://www.google.com/maps/place/' + currentFileCoords
+                  "
+                  target="_blank"
+                  >{{ currentFileCoords }}</a
+                >
+              </div>
+              <div v-if="currentFileModel">
+                Maked by: {{ currentFileModel }}
+              </div>
+            </div>
+            <div id="file_info_caption_container">
+              <textarea
+                id="file_info_caption"
+                v-model="currentFile.caption"
+              ></textarea>
+            </div>
+            <div id="file_info_update_caption">
+              <v-btn @click="updateCaption()">Update caption</v-btn>
+            </div>
+            <div id="file_info_sources"></div>
+          </div>
+          <div v-else>No file selected.</div>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-footer>
+      <div>{{ statusMessage }}</div>
+    </v-footer>
+    <v-dialog v-model="showDialogUrlForImport">
+      <v-card class="prompt-dialog-card">
+        <v-card-text>
+          <v-text-field
+            v-model="urlForImport"
+            label="URL"
+            prepend-inner-icon="mdi-earth"
+          />
+        </v-card-text>
+        <v-card-actions class="justify-center">
+          <v-btn @click="importFileFromUrl()">Upload</v-btn>
+          <v-btn @click="showDialogUrlForImport = false">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-app>
 </template>
 
 <script>
 import { useTheme } from 'vuetify';
-import { thisExpression } from '@babel/types';
 
 import FormAddNewTagToFile from '@/components/FormAddNewTagToFile.vue';
 import FormSearchFiles from '@/components/FormSearchFiles.vue';
@@ -180,7 +219,9 @@ export default {
         eshuushuu: new Job(10, 15),
         zerochan: new Job(10, 15),
         anime_pictures: new Job(10, 15)
-      }
+      },
+      showDialogUrlForImport: false,
+      urlForImport: null
     };
   },
   computed: {
@@ -317,24 +358,31 @@ export default {
       this.statusMessage = 'File has imported from a clipboard.';
     },
     async importFileFromUrl() {
-      let url = await window.widget.prompt();
-      if (!url) {
+      if (!this.showDialogUrlForImport) {
+        this.urlForImport = null;
+        this.showDialogUrlForImport = true;
+        return;
+      }
+      this.showDialogUrlForImport = false;
+      if (!this.urlForImport) {
         this.statusMessage = 'Form is cancelled';
         return false;
       }
-      const tmpFilePath = await window.fileApi.saveTempFileFromUrl(url);
+      const tmpFilePath = await window.fileApi.saveTempFileFromUrl(
+        this.urlForImport
+      );
       if (!tmpFilePath) {
-        thisExpression.statusMessage = `Can't upload file from ${url}.`;
+        this.statusMessage = `Can't upload file from ${this.urlForImport}.`;
         return false;
       }
       let { file_id } = await window.fileApi.addFile(tmpFilePath);
       await window.fileApi.removeFile(tmpFilePath);
       if (!file_id) {
-        this.statusMessage = `Can't copy file from ${url}.`;
+        this.statusMessage = `Can't copy file from ${this.urlForImport}.`;
         return false;
       }
-      await window.sqliteApi.addUrlToFile(url, file_id);
-      this.statusMessage = `File has imported from url '${url}'.`;
+      await window.sqliteApi.addUrlToFile(this.urlForImport, file_id);
+      this.statusMessage = `File has imported from url '${this.urlForImport}'.`;
     },
     async showAllTags() {
       this.tags = await window.sqliteApi.getAllTags();
@@ -432,5 +480,13 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.prompt-dialog-card {
+  width: 50vw;
+}
+
+.pointer-clickable {
+  cursor: pointer;
 }
 </style>
