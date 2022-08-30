@@ -19,6 +19,7 @@ module.exports = defineConfig({
   },
   pluginOptions: {
     electronBuilder: {
+      customFileProtocol: './',
       externals: ['tesseract.js'],
       preload: 'src/preload.js',
       builderOptions: {
