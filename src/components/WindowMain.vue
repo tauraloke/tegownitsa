@@ -24,59 +24,15 @@
           <div v-if="currentTag" id="tag_edit_form_container"></div>
 
           <div id="tags">
-            <form-add-new-tag-to-file
-              v-if="currentFile"
-              :file-id="currentFile?.id"
-              @after-add-tag="afterAddTagHandler($event)"
-            />
-
             <h3>Tags</h3>
-
-            <v-sheet
-              v-for="group in tagsGroupped"
-              :key="group.id"
-              elevation="10"
-              rounded="xl"
-              class="tags_namespace"
-            >
-              <h5>{{ group.name }}</h5>
-              <div class="ma-4">
-                <v-chip-group column>
-                  <v-chip
-                    v-for="tag in group.tags"
-                    :key="tag?.id"
-                    :title="tag?.locales.map((l) => l.title)"
-                    @click="searchFilesByTag(tag?.locales?.[0]?.title)"
-                  >
-                    {{ tag?.locales?.[0]?.title }}
-                    <v-btn
-                      class="ma-2"
-                      title="Edit the tag"
-                      outlined
-                      size="x-small"
-                      color="info"
-                      fab
-                      icon="mdi-pencil"
-                      @click="editTag(tag?.id)"
-                    />
-                    <v-btn
-                      class="ma-2"
-                      title="Edit the tag"
-                      outlined
-                      size="x-small"
-                      color="secondary"
-                      fab
-                      icon="mdi-delete"
-                      @click="removeTagFromFile(tag?.file_tag_id)"
-                    />
-                  </v-chip>
-                </v-chip-group>
-              </div>
-            </v-sheet>
+            <list-tag-groups :tags-groupped="tagsGroupped(tags)" />
           </div>
         </v-col>
 
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="10">
+          <v-row>
+            {{ statusMessage }}
+          </v-row>
           <v-row v-if="files?.length > 0" id="files">
             <v-col
               v-for="file in files"
@@ -90,7 +46,7 @@
                 :title="file?.source_filename"
                 aspect-ratio="1"
                 cover
-                class="bg-grey-lighten-2 pointer-clickable"
+                class="bg-grey-lighten-2 pointer-clickable pretty-corners"
                 @click="showFile(file)"
               />
             </v-col>
@@ -100,52 +56,91 @@
             {{ duplicatedFiles }}
           </div>
         </v-col>
-
-        <v-col cols="12" sm="4">
-          <div v-if="currentFile" id="file_info">
-            <div id="file_info_header">{{ currentFile.source_filename }}</div>
-            <div id="file_info_img_container">
-              <v-img
-                id="file_info_img"
-                contain
-                :src="'file://' + currentFile.full_path"
-              />
-            </div>
-            <div v-if="exifExists" id="file_info_exif">
-              <div v-if="currentFileDateCreated">
-                Create date: {{ currentFileDateCreated }}
-              </div>
-              <div v-if="currentFileCoords">
-                <a
-                  :href="
-                    'https://www.google.com/maps/place/' + currentFileCoords
-                  "
-                  target="_blank"
-                  >{{ currentFileCoords }}</a
-                >
-              </div>
-              <div v-if="currentFileModel">
-                Maked by: {{ currentFileModel }}
-              </div>
-            </div>
-            <div id="file_info_caption_container">
-              <textarea
-                id="file_info_caption"
-                v-model="currentFile.caption"
-              ></textarea>
-            </div>
-            <div id="file_info_update_caption">
-              <v-btn @click="updateCaption()">Update caption</v-btn>
-            </div>
-            <div id="file_info_sources"></div>
-          </div>
-          <div v-else>No file selected.</div>
-        </v-col>
       </v-row>
     </v-container>
-    <v-footer>
-      <div>{{ statusMessage }}</div>
-    </v-footer>
+
+    <v-dialog v-model="hasCurrentFile" fullscreen>
+      <v-card v-if="currentFile" class="justify-center pa-4">
+        <v-card-title style="padding-top: 8em; text-align: center">
+          {{ currentFile.source_filename }}
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" md="2">
+              <h3>Tags</h3>
+              <form-add-new-tag-to-file
+                v-if="currentFile"
+                :file-id="currentFile?.id"
+                @after-add-tag="afterAddTagHandler($event)"
+              />
+              <list-tag-groups :tags-groupped="tagsGroupped(currentFileTags)" />
+            </v-col>
+            <v-col cols="12" md="10">
+              <div id="file_info_img_container">
+                <v-img
+                  id="file_info_img"
+                  contain
+                  aspect-ratio="1"
+                  height="75vh"
+                  :src="'file://' + currentFile.full_path"
+                />
+              </div>
+              <v-card
+                v-if="exifExists"
+                id="file_info_exif"
+                elevation="4"
+                class="ma-2 pa-4"
+              >
+                <h4>Exif data</h4>
+                <div v-if="currentFileDateCreated">
+                  Create date: {{ currentFileDateCreated }}
+                </div>
+                <div v-if="currentFileCoords">
+                  Coordinates:
+                  <a
+                    :href="
+                      'https://www.google.com/maps/place/' + currentFileCoords
+                    "
+                    target="_blank"
+                  >
+                    {{ currentFileCoords }}
+                  </a>
+                </div>
+                <div v-if="currentFileModel">
+                  Maked by: {{ currentFileModel }}
+                </div>
+              </v-card>
+              <v-card elevation="4" class="ma-2">
+                <div id="file_info_caption_container">
+                  <v-textarea
+                    id="file_info_caption"
+                    v-model="currentFile.caption"
+                    label="recognized text on image"
+                  ></v-textarea>
+                </div>
+                <div id="file_info_update_caption">
+                  <v-btn @click="updateCaption()">Update caption</v-btn>
+                </div>
+              </v-card>
+              <div
+                v-if="currentFileUrls && currentFileUrls.length > 0"
+                id="file_info_sources"
+              >
+                <v-card elevation="4" class="ma-2 pa-8">
+                  <h5>Sources</h5>
+                  <ul>
+                    <li v-for="url in currentFileUrls" :key="url">
+                      <a :href="url" target="_blank">{{ url }}</a>
+                    </li>
+                  </ul>
+                </v-card>
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <v-dialog v-model="showDialogUrlForImport">
       <v-card class="prompt-dialog-card">
         <v-card-text>
@@ -161,6 +156,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-footer> </v-footer>
   </v-app>
 </template>
 
@@ -169,6 +166,7 @@ import { useTheme } from 'vuetify';
 
 import FormAddNewTagToFile from '@/components/FormAddNewTagToFile.vue';
 import FormSearchFiles from '@/components/FormSearchFiles.vue';
+import ListTagGroups from '@/components/ListTagGroups.vue';
 
 import Job from '@/services/job.js';
 import tagResources from '@/config/tag_resources.js';
@@ -184,7 +182,8 @@ export default {
   name: 'WindowMain',
   components: {
     FormAddNewTagToFile,
-    FormSearchFiles
+    FormSearchFiles,
+    ListTagGroups
   },
   setup() {
     const theme = useTheme();
@@ -203,6 +202,8 @@ export default {
       statusMessage: '',
       tags: [],
       currentFile: null,
+      currentFileUrls: null,
+      currentFileTags: [],
       duplicatedFiles: null,
       files: [],
       searchString: '',
@@ -258,20 +259,13 @@ export default {
       }
       return this.currentFile.exif_make + ' ' + this.currentFile.exif_model;
     },
-    tagsGroupped() {
-      let groups = [];
-      for (let i = 0; i < this.tags.length; i++) {
-        let tag = this.tags[i];
-        if (!groups[tag.namespace_id]) {
-          groups[tag.namespace_id] = {
-            name: tagNameSpacesById[tag.namespace_id],
-            id: tag.namespace_id,
-            tags: []
-          };
-        }
-        groups[tag.namespace_id].tags.push(tag);
+    hasCurrentFile: {
+      get() {
+        return !!this.currentFile;
+      },
+      set() {
+        this.currentFile = null;
       }
-      return Object.values(groups);
     }
   },
   mounted() {
@@ -304,6 +298,21 @@ export default {
     async editTag(_tag_id) {
       // TODO
     },
+    tagsGroupped(tags) {
+      let groups = [];
+      for (let i = 0; i < tags.length; i++) {
+        let tag = tags[i];
+        if (!groups[tag.namespace_id]) {
+          groups[tag.namespace_id] = {
+            name: tagNameSpacesById[tag.namespace_id],
+            id: tag.namespace_id,
+            tags: []
+          };
+        }
+        groups[tag.namespace_id].tags.push(tag);
+      }
+      return Object.values(groups);
+    },
     async searchFilesByTag(tag_title) {
       this.$refs.form_search_files.reset(tag_title);
     },
@@ -327,7 +336,13 @@ export default {
     },
     async showFile(file) {
       this.currentFile = file;
-      this.tags = await window.sqliteApi.findTagsByFile(file.id);
+      this.currentFileTags = await window.sqliteApi.findTagsByFile(file.id);
+      this.currentFileUrls = (
+        await window.sqliteApi.queryAll(
+          'SELECT url FROM file_urls WHERE file_id=?',
+          [file.id]
+        )
+      ).map((t) => t.url);
     },
     async openFolder() {
       let folder = await window.fileApi.openFolder();
@@ -488,5 +503,13 @@ export default {
 
 .pointer-clickable {
   cursor: pointer;
+}
+
+.pretty-corners {
+  border-radius: 5px;
+}
+
+.height-half-screen {
+  height: 75vh;
 }
 </style>

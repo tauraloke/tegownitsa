@@ -6,7 +6,9 @@
 // TODO: implement setting window
 export default {
   name: 'WindowSettings',
-  components: {}
+  mounted() {
+    document.title = 'Settings';
+  }
 };
 </script>
 

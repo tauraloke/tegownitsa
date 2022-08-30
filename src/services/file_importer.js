@@ -15,6 +15,8 @@ import { EXIF } from '../config/source_type.json';
 import { randomDigit } from './utils.js';
 import { run } from '../api/sqlite_api/add_tag.js';
 
+const PREVIEW_WIDTH = 140;
+
 class FileImporter {
   constructor(db) {
     this.db = db;
@@ -144,7 +146,7 @@ class FileImporter {
       storageDirPathForFile,
       PREVIEW_PREFIX + filename
     );
-    image.resize(100).toFile(newPreviewPathInStorage);
+    image.resize(PREVIEW_WIDTH).toFile(newPreviewPathInStorage);
 
     let exif = this.getExif(absolutePath);
     let file_id = await this.insertFile(
@@ -166,7 +168,10 @@ class FileImporter {
     mkdirSync(storageDirPathForFile, {
       recursive: true
     });
-    let tmpFilePath = join(storageDirPathForFile, parse(url).name + '.png');
+    let tmpFilePath = join(
+      storageDirPathForFile,
+      parse(url).name.split('?')[0] + '.png'
+    );
     await sharp(buffer).toFormat('png').toFile(tmpFilePath);
     return tmpFilePath;
   }
