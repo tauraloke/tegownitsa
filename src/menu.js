@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 'use strict';
 import path from 'path';
-import { app, Menu, shell } from 'electron';
+import { app, Menu, shell, BrowserWindow } from 'electron';
 import {
   is,
   appMenu,
@@ -12,9 +12,24 @@ import {
 } from 'electron-util';
 import config from './config/store.js';
 
-const showPreferences = () => {
+const showPreferences = (_menuItem, currentWindow, _event) => {
   // Show the app's preferences here
-  console.log('test');
+  let winSettings = new BrowserWindow({
+    width: 700,
+    height: 500,
+    parent: currentWindow,
+    modal: true
+  });
+  winSettings.setMenuBarVisibility(false);
+  winSettings.on('close', function () {
+    winSettings = null;
+  });
+  const setURL =
+    process.env.NODE_ENV === 'development'
+      ? `${process.env.WEBPACK_DEV_SERVER_URL}#/set`
+      : `file://${__dirname}/index.html#/set`;
+  winSettings.loadURL(setURL);
+  winSettings.show();
 };
 
 const helpSubmenu = [
@@ -108,8 +123,8 @@ const macosTemplate = [
     {
       label: 'Preferences…',
       accelerator: 'Command+,',
-      click() {
-        showPreferences();
+      click(...args) {
+        showPreferences(...args);
       }
     }
   ]),
@@ -191,8 +206,8 @@ const otherTemplate = [
         label: 'Settings',
         icon: path.join(__static, 'menu', 'settings.png'),
         accelerator: 'Control+,',
-        click() {
-          showPreferences();
+        click(...args) {
+          showPreferences(...args);
         }
       },
       {
