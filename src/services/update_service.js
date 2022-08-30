@@ -16,7 +16,7 @@ export default class UpdateService {
     if (!is.development) {
       setInterval(() => {
         autoUpdater.checkForUpdates();
-      }, this.cooldown_hour);
+      }, this.cooldown_hour * 1000 * 60 * 60);
 
       autoUpdater.checkForUpdates();
     }
