@@ -25,11 +25,15 @@
 
           <div id="tags">
             <h3>Tags</h3>
-            <list-tag-groups :tags-groupped="tagsGroupped(tags)" />
+            <list-tag-groups
+              :tags-groupped="tagsGroupped(tags)"
+              @search-by-title="searchFilesByTags($event)"
+            />
           </div>
         </v-col>
 
         <v-col cols="12" sm="8">
+          <h3 v-if="files?.length > 0">Files</h3>
           <v-row v-if="files?.length > 0" id="files">
             <v-col
               v-for="file in files"
@@ -42,8 +46,9 @@
                 :src="'file://' + file?.preview_path"
                 :title="file?.source_filename"
                 aspect-ratio="1"
-                cover
-                class="bg-grey-lighten-2 pointer-clickable pretty-corners"
+                width="140"
+                contain
+                class="bg-grey-lighten-2 pointer-clickable pretty-corners elevation-4"
                 @click="showFile(file)"
               />
             </v-col>
@@ -79,7 +84,13 @@
                 :file-id="currentFile?.id"
                 @after-add-tag="afterAddTagHandler($event)"
               />
-              <list-tag-groups :tags-groupped="tagsGroupped(currentFileTags)" />
+              <list-tag-groups
+                :tags-groupped="tagsGroupped(currentFileTags)"
+                @search-by-title="
+                  currentFile = null;
+                  searchFilesByTags($event);
+                "
+              />
             </v-col>
             <v-col cols="12" md="10">
               <div id="file_info_img_container">
@@ -164,7 +175,10 @@
     </v-dialog>
 
     <v-footer app>
-      {{ statusMessage }}
+      <v-list width="100%">
+        <v-divider inset />
+        <v-list-item>{{ statusMessage }}</v-list-item>
+      </v-list>
     </v-footer>
   </v-app>
 </template>
@@ -299,12 +313,6 @@ export default {
     async afterAddTagHandler(event) {
       console.log(event);
       this.tags.push(event);
-    },
-    async removeTagFromFile(_file_tag_id) {
-      // TODO
-    },
-    async editTag(_tag_id) {
-      // TODO
     },
     tagsGroupped(tags) {
       let groups = [];
@@ -517,7 +525,7 @@ export default {
   border-radius: 5px;
 }
 
-.height-half-screen {
-  height: 75vh;
+#files {
+  margin-right: 2em;
 }
 </style>

@@ -14,29 +14,11 @@
             v-for="tag in group.tags"
             :key="tag?.id"
             :title="tag?.locales.map((l) => l.title)"
+            :closable="isClosable(tag)"
+            @click:close.stop="removeTagFromFile(tag.file_tag_id, tag.id)"
             @click="searchFilesByTag(tag?.locales?.[0]?.title)"
           >
             {{ tag?.locales?.[0]?.title }}
-            <v-btn
-              class="ma-2"
-              title="Edit the tag"
-              outlined
-              size="x-small"
-              color="info"
-              fab
-              icon="mdi-pencil"
-              @click="editTag(tag?.id)"
-            />
-            <v-btn
-              class="ma-2"
-              title="Edit the tag"
-              outlined
-              size="x-small"
-              color="secondary"
-              fab
-              icon="mdi-delete"
-              @click="removeTagFromFile(tag?.file_tag_id)"
-            />
           </v-chip>
         </v-chip-group>
       </div>
@@ -53,7 +35,7 @@ export default {
       required: true
     }
   },
-  emits: { 'by-tags': null, 'by-caption': null },
+  emits: { 'search-by-title': null },
   data() {
     return {
       searchCaption: null,
@@ -64,14 +46,18 @@ export default {
     };
   },
   methods: {
+    isClosable(tag) {
+      return !!tag.file_tag_id;
+    },
     searchFilesByTag(title) {
-      console.log(title);
-      // TODO
+      this.$emit('search-by-title', title);
     },
     editTag(_tag_id) {
       // TODO
     },
-    removeTagFromFile(_file_tag_id) {
+    removeTagFromFile(file_id, tag_id) {
+      alert(file_id + '~' + tag_id);
+      return false;
       // TODO
     }
   }
