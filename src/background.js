@@ -36,7 +36,7 @@ async function createWindow() {
       webSecurity: false,
       preload: path.join(__dirname, './preload.js')
     }
-  });
+  }); // TODO: create BrowserWindow as show: false; apply night/day mode from config; show window win.show()
   win.maximize();
 
   protocol.registerFileProtocol('file', (request, callback) => {

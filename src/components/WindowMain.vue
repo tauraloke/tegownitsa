@@ -18,9 +18,9 @@
       />
     </header>
 
-    <v-container>
+    <section>
       <v-row>
-        <v-col cols="12" sm="2">
+        <v-col cols="12" sm="4">
           <div v-if="currentTag" id="tag_edit_form_container"></div>
 
           <div id="tags">
@@ -29,10 +29,7 @@
           </div>
         </v-col>
 
-        <v-col cols="12" sm="10">
-          <v-row>
-            {{ statusMessage }}
-          </v-row>
+        <v-col cols="12" sm="8">
           <v-row v-if="files?.length > 0" id="files">
             <v-col
               v-for="file in files"
@@ -57,13 +54,22 @@
           </div>
         </v-col>
       </v-row>
-    </v-container>
+    </section>
 
-    <v-dialog v-model="hasCurrentFile" fullscreen>
-      <v-card v-if="currentFile" class="justify-center pa-4">
-        <v-card-title style="padding-top: 8em; text-align: center">
-          {{ currentFile.source_filename }}
-        </v-card-title>
+    <v-dialog v-model="hasCurrentFile" fullscreen scrollable>
+      <v-card v-if="currentFile">
+        <v-toolbar>
+          <v-toolbar-title>
+            {{ currentFile.source_filename }}
+          </v-toolbar-title>
+          <v-toolbar-items>
+            <v-btn
+              icon="mdi-close"
+              title="Go back"
+              @click="currentFile = null"
+            />
+          </v-toolbar-items>
+        </v-toolbar>
         <v-card-text>
           <v-row>
             <v-col cols="12" md="2">
@@ -157,7 +163,9 @@
       </v-card>
     </v-dialog>
 
-    <v-footer> </v-footer>
+    <v-footer app>
+      {{ statusMessage }}
+    </v-footer>
   </v-app>
 </template>
 
