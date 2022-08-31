@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 'use strict';
 import path from 'path';
-import { app, Menu, shell, BrowserWindow } from 'electron';
+import { app, Menu, shell } from 'electron';
 import {
   is,
   appMenu,
@@ -12,24 +12,9 @@ import {
 } from 'electron-util';
 import config from './config/store.js';
 
-const showPreferences = (_menuItem, currentWindow, _event) => {
+const showPreferences = (_menuItem, browserWindow, _event) => {
   // Show the app's preferences here
-  let winSettings = new BrowserWindow({
-    width: 700,
-    height: 500,
-    parent: currentWindow,
-    modal: true
-  });
-  winSettings.setMenuBarVisibility(false);
-  winSettings.on('close', function () {
-    winSettings = null;
-  });
-  const setURL =
-    process.env.NODE_ENV === 'development'
-      ? `${process.env.WEBPACK_DEV_SERVER_URL}#/set`
-      : `file://${__dirname}/index.html#/set`;
-  winSettings.loadURL(setURL);
-  winSettings.show();
+  browserWindow.webContents.send('execute', 'openPreferencesDialog');
 };
 
 const helpSubmenu = [

@@ -27,6 +27,7 @@ async function createWindow() {
   win = new BrowserWindow({
     width: 800,
     height: 600,
+    show: false,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -36,8 +37,9 @@ async function createWindow() {
       webSecurity: false,
       preload: path.join(__dirname, './preload.js')
     }
-  }); // TODO: create BrowserWindow as show: false; apply night/day mode from config; show window win.show()
+  });
   win.maximize();
+  win.show();
 
   protocol.registerFileProtocol('file', (request, callback) => {
     const pathname = decodeURI(request.url.replace('file:///', ''));

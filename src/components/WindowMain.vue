@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <header>
-      <v-btn color="light" @click="toggleTheme()">toggle theme</v-btn>
       <v-btn @click="openFolder()">Import folder</v-btn>
       <v-btn @click="openFile()">Import file</v-btn>
       <v-btn @click="importFileFromUrl()">Import file from url</v-btn>
@@ -18,7 +17,7 @@
       />
     </header>
 
-    <section>
+    <section class="mb-8">
       <v-row>
         <v-col cols="12" sm="4">
           <div v-if="currentTag" id="tag_edit_form_container"></div>
@@ -175,6 +174,11 @@
       </v-card>
     </v-dialog>
 
+    <dialog-preferences
+      ref="dialog_preferences"
+      @option-changed="updateAppOptions"
+    />
+
     <v-footer app>
       <v-list width="100%">
         <v-divider inset />
@@ -190,6 +194,7 @@ import { useTheme } from 'vuetify';
 import FormAddNewTagToFile from '@/components/FormAddNewTagToFile.vue';
 import FormSearchFiles from '@/components/FormSearchFiles.vue';
 import ListTagGroups from '@/components/ListTagGroups.vue';
+import DialogPreferences from '@/components/DialogPreferences.vue';
 
 import Job from '@/services/job.js';
 import tagResources from '@/config/tag_resources.js';
@@ -206,17 +211,15 @@ export default {
   components: {
     FormAddNewTagToFile,
     FormSearchFiles,
-    ListTagGroups
+    ListTagGroups,
+    DialogPreferences
   },
   setup() {
     const theme = useTheme();
     return {
       theme,
-      toggleTheme: () => {
-        console.log(theme.global.name.value, theme.global.current.value.dark);
-        theme.global.name.value = theme.global.current.value.dark
-          ? 'light'
-          : 'dark';
+      setTheme: (isDark) => {
+        theme.global.name.value = isDark ? 'dark' : 'light';
       }
     };
   },
@@ -246,7 +249,8 @@ export default {
       },
       showDialogUrlForImport: false,
       urlForImport: null,
-      fileCaptionTextareaIcon: 'mdi-floppy'
+      fileCaptionTextareaIcon: 'mdi-floppy',
+      appOptions: {}
     };
   },
   computed: {
@@ -292,8 +296,14 @@ export default {
       }
     }
   },
+  watch: {
+    'appOptions.dark_theme': function (newValue, _oldValue) {
+      console.log('set theme', _oldValue, newValue);
+      this.setTheme(newValue);
+    }
+  },
   mounted() {
-    window.menuApi.executeListener((event, method, ...args) => {
+    window.busApi.executeListener((_event, method, ...args) => {
       let allowedMenuMethods = [
         'openFile',
         'openFolder',
@@ -301,7 +311,9 @@ export default {
         'importFromClipboard',
         'scanSelectedFiles',
         'lookUpDups',
-        'loadTagsFromIQDB'
+        'loadTagsFromIQDB',
+        'openPreferencesDialog',
+        'setTheme'
       ];
       if (method in allowedMenuMethods) {
         return false;
@@ -310,6 +322,11 @@ export default {
     });
     this.searchFilesByCaption('');
     this.showAllTags();
+    window.configApi.getConfig('dark_theme').then((isDark) => {
+      if (isDark) {
+        this.setTheme(isDark);
+      }
+    });
   },
   methods: {
     async afterAddTagHandler(event) {
@@ -341,7 +358,6 @@ export default {
       this.statusMessage = `Found ${this.files.length} results by tag '${tags_titles}'`;
     },
     async searchFilesByCaption(caption = '') {
-      console.log(caption);
       this.currentFile = null;
       this.tags = [];
       this.statusMessage = `Start search by caption '${caption}'`;
@@ -507,6 +523,12 @@ export default {
           }
         });
       }
+    },
+    openPreferencesDialog() {
+      this.$refs.dialog_preferences.showComponent();
+    },
+    updateAppOptions(name, value) {
+      this.appOptions[name] = value;
     }
   }
 };

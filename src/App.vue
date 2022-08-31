@@ -1,11 +1,14 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <window-main />
   </div>
 </template>
 
 <script>
+import WindowMain from '@/components/WindowMain.vue';
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: { WindowMain }
 };
 </script>

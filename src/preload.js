@@ -10,7 +10,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 new ApiConnector().connectPreloadHandlers();
 
-contextBridge.exposeInMainWorld('menuApi', {
+contextBridge.exposeInMainWorld('busApi', {
   executeListener: (listener) => {
     return ipcRenderer.on('execute', listener);
   }
