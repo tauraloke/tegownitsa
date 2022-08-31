@@ -27,7 +27,7 @@
             <h3>Tags</h3>
             <list-tag-groups
               :tags-groupped="tagsGroupped(tags)"
-              @search-by-title="searchFilesByTags($event)"
+              @search-by-title="searchFilesByTag($event)"
             />
           </div>
         </v-col>
@@ -88,7 +88,7 @@
                 :tags-groupped="tagsGroupped(currentFileTags)"
                 @search-by-title="
                   currentFile = null;
-                  searchFilesByTags($event);
+                  searchFilesByTag($event);
                 "
               />
             </v-col>
@@ -127,17 +127,18 @@
                   Maked by: {{ currentFileModel }}
                 </div>
               </v-card>
-              <v-card elevation="4" class="ma-2">
-                <div id="file_info_caption_container">
-                  <v-textarea
-                    id="file_info_caption"
-                    v-model="currentFile.caption"
-                    label="recognized text on image"
-                  ></v-textarea>
-                </div>
-                <div id="file_info_update_caption">
-                  <v-btn @click="updateCaption()">Update caption</v-btn>
-                </div>
+              <v-card elevation="4" class="ma-2 clickable-i">
+                <v-textarea
+                  ref="file_info_caption"
+                  v-model="currentFile.caption"
+                  label="recognized text on image"
+                  title="Click to floppy to save changes"
+                  :append-inner-icon="fileCaptionTextareaIcon"
+                  @click:control="clickedOnCaptionTextarea($event)"
+                  @update:model-value="
+                    fileCaptionTextareaIcon = 'mdi-content-save-edit'
+                  "
+                ></v-textarea>
               </v-card>
               <div
                 v-if="currentFileUrls && currentFileUrls.length > 0"
@@ -244,7 +245,8 @@ export default {
         anime_pictures: new Job(10, 15)
       },
       showDialogUrlForImport: false,
-      urlForImport: null
+      urlForImport: null,
+      fileCaptionTextareaIcon: 'mdi-floppy'
     };
   },
   computed: {
@@ -423,7 +425,7 @@ export default {
         this.statusMessage = 'Have no current file!';
         return false;
       }
-      let newCaption = document.getElementById('file_info_caption').value;
+      let newCaption = this.$refs.file_info_caption.value;
       this.currentFile.caption = newCaption;
       await window.sqliteApi.query('UPDATE files SET caption=? WHERE id=?', [
         newCaption,
@@ -472,6 +474,13 @@ export default {
       this.currentFile = null;
       this.duplicatedFiles = dups;
       this.statusMessage = `${dups.length} pairs found`;
+    },
+    clickedOnCaptionTextarea(event) {
+      if (event?.path?.[0]?.nodeName == 'I') {
+        this.updateCaption();
+        this.isCaptionUpdated = false;
+        this.fileCaptionTextareaIcon = 'mdi-floppy';
+      }
     },
     async loadTagsFromIQDB() {
       this.statusMessage = `Start loading tags for ${this.files.length} files`;
@@ -527,5 +536,9 @@ export default {
 
 #files {
   margin-right: 2em;
+}
+
+.clickable-i i {
+  cursor: pointer;
 }
 </style>
