@@ -17,7 +17,7 @@
       />
     </header>
 
-    <section class="mb-8">
+    <main style="padding-bottom: 4em">
       <v-row>
         <v-col cols="12" sm="4">
           <div v-if="currentTag" id="tag_edit_form_container"></div>
@@ -58,7 +58,7 @@
           </div>
         </v-col>
       </v-row>
-    </section>
+    </main>
 
     <v-dialog v-model="hasCurrentFile" fullscreen scrollable>
       <v-card v-if="currentFile">
@@ -126,12 +126,13 @@
                   Maked by: {{ currentFileModel }}
                 </div>
               </v-card>
-              <v-card elevation="4" class="ma-2 clickable-i">
+              <v-card elevation="4" class="ma-2">
                 <v-textarea
                   ref="file_info_caption"
                   v-model="currentFile.caption"
                   label="recognized text on image"
                   title="Click to floppy to save changes"
+                  class="clickable-i"
                   :append-inner-icon="fileCaptionTextareaIcon"
                   @click:control="clickedOnCaptionTextarea($event)"
                   @update:model-value="
@@ -200,10 +201,12 @@ import Job from '@/services/job.js';
 import tagResources from '@/config/tag_resources.js';
 import tagNamespaces from '@/config/tag_namespaces.json';
 import { swap } from '@/services/utils.js';
-import { CAPTION_YET_NOT_SCANNED } from '@/config/constants.json';
+import {
+  CAPTION_YET_NOT_SCANNED,
+  CAPTION_NOT_FOUND
+} from '@/config/constants.json';
 
 const tagNameSpacesById = swap(tagNamespaces);
-const CAPTION_NOT_FOUND = '[NO CAPTION FOUND]';
 const DUPLICATE_HAMMING_THRESHOLD = 7;
 
 export default {
@@ -457,11 +460,7 @@ export default {
         }
         try {
           console.log('Scan file: ', file);
-          let recognized = await window.ocrApi.recognize(file['full_path'], [
-            'eng',
-            'rus',
-            'jpn'
-          ]); // TODO: move languages to app settings
+          let recognized = await window.ocrApi.recognize(file['full_path']);
           console.log('Recognized: ', recognized);
           let caption = recognized.data.blocks
             .filter((b) => b.text.trim() != '' && b.confidence > 70)
