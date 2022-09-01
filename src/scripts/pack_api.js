@@ -3,6 +3,8 @@
 
 const fs = require('fs');
 const path = require('path');
+
+// Pack API JSON
 let result = {};
 let apiDir = fs.readdirSync(path.join(__dirname, '..', 'api'), {
   withFileTypes: true
@@ -21,7 +23,8 @@ apiDir.forEach((dir) => {
     }
   });
 });
+
 fs.writeFileSync(
-  path.join(__dirname, '..', 'api', 'contents.json'),
+  path.join(__dirname, '..', '.json_bus', 'api_contents.json'),
   JSON.stringify(result)
 );

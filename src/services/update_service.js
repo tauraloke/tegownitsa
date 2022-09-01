@@ -1,5 +1,6 @@
 import { is } from 'electron-util';
 import { autoUpdater } from 'electron-updater';
+import store from '../config/store.js';
 
 export default class UpdateService {
   constructor({ cooldown_hour = 4, mainWindow }) {
@@ -7,12 +8,16 @@ export default class UpdateService {
     this.mainWindow = mainWindow;
   }
   sendStatusToWindow(text) {
-    console.log(text);
+    console.log('Updater message: ', text);
     if (this.mainWindow && this.mainWindow.webContents) {
       this.mainWindow.webContents.send('message', text);
     }
   }
   connect() {
+    if (!store.get('has_auto_updates')) {
+      this.sendStatusToWindow('Updates are disabled by user options.');
+      return false;
+    }
     if (!is.development) {
       setInterval(() => {
         autoUpdater.checkForUpdates();

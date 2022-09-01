@@ -1,7 +1,7 @@
 import ApiFolder from './api_folder.js';
 import { camelize } from './utils.js';
 import { ipcMain, ipcRenderer, contextBridge } from 'electron';
-import contents from '../api/contents.json';
+import contents from '../.json_bus/api_contents.json';
 
 class ApiConnector {
   constructor() {}

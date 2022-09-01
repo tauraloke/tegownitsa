@@ -301,7 +301,6 @@ export default {
   },
   watch: {
     'appOptions.dark_theme': function (newValue, _oldValue) {
-      console.log('set theme', _oldValue, newValue);
       this.setTheme(newValue);
     }
   },
@@ -333,7 +332,6 @@ export default {
   },
   methods: {
     async afterAddTagHandler(event) {
-      console.log(event);
       this.tags.push(event);
     },
     tagsGroupped(tags) {

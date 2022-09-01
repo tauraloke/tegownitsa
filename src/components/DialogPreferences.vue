@@ -28,6 +28,11 @@
                 label="Theme Light/Dark"
                 persistent-hint
               ></v-switch>
+
+              <v-checkbox
+                v-model="options.has_auto_updates"
+                label="Enable auto updates"
+              />
             </v-card-text>
           </v-card>
         </v-window-item>
@@ -85,6 +90,9 @@
 
 <script>
 import { TESSERACT_LANGUAGE_DIVIDER } from '../config/constants.json';
+import storeDefaults from '../.json_bus/store_defaults.json';
+
+let previousOptions = {};
 
 export default {
   name: 'WindowSettings',
@@ -135,55 +143,59 @@ export default {
     };
   },
   watch: {
-    'options.dark_theme': function (newValue, _oldValue) {
-      if (!this.isWatchersActive || newValue === undefined) {
-        return newValue;
-      }
-      window.configApi.setConfig('dark_theme', newValue);
-      this.$emit('option-changed', 'dark_theme', newValue);
-    },
-    'options.tesseract_psm': function (newValue, _oldValue) {
-      if (!this.isWatchersActive || newValue === undefined) {
-        return newValue;
-      }
-      window.configApi.setConfig('tesseract_psm', newValue);
-      this.$emit('option-changed', 'tesseract_psm', newValue);
-    },
-    'options.tesseract_oem': function (newValue, _oldValue) {
-      if (!this.isWatchersActive || newValue === undefined) {
-        return newValue;
-      }
-      window.configApi.setConfig('tesseract_oem', newValue);
-      this.$emit('option-changed', 'tesseract_oem', newValue);
-    },
-    'options.tesseract_languages': function (newValue, _oldValue) {
-      if (!this.isWatchersActive || newValue === undefined) {
-        return newValue;
-      }
-      if (typeof newValue !== 'string') {
-        newValue = Object.values(newValue).join(TESSERACT_LANGUAGE_DIVIDER);
-      }
-      console.log('rerere', newValue);
-      window.configApi.setConfig('tesseract_languages', newValue);
-      this.$emit('option-changed', 'tesseract_languages', newValue);
+    options: {
+      handler: function (newOptions) {
+        if (!this.isWatchersActive) {
+          return true;
+        }
+        console.log(newOptions);
+        let changedKey = null;
+        for (let key in previousOptions) {
+          if (newOptions[key] != previousOptions[key]) {
+            changedKey = key;
+            previousOptions[key] = newOptions[key];
+            break;
+          }
+        }
+        if (!changedKey) {
+          return true;
+        }
+        this._updateOption(changedKey, newOptions[changedKey]);
+      },
+      deep: true
     }
   },
   async mounted() {
     this.isWatchersActive = false;
-    this.options['dark_theme'] = await window.configApi.getConfig('dark_theme');
-    this.options['tesseract_psm'] =
-      (await window.configApi.getConfig('tesseract_psm')) || 3;
-    this.options['tesseract_oem'] =
-      (await window.configApi.getConfig('tesseract_oem')) || 3;
-    this.options['tesseract_languages'] =
-      (await window.configApi.getConfig('tesseract_languages')).split(
-        TESSERACT_LANGUAGE_DIVIDER
-      ) || 'eng';
+    for (let key in storeDefaults) {
+      previousOptions[key] = await window.configApi.getConfig(key);
+      if (previousOptions[key] === undefined) {
+        previousOptions[key] = storeDefaults[key];
+      }
+      if (key == 'tesseract_languages') {
+        previousOptions[key] = previousOptions[key].split(
+          TESSERACT_LANGUAGE_DIVIDER
+        );
+      }
+      this.options[key] = previousOptions[key];
+    }
     this.isWatchersActive = true;
   },
   methods: {
     showComponent() {
       this.isDialogVisible = true;
+    },
+    _updateOption(key, value) {
+      console.log('update option', key, value); // TODO: remove
+      if (key === 'tesseract_languages') {
+        if (typeof value === 'object') {
+          value = Object.values(value).join(TESSERACT_LANGUAGE_DIVIDER);
+        } else {
+          return;
+        }
+      }
+      window.configApi.setConfig(key, value);
+      this.$emit('option-changed', key, value);
     }
   }
 };

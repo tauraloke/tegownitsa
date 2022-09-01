@@ -85,7 +85,7 @@ class FileImporter {
     try {
       return create(fileBuffer).parse(fileBuffer).tags;
     } catch (_error) {
-      console.log('Cannot extract exif');
+      console.log(`Cannot extract exif from ${absolutePath}`);
       return {};
     }
   }
