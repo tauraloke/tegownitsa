@@ -20,8 +20,6 @@
     <main style="padding-bottom: 4em">
       <v-row>
         <v-col cols="12" sm="4">
-          <div v-if="currentTag" id="tag_edit_form_container"></div>
-
           <div id="tags">
             <h3>Tags</h3>
             <list-tag-groups
@@ -60,104 +58,10 @@
       </v-row>
     </main>
 
-    <v-dialog v-model="hasCurrentFile" fullscreen scrollable>
-      <v-card v-if="currentFile">
-        <v-toolbar>
-          <v-toolbar-title>
-            {{ currentFile.source_filename }}
-          </v-toolbar-title>
-          <v-toolbar-items>
-            <v-btn
-              icon="mdi-close"
-              title="Go back"
-              @click="currentFile = null"
-            />
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-card-text>
-          <v-row>
-            <v-col cols="12" md="2">
-              <h3>Tags</h3>
-              <form-add-new-tag-to-file
-                v-if="currentFile"
-                :file-id="currentFile?.id"
-                @after-add-tag="afterAddTagHandler($event)"
-              />
-              <list-tag-groups
-                :tags-groupped="tagsGroupped(currentFileTags)"
-                @search-by-title="
-                  currentFile = null;
-                  searchFilesByTag($event);
-                "
-              />
-            </v-col>
-            <v-col cols="12" md="10">
-              <div id="file_info_img_container">
-                <v-img
-                  id="file_info_img"
-                  contain
-                  aspect-ratio="1"
-                  height="75vh"
-                  :src="'file://' + currentFile.full_path"
-                />
-              </div>
-              <v-card
-                v-if="exifExists"
-                id="file_info_exif"
-                elevation="4"
-                class="ma-2 pa-4"
-              >
-                <h4>Exif data</h4>
-                <div v-if="currentFileDateCreated">
-                  Create date: {{ currentFileDateCreated }}
-                </div>
-                <div v-if="currentFileCoords">
-                  Coordinates:
-                  <a
-                    :href="
-                      'https://www.google.com/maps/place/' + currentFileCoords
-                    "
-                    target="_blank"
-                  >
-                    {{ currentFileCoords }}
-                  </a>
-                </div>
-                <div v-if="currentFileModel">
-                  Maked by: {{ currentFileModel }}
-                </div>
-              </v-card>
-              <v-card elevation="4" class="ma-2">
-                <v-textarea
-                  ref="file_info_caption"
-                  v-model="currentFile.caption"
-                  label="recognized text on image"
-                  title="Click to floppy to save changes"
-                  class="clickable-i"
-                  :append-inner-icon="fileCaptionTextareaIcon"
-                  @click:control="clickedOnCaptionTextarea($event)"
-                  @update:model-value="
-                    fileCaptionTextareaIcon = 'mdi-content-save-edit'
-                  "
-                ></v-textarea>
-              </v-card>
-              <div
-                v-if="currentFileUrls && currentFileUrls.length > 0"
-                id="file_info_sources"
-              >
-                <v-card elevation="4" class="ma-2 pa-8">
-                  <h5>Sources</h5>
-                  <ul>
-                    <li v-for="url in currentFileUrls" :key="url">
-                      <a :href="url" target="_blank">{{ url }}</a>
-                    </li>
-                  </ul>
-                </v-card>
-              </div>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+    <dialog-show-file
+      ref="dialog_show_file"
+      @search-by-tag="searchFilesByTag($event)"
+    />
 
     <v-dialog v-model="showDialogUrlForImport">
       <v-card class="prompt-dialog-card">
@@ -192,28 +96,27 @@
 <script>
 import { useTheme } from 'vuetify';
 
-import FormAddNewTagToFile from '@/components/FormAddNewTagToFile.vue';
 import FormSearchFiles from '@/components/FormSearchFiles.vue';
 import ListTagGroups from '@/components/ListTagGroups.vue';
 import DialogPreferences from '@/components/DialogPreferences.vue';
+import DialogShowFile from '@/components/DialogShowFile.vue';
+import MixinTagsGroupped from '@/components/MixinTagsGroupped.js';
 
 import Job from '@/services/job.js';
-import tagNamespaces from '@/config/tag_namespaces.json';
-import { swap } from '@/services/utils.js';
 import constants from '@/config/constants.json';
 import FabricJobTagSourceStrategy from '@/services/tag_sources_strategies/fabric_tag_source_strateges.js';
 
-const tagNameSpacesById = swap(tagNamespaces);
-const DUPLICATE_HAMMING_THRESHOLD = 7;
+const DUPLICATE_HAMMING_THRESHOLD = 7; // TODO: вынести в настройки
 
 export default {
   name: 'WindowMain',
   components: {
-    FormAddNewTagToFile,
     FormSearchFiles,
     ListTagGroups,
-    DialogPreferences
+    DialogPreferences,
+    DialogShowFile
   },
+  mixins: [MixinTagsGroupped],
   setup() {
     const theme = useTheme();
     return {
@@ -230,12 +133,8 @@ export default {
       currentFile: null,
       currentFileUrls: null,
       currentFileTags: [],
-      duplicatedFiles: null,
+      duplicatedFiles: [],
       files: [],
-      searchString: '',
-      currentTag: null,
-      tagNameSpacesById: tagNameSpacesById,
-      isTagsAutoCompleteLoading: false,
       jobs: {
         iqdb: new Job(10, 15),
         danbooru: new Job(10, 15),
@@ -249,52 +148,8 @@ export default {
       },
       showDialogUrlForImport: false,
       urlForImport: null,
-      fileCaptionTextareaIcon: 'mdi-floppy',
       appOptions: {}
     };
-  },
-  computed: {
-    exifExists() {
-      return (
-        this.currentFile?.exif_create_date ||
-        (this.currentFile?.exif_latitude && this.currentFile?.exif_longitude) ||
-        this.currentFile?.exif_make
-      );
-    },
-    currentFileDateCreated() {
-      if (!this.currentFile?.exif_create_date) {
-        return null;
-      }
-      return new Date(this.currentFile.exif_create_date * 1000).toLocaleString(
-        'ru'
-      );
-    },
-    currentFileCoords() {
-      if (
-        !this.currentFile?.exif_latitude ||
-        !this.currentFile?.exif_longitude
-      ) {
-        return null;
-      }
-      return [
-        this.currentFile?.exif_latitude,
-        this.currentFile?.exif_longitude
-      ].join(',');
-    },
-    currentFileModel() {
-      if (!this.currentFile?.exif_make || !this.currentFile?.exif_model) {
-        return null;
-      }
-      return this.currentFile.exif_make + ' ' + this.currentFile.exif_model;
-    },
-    hasCurrentFile: {
-      get() {
-        return !!this.currentFile;
-      },
-      set() {
-        this.currentFile = null;
-      }
-    }
   },
   watch: {
     'appOptions.dark_theme': function (newValue, _oldValue) {
@@ -328,35 +183,17 @@ export default {
     });
   },
   methods: {
-    async afterAddTagHandler(event) {
-      this.tags.push(event);
-    },
-    tagsGroupped(tags) {
-      let groups = [];
-      for (let i = 0; i < tags.length; i++) {
-        let tag = tags[i];
-        if (!groups[tag.namespace_id]) {
-          groups[tag.namespace_id] = {
-            name: tagNameSpacesById[tag.namespace_id],
-            id: tag.namespace_id,
-            tags: []
-          };
-        }
-        groups[tag.namespace_id].tags.push(tag);
-      }
-      return Object.values(groups);
-    },
     async searchFilesByTag(tag_title) {
       this.$refs.form_search_files.reset(tag_title);
     },
     async searchFilesByTags(tags_titles) {
-      this.currentFile = null;
+      this.hideFile();
       this.statusMessage = `Start search by tag '${tags_titles}'`;
       this.files = await window.sqliteApi.findFilesByTags(tags_titles);
       this.statusMessage = `Found ${this.files.length} results by tag '${tags_titles}'`;
     },
     async searchFilesByCaption(caption = '') {
-      this.currentFile = null;
+      this.hideFile();
       this.tags = [];
       this.statusMessage = `Start search by caption '${caption}'`;
       let files = await window.sqliteApi.queryAll(
@@ -367,14 +204,10 @@ export default {
       this.statusMessage = `Found ${this.files.length} results by caption '${caption}'`;
     },
     async showFile(file) {
-      this.currentFile = file;
-      this.currentFileTags = await window.sqliteApi.findTagsByFile(file.id);
-      this.currentFileUrls = (
-        await window.sqliteApi.queryAll(
-          'SELECT url FROM file_urls WHERE file_id=?',
-          [file.id]
-        )
-      ).map((t) => t.url);
+      this.$refs.dialog_show_file.showComponent(file);
+    },
+    async hideFile() {
+      this.$refs.dialog_show_file.hideComponent();
     },
     async openFolder() {
       let folder = await window.fileApi.openFolder();
@@ -434,19 +267,6 @@ export default {
     async showAllTags() {
       this.tags = await window.sqliteApi.getAllTags();
     },
-    async updateCaption() {
-      if (!this.currentFile?.id) {
-        this.statusMessage = 'Have no current file!';
-        return false;
-      }
-      let newCaption = this.$refs.file_info_caption.value;
-      this.currentFile.caption = newCaption;
-      await window.sqliteApi.query('UPDATE files SET caption=? WHERE id=?', [
-        newCaption,
-        this.currentFile?.id
-      ]);
-      this.statusMessage = `Caption updated for file #${this.currentFile?.id}`;
-    },
     async scanSelectedFiles() {
       for (let i = 0; i < this.files.length; i++) {
         let file = this.files[i];
@@ -481,16 +301,9 @@ export default {
         'SELECT files.*, files2.id AS f2_id, files2.preview_path AS f2_preview_path, files2.width AS f2_width, files2.height AS f2_height, hamming(files.imagehash, files2.imagehash) AS distance FROM files JOIN files AS files2 ON files.id > files2.id WHERE distance < ?',
         [threshold]
       );
-      this.currentFile = null;
+      this.hideFile();
       this.duplicatedFiles = dups;
       this.statusMessage = `${dups.length} pairs found`;
-    },
-    clickedOnCaptionTextarea(event) {
-      if (event?.path?.[0]?.nodeName == 'I') {
-        this.updateCaption();
-        this.isCaptionUpdated = false;
-        this.fileCaptionTextareaIcon = 'mdi-floppy';
-      }
     },
     async loadTagsFromIQDB() {
       this.statusMessage = `Start loading tags for ${this.files.length} files`;
@@ -557,9 +370,5 @@ export default {
 
 #files {
   margin-right: 2em;
-}
-
-.clickable-i i {
-  cursor: pointer;
 }
 </style>

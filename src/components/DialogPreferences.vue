@@ -119,7 +119,7 @@ import tagSourceStrategies from '../config/tag_source_strategies.json';
 let previousOptions = {};
 
 export default {
-  name: 'WindowSettings',
+  name: 'DialogPreferences',
   emits: ['option-changed'],
   data() {
     return {
