@@ -90,10 +90,10 @@ npm start
   extracting textes from images for better indexing, `Apache 2.0 license`.
 
 
-## Next objectives
+## Next goals
 
-- Adjust HTML and styles in the application.
-- Pagination.
-- Add Saucenao API requests with a private token.
-- Move Tesseract language list to settings.
-- i18n.
+-[ ] (In progress) Adjust HTML and styles in the application.
+-[ ] Pagination.
+-[ ] Add Saucenao API requests with a private token.
+-[x] Move Tesseract language list to settings.
+-[ ] i18n.
