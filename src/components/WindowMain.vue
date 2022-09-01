@@ -61,6 +61,7 @@
     <dialog-show-file
       ref="dialog_show_file"
       @search-by-tag="searchFilesByTag($event)"
+      @toast="toast($event)"
     />
 
     <v-dialog v-model="showDialogUrlForImport">
@@ -84,12 +85,16 @@
       @option-changed="updateAppOptions"
     />
 
-    <v-footer app>
-      <v-list width="100%">
-        <v-divider inset />
-        <v-list-item>{{ statusMessage }}</v-list-item>
-      </v-list>
-    </v-footer>
+    <v-snackbar v-model="isStatusMessageVisible">
+      {{ statusMessage }}
+      <template #actions>
+        <v-btn
+          icon="mdi-close"
+          title="Close"
+          @click="isStatusMessageVisible = null"
+        />
+      </template>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -129,6 +134,7 @@ export default {
   data() {
     return {
       statusMessage: '',
+      isStatusMessageVisible: false,
       tags: [],
       currentFile: null,
       currentFileUrls: null,
@@ -188,20 +194,18 @@ export default {
     },
     async searchFilesByTags(tags_titles) {
       this.hideFile();
-      this.statusMessage = `Start search by tag '${tags_titles}'`;
       this.files = await window.sqliteApi.findFilesByTags(tags_titles);
-      this.statusMessage = `Found ${this.files.length} results by tag '${tags_titles}'`;
+      this.toast(`Found ${this.files.length} results by tag '${tags_titles}'`);
     },
     async searchFilesByCaption(caption = '') {
       this.hideFile();
       this.tags = [];
-      this.statusMessage = `Start search by caption '${caption}'`;
       let files = await window.sqliteApi.queryAll(
         'SELECT * FROM files WHERE caption LIKE "%" || ? || "%" OR source_filename LIKE "%" || ? || "%"',
         [caption, caption]
       );
       this.files = files;
-      this.statusMessage = `Found ${this.files.length} results by caption '${caption}'`;
+      this.toast(`Found ${this.files.length} results by caption '${caption}'`);
     },
     async showFile(file) {
       this.$refs.dialog_show_file.showComponent(file);
@@ -215,7 +219,7 @@ export default {
       let path = folder.filePaths[0];
       console.log(`Loading folder ${path}`);
       await window.fileApi.addFilesFromFolder(path);
-      this.statusMessage = `Folder ${path} has imported.`;
+      this.toast(`Folder ${path} has imported.`);
     },
     async openFile() {
       let file = await window.fileApi.openFile();
@@ -225,17 +229,17 @@ export default {
       let path = file.filePaths[0];
       console.log(`Chosen file ${path}`);
       await window.fileApi.addFile(path);
-      this.statusMessage = `File ${path} has imported.`;
+      this.toast(`File ${path} has imported.`);
     },
     async importFromClipboard() {
       const tmpFilePath = await window.fileApi.saveTempFileFromClipboard();
       if (!tmpFilePath) {
-        this.statusMessage = 'Clipboard is empty.';
+        this.toast('Clipboard is empty.');
         return false;
       }
       await window.fileApi.addFile(tmpFilePath);
       await window.fileApi.removeFile(tmpFilePath);
-      this.statusMessage = 'File has imported from a clipboard.';
+      this.toast('File has imported from a clipboard.');
     },
     async importFileFromUrl() {
       if (!this.showDialogUrlForImport) {
@@ -245,24 +249,24 @@ export default {
       }
       this.showDialogUrlForImport = false;
       if (!this.urlForImport) {
-        this.statusMessage = 'Form is cancelled';
+        this.toast('Form is cancelled');
         return false;
       }
       const tmpFilePath = await window.fileApi.saveTempFileFromUrl(
         this.urlForImport
       );
       if (!tmpFilePath) {
-        this.statusMessage = `Can't upload file from ${this.urlForImport}.`;
+        this.toast(`Can't upload file from ${this.urlForImport}.`);
         return false;
       }
       let { file_id } = await window.fileApi.addFile(tmpFilePath);
       await window.fileApi.removeFile(tmpFilePath);
       if (!file_id) {
-        this.statusMessage = `Can't copy file from ${this.urlForImport}.`;
+        this.toast(`Can't copy file from ${this.urlForImport}.`);
         return false;
       }
       await window.sqliteApi.addUrlToFile(this.urlForImport, file_id);
-      this.statusMessage = `File has imported from url '${this.urlForImport}'.`;
+      this.toast(`File has imported from url '${this.urlForImport}'.`);
     },
     async showAllTags() {
       this.tags = await window.sqliteApi.getAllTags();
@@ -292,7 +296,7 @@ export default {
           this.files[i].caption = caption;
         } catch (e) {
           console.error(e);
-          this.statusMessage = 'Something wrong with scanning...';
+          this.toast('Something wrong with scanning...');
         }
       }
     },
@@ -303,10 +307,14 @@ export default {
       );
       this.hideFile();
       this.duplicatedFiles = dups;
-      this.statusMessage = `${dups.length} pairs found`;
+      this.toast(`${dups.length} pairs found`);
+    },
+    toast(message) {
+      this.statusMessage = message;
+      this.isStatusMessageVisible = true;
     },
     async loadTagsFromIQDB() {
-      this.statusMessage = `Start loading tags for ${this.files.length} files`;
+      this.toast(`Start loading tags for ${this.files.length} files`);
       let strategy = FabricJobTagSourceStrategy.getStrategy({
         key: await window.configApi.getConfig('tag_source_strategies'),
         engine: 'iqdb'
@@ -340,6 +348,7 @@ export default {
       this.$refs.dialog_preferences.showComponent();
     },
     updateAppOptions(name, value) {
+      this.toast('Preferences saved');
       this.appOptions[name] = value;
     }
   }

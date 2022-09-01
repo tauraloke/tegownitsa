@@ -104,7 +104,7 @@ export default {
   name: 'DialogShowFile',
   components: { FormAddNewTagToFile, ListTagGroups },
   mixins: [MixinTagsGroupped],
-  emits: ['search-by-tag'],
+  emits: ['search-by-tag', 'toast'],
   data() {
     return {
       isDialogVisible: false,
@@ -179,7 +179,7 @@ export default {
         this.currentFile?.caption,
         this.currentFile?.id
       ]);
-      this.statusMessage = `Caption updated for file #${this.currentFile?.id}`;
+      this.$emit('toast', `Caption updated for file #${this.currentFile?.id}`);
     },
     clickedOnCaptionTextarea(event) {
       if (event?.path?.[0]?.nodeName == 'I') {
