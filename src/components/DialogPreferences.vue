@@ -186,7 +186,7 @@ export default {
       this.isDialogVisible = true;
     },
     _updateOption(key, value) {
-      console.log('update option', key, value); // TODO: remove
+      console.log('Update option', key, value);
       if (key === 'tesseract_languages') {
         if (typeof value === 'object') {
           value = Object.values(value).join(TESSERACT_LANGUAGE_DIVIDER);

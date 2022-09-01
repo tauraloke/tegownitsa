@@ -24,7 +24,8 @@
         v-model="searchCaption"
         label="Find by caption: print and enter"
         clearable
-        @change="$emit('by-caption', $event?.target?.value)"
+        append-icon="mdi-magnify"
+        @click:append="$emit('by-caption', searchCaption)"
       ></v-text-field>
     </v-row>
   </v-container>
