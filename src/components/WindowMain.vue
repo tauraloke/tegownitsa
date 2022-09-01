@@ -198,13 +198,13 @@ import ListTagGroups from '@/components/ListTagGroups.vue';
 import DialogPreferences from '@/components/DialogPreferences.vue';
 
 import Job from '@/services/job.js';
-import tagResources from '@/config/tag_resources.js';
 import tagNamespaces from '@/config/tag_namespaces.json';
 import { swap } from '@/services/utils.js';
 import {
   CAPTION_YET_NOT_SCANNED,
   CAPTION_NOT_FOUND
 } from '@/config/constants.json';
+import FabricJobTagSourceStrategy from '@/services/tag_sources_strategies/fabric_tag_source_strateges.js';
 
 const tagNameSpacesById = swap(tagNamespaces);
 const DUPLICATE_HAMMING_THRESHOLD = 7;
@@ -497,26 +497,31 @@ export default {
     },
     async loadTagsFromIQDB() {
       this.statusMessage = `Start loading tags for ${this.files.length} files`;
+      let strategy = FabricJobTagSourceStrategy.getStrategy({
+        key: await window.configApi.getConfig('tag_source_strategies'),
+        engine: 'iqdb'
+      });
+      let iqdb_threshold = await window.configApi.getConfig(
+        'tag_source_threshold_iqdb'
+      );
+      if (iqdb_threshold === undefined) {
+        iqdb_threshold = 0.8;
+      }
       for (let i = 0; i < this.files.length; i++) {
         let file = this.files[i];
         this.jobs.iqdb.addTask(async () => {
           let response = await window.network.lookupIqdbFile(
             file['preview_path']
           );
-          if (response.ok && response.data && response.data[1]) {
-            let bestMatch = response.data[1];
-            let resource = tagResources.find((r) =>
-              bestMatch.sourceUrl.match(r.mask)
+          if (response.ok && response?.data?.length > 0) {
+            let candidatesList = response.data?.filter(
+              (b) => b?.similarity > iqdb_threshold
             );
-            if (resource) {
-              Job.addJobTask(
-                this.jobs,
-                resource.name,
-                resource.locale,
-                bestMatch.sourceUrl,
-                file
-              );
-            }
+            strategy.run({
+              file,
+              jobList: this.jobs,
+              candidatesList: candidatesList
+            });
           }
         });
       }

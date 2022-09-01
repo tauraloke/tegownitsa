@@ -80,7 +80,30 @@
         </v-window-item>
         <v-window-item value="tag_sources">
           <v-card flat>
-            <v-card-text> tag sources options </v-card-text>
+            <v-card-text>
+              <v-select
+                v-model="options.tag_source_strategies"
+                hint="Strategies to enrich tag pool from outer search engines"
+                :items="tagSourceStrategiesList"
+                item-title="title"
+                item-value="value"
+                label="Strategy"
+                variant="outlined"
+                persistent-hint
+                single-line
+                class="mb-8"
+              />
+              <v-slider
+                v-model="options.tag_source_threshold_iqdb"
+                thumb-label="always"
+                :min="0"
+                :max="1"
+              ></v-slider>
+              <div class="text-caption mb-8">
+                Similarity threshold for IQDB results (higher is a stronger
+                filter)
+              </div>
+            </v-card-text>
           </v-card>
         </v-window-item>
       </v-window>
@@ -91,6 +114,7 @@
 <script>
 import { TESSERACT_LANGUAGE_DIVIDER } from '../config/constants.json';
 import storeDefaults from '../.json_bus/store_defaults.json';
+import tagSourceStrategies from '../config/tag_source_strategies.json';
 
 let previousOptions = {};
 
@@ -103,6 +127,16 @@ export default {
       tab: 'application',
       options: {},
       isWatchersActive: false,
+      tagSourceStrategiesList: [
+        {
+          title: 'Catch the first one',
+          value: tagSourceStrategies.CATCH_FIRST_ONE
+        },
+        {
+          title: 'Catch tags from any related resources',
+          value: tagSourceStrategies.CATCH_ALL
+        }
+      ],
       tesseractPSM: [
         {
           description: 'OSD_ONLY',
@@ -168,16 +202,15 @@ export default {
   async mounted() {
     this.isWatchersActive = false;
     for (let key in storeDefaults) {
-      previousOptions[key] = await window.configApi.getConfig(key);
-      if (previousOptions[key] === undefined) {
-        previousOptions[key] = storeDefaults[key];
+      let value = await window.configApi.getConfig(key);
+      if (value === undefined) {
+        value = storeDefaults[key];
       }
       if (key == 'tesseract_languages') {
-        previousOptions[key] = previousOptions[key].split(
-          TESSERACT_LANGUAGE_DIVIDER
-        );
+        value = value.split(TESSERACT_LANGUAGE_DIVIDER);
       }
-      this.options[key] = previousOptions[key];
+      previousOptions[key] = value;
+      this.options[key] = value;
     }
     this.isWatchersActive = true;
   },
