@@ -84,6 +84,8 @@
 </template>
 
 <script>
+import { TESSERACT_LANGUAGE_DIVIDER } from '../config/constants.json';
+
 export default {
   name: 'WindowSettings',
   emits: ['option-changed'],
@@ -159,7 +161,7 @@ export default {
         return newValue;
       }
       if (typeof newValue !== 'string') {
-        newValue = Object.values(newValue).join(',');
+        newValue = Object.values(newValue).join(TESSERACT_LANGUAGE_DIVIDER);
       }
       console.log('rerere', newValue);
       window.configApi.setConfig('tesseract_languages', newValue);
@@ -174,8 +176,9 @@ export default {
     this.options['tesseract_oem'] =
       (await window.configApi.getConfig('tesseract_oem')) || 3;
     this.options['tesseract_languages'] =
-      (await window.configApi.getConfig('tesseract_languages')).split(',') ||
-      'eng';
+      (await window.configApi.getConfig('tesseract_languages')).split(
+        TESSERACT_LANGUAGE_DIVIDER
+      ) || 'eng';
     this.isWatchersActive = true;
   },
   methods: {

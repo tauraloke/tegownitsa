@@ -3,6 +3,7 @@
 'use strict';
 import Store from 'electron-store';
 import { PSM, OEM } from 'tesseract.js';
+import { TESSERACT_LANGUAGE_DIVIDER } from './constants.json';
 
 export default new Store({
   defaults: {
@@ -10,6 +11,6 @@ export default new Store({
     dark_theme: false,
     tesseract_psm: PSM.AUTO,
     tesseract_oem: OEM.DEFAULT,
-    tesseract_languages: 'rus,eng,jpn'
+    tesseract_languages: ['eng', 'jpn', 'rus'].join(TESSERACT_LANGUAGE_DIVIDER)
   }
 });

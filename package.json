@@ -64,7 +64,7 @@
     "vue-cli-plugin-electron-builder": "~2.1.1",
     "vue-cli-plugin-vuetify": "~2.5.5",
     "webpack-plugin-vuetify": "^2.0.0-alpha.13",
-    "xo": "^0.52.1"
+    "xo": "^0.52.3"
   },
   "browserslist": [
     "> 1%",
