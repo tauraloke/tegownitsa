@@ -200,10 +200,7 @@ import DialogPreferences from '@/components/DialogPreferences.vue';
 import Job from '@/services/job.js';
 import tagNamespaces from '@/config/tag_namespaces.json';
 import { swap } from '@/services/utils.js';
-import {
-  CAPTION_YET_NOT_SCANNED,
-  CAPTION_NOT_FOUND
-} from '@/config/constants.json';
+import constants from '@/config/constants.json';
 import FabricJobTagSourceStrategy from '@/services/tag_sources_strategies/fabric_tag_source_strateges.js';
 
 const tagNameSpacesById = swap(tagNamespaces);
@@ -453,7 +450,7 @@ export default {
     async scanSelectedFiles() {
       for (let i = 0; i < this.files.length; i++) {
         let file = this.files[i];
-        if (file?.caption != CAPTION_YET_NOT_SCANNED) {
+        if (file?.caption != constants.CAPTION_YET_NOT_SCANNED) {
           continue;
         }
         try {
@@ -465,7 +462,7 @@ export default {
             .map((b) => b.text.replace(/[\n\t\r]/g, ' '))
             .join('\n');
           if (caption == '') {
-            caption = CAPTION_NOT_FOUND;
+            caption = constants.CAPTION_NOT_FOUND;
           }
           console.log(`#${file['id']}: Scanned text: ${caption}`);
           await window.sqliteApi.query(

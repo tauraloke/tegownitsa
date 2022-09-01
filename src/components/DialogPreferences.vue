@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import { TESSERACT_LANGUAGE_DIVIDER } from '../config/constants.json';
+import constants from '../config/constants.json';
 import storeDefaults from '../.json_bus/store_defaults.json';
 import tagSourceStrategies from '../config/tag_source_strategies.json';
 
@@ -207,7 +207,7 @@ export default {
         value = storeDefaults[key];
       }
       if (key == 'tesseract_languages') {
-        value = value.split(TESSERACT_LANGUAGE_DIVIDER);
+        value = value.split(constants.TESSERACT_LANGUAGE_DIVIDER);
       }
       previousOptions[key] = value;
       this.options[key] = value;
@@ -222,7 +222,9 @@ export default {
       console.log('Update option', key, value);
       if (key === 'tesseract_languages') {
         if (typeof value === 'object') {
-          value = Object.values(value).join(TESSERACT_LANGUAGE_DIVIDER);
+          value = Object.values(value).join(
+            constants.TESSERACT_LANGUAGE_DIVIDER
+          );
         } else {
           return;
         }

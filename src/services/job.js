@@ -58,6 +58,9 @@ export default class Job {
   }
   static addJobTask(jobList, resource_name, locale, url, file) {
     jobList[resource_name].addTask(async () => {
+      console.log(
+        `Start search tags on ${resource_name} for file #${file['id']}`
+      );
       let tags = await window.network.extractTagsFromSource(url, resource_name);
       let source_type = sourceTypes[resource_name.toUpperCase()];
       for (let i in tags) {

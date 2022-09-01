@@ -1,16 +1,13 @@
-import {
-  CATCH_FIRST_ONE,
-  CATCH_ALL
-} from '../../config/tag_source_strategies.json';
+import tss from '../../config/tag_source_strategies.json';
 import IqdbCatchFirstStrategy from './iqdb_catch_first_strategy.js';
 import CatchAllStrategy from './catch_all_strategy.js';
 
 export default class FabricJobTagSourceStrategy {
   static getStrategy({ key, engine }) {
-    if (key == CATCH_FIRST_ONE && engine == 'iqdb') {
+    if (key == tss.CATCH_FIRST_ONE && engine == 'iqdb') {
       return new IqdbCatchFirstStrategy();
     }
-    if (key == CATCH_ALL) {
+    if (key == tss.CATCH_ALL) {
       return new CatchAllStrategy();
     }
 
