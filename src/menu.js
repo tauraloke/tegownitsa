@@ -149,6 +149,7 @@ const otherTemplate = [
     submenu: [
       {
         label: 'Import image from file',
+        accelerator: 'CmdOrCtrl+I',
         icon: path.join(__static, 'menu', 'file.png'),
         click(_menuItem, browserWindow, _event) {
           browserWindow.webContents.send('execute', 'openFile');
@@ -156,6 +157,7 @@ const otherTemplate = [
       },
       {
         label: 'Import images from folder',
+        accelerator: 'CmdOrCtrl+F',
         icon: path.join(__static, 'menu', 'folder.png'),
         click(_menuItem, browserWindow, _event) {
           browserWindow.webContents.send('execute', 'openFolder');
@@ -163,6 +165,7 @@ const otherTemplate = [
       },
       {
         label: 'Import image from direct URL',
+        accelerator: 'CmdOrCtrl+U',
         icon: path.join(__static, 'menu', 'url.png'),
         click(_menuItem, browserWindow, _event) {
           browserWindow.webContents.send('execute', 'importFileFromUrl');
@@ -200,6 +203,7 @@ const otherTemplate = [
       },
       {
         label: 'Scan text on current files',
+        accelerator: 'CmdOrCtrl+H',
         icon: path.join(__static, 'menu', 'scan.png'),
         click(_menuItem, browserWindow, _event) {
           browserWindow.webContents.send('execute', 'scanSelectedFiles');
@@ -207,6 +211,7 @@ const otherTemplate = [
       },
       {
         label: 'Find duplicates',
+        accelerator: 'CmdOrCtrl+D',
         icon: path.join(__static, 'menu', 'dups.png'),
         click(_menuItem, browserWindow, _event) {
           browserWindow.webContents.send('execute', 'lookUpDups');
@@ -214,6 +219,7 @@ const otherTemplate = [
       },
       {
         label: 'Load tags from IQDB for current files',
+        accelerator: 'CmdOrCtrl+T',
         icon: path.join(__static, 'menu', 'iqdb.png'),
         click(_menuItem, browserWindow, _event) {
           browserWindow.webContents.send('execute', 'loadTagsFromIQDB');
