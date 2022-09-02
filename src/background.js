@@ -134,7 +134,12 @@ ipcMain.on('context-menu-message', (_event, msg) => {
       label: 'Copy image to clipboard',
       click: () => {
         clipboard.writeImage(
-          nativeImage.createFromPath(msg.srcUrl.replace(/^file:\/\//, '')),
+          nativeImage.createFromPath(
+            msg.srcUrl.replace(
+              process.platform === 'win32' ? /^file:\/\/\// : /^file:\/\//,
+              ''
+            )
+          ),
           'clipboard'
         );
       }
