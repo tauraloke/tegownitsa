@@ -141,17 +141,7 @@ export default {
       currentFileTags: [],
       duplicatedFiles: [],
       files: [],
-      jobs: {
-        iqdb: new Job(10, 15),
-        danbooru: new Job(10, 15),
-        konachan: new Job(10, 15),
-        yandere: new Job(10, 15),
-        gelbooru: new Job(10, 15),
-        sankaku: new Job(10, 15),
-        eshuushuu: new Job(10, 15),
-        zerochan: new Job(10, 15),
-        anime_pictures: new Job(10, 15)
-      },
+      task_queues: {},
       showDialogUrlForImport: false,
       urlForImport: null,
       appOptions: {}
@@ -187,6 +177,26 @@ export default {
         this.setTheme(isDark);
       }
     });
+    window.configApi
+      .getConfig('tag_source_iqdb_bottom_cooldown')
+      .then((bottom_cooldown) => {
+        window.configApi
+          .getConfig('tag_source_iqdb_top_cooldown')
+          .then((top_cooldown) => {
+            this.task_queues.iqdb = new Job(bottom_cooldown, top_cooldown);
+            this.task_queues.danbooru = new Job(bottom_cooldown, top_cooldown);
+            this.task_queues.konachan = new Job(bottom_cooldown, top_cooldown);
+            this.task_queues.yandere = new Job(bottom_cooldown, top_cooldown);
+            this.task_queues.gelbooru = new Job(bottom_cooldown, top_cooldown);
+            this.task_queues.sankaku = new Job(bottom_cooldown, top_cooldown);
+            this.task_queues.eshuushuu = new Job(bottom_cooldown, top_cooldown);
+            this.task_queues.zerochan = new Job(bottom_cooldown, top_cooldown);
+            this.task_queues.anime_pictures = new Job(
+              bottom_cooldown,
+              top_cooldown
+            );
+          });
+      });
   },
   methods: {
     async searchFilesByTag(tag_title) {
@@ -327,7 +337,7 @@ export default {
       }
       for (let i = 0; i < this.files.length; i++) {
         let file = this.files[i];
-        this.jobs.iqdb.addTask(async () => {
+        this.task_queues.iqdb.addTask(async () => {
           let response = await window.network.lookupIqdbFile(
             file['preview_path']
           );
@@ -337,7 +347,7 @@ export default {
             );
             strategy.run({
               file,
-              jobList: this.jobs,
+              jobList: this.task_queues,
               candidatesList: candidatesList
             });
           }

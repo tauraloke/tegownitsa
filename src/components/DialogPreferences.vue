@@ -108,7 +108,19 @@
                 v-model="options.tag_source_saucenao_api_key"
                 label="Saucenao key"
                 hint="You need an API key to seek by Saucenao API"
+                class="mb-8"
               />
+
+              <v-range-slider
+                v-model="iqdbCooldownRange"
+                step="1"
+                min="10"
+                max="120"
+                thumb-label="always"
+              ></v-range-slider>
+              <div class="text-caption mb-8">
+                Cooldown of requests to IQDB.org server.
+              </div>
             </v-card-text>
           </v-card>
         </v-window-item>
@@ -179,7 +191,8 @@ export default {
         { title: 'Portuguese', value: 'por' },
         { title: 'Russian', value: 'rus' },
         { title: 'Spanish', value: 'spa' }
-      ]
+      ],
+      iqdbCooldownRange: [30, 60] // dumb init values
     };
   },
   watch: {
@@ -203,6 +216,10 @@ export default {
         this._updateOption(changedKey, newOptions[changedKey]);
       },
       deep: true
+    },
+    iqdbCooldownRange: function (values) {
+      this.options.tag_source_iqdb_bottom_cooldown = values[0];
+      this.options.tag_source_iqdb_top_cooldown = values[1];
     }
   },
   async mounted() {
@@ -218,6 +235,10 @@ export default {
       previousOptions[key] = value;
       this.options[key] = value;
     }
+    this.iqdbCooldownRange = [
+      this.options.tag_source_iqdb_bottom_cooldown,
+      this.options.tag_source_iqdb_top_cooldown
+    ];
     this.isWatchersActive = true;
   },
   methods: {
