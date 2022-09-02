@@ -13,5 +13,6 @@ module.exports = {
     constants.TESSERACT_LANGUAGE_DIVIDER
   ),
   tag_source_strategies: tss.CATCH_FIRST_ONE,
-  tag_source_threshold_iqdb: 0.8
+  tag_source_threshold_iqdb: 0.8,
+  tag_source_saucenao_api_key: false
 };

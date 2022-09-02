@@ -103,6 +103,12 @@
                 Similarity threshold for IQDB results (higher is a stronger
                 filter)
               </div>
+
+              <v-text-field
+                v-model="options.tag_source_saucenao_api_key"
+                label="Saucenao key"
+                hint="You need an API key to seek by Saucenao API"
+              />
             </v-card-text>
           </v-card>
         </v-window-item>
