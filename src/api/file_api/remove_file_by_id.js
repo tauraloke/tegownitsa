@@ -1,8 +1,8 @@
 import { unlink } from 'fs';
-import { run as _run } from '../sqlite_api/remove_file_row.js';
+import { run as removeFileRow } from '../sqlite_api/remove_file_row.js';
 
-export async function run(_event, db, file_id) {
-  let file = await _run({}, db, file_id);
+export async function run(event, db, file_id) {
+  let file = await removeFileRow(event, db, file_id);
   if (!file) {
     return false;
   }

@@ -14,6 +14,10 @@
           <v-icon start> mdi-source-pull </v-icon>
           Tag sources
         </v-tab>
+        <v-tab value="duplicates">
+          <v-icon start> mdi-card-multiple-outline </v-icon>
+          Duplicates
+        </v-tab>
       </v-tabs>
       <v-window v-model="tab" direction="vertical">
         <v-window-item value="application">
@@ -120,6 +124,23 @@
               ></v-range-slider>
               <div class="text-caption mb-8">
                 Cooldown of requests to IQDB.org server.
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+        <v-window-item value="duplicates">
+          <v-card flat>
+            <v-card-text>
+              <v-slider
+                v-model="options.image_similarity_threshold"
+                thumb-label="always"
+                :min="0"
+                :max="100"
+                class="mt-8"
+              ></v-slider>
+              <div class="text-caption mb-8">
+                Similarity threshold for finding local duplicates (higher is
+                stronger filter).
               </div>
             </v-card-text>
           </v-card>

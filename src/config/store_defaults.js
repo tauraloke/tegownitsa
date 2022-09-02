@@ -2,6 +2,7 @@
 const { PSM, OEM } = require('tesseract.js');
 const constants = require('./constants.json');
 const tss = require('./tag_source_strategies.json');
+const { imageSimilarity } = require('../services/image_distance.js');
 
 module.exports = {
   sql_filename_path: 'db.sqlite3',
@@ -16,5 +17,8 @@ module.exports = {
   tag_source_threshold_iqdb: 0.8,
   tag_source_saucenao_api_key: false,
   tag_source_iqdb_bottom_cooldown: 30,
-  tag_source_iqdb_top_cooldown: 60
+  tag_source_iqdb_top_cooldown: 60,
+  image_similarity_threshold: imageSimilarity(
+    constants.BASE_DUPLICATE_HAMMING_THRESHOLD
+  )
 };

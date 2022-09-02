@@ -19,6 +19,7 @@
 
     <main style="padding-bottom: 4em">
       <v-row>
+        <!-- tags -->
         <v-col cols="12" sm="4">
           <div id="tags">
             <h3>Tags</h3>
@@ -30,6 +31,7 @@
           </div>
         </v-col>
 
+        <!-- files -->
         <v-col cols="12" sm="8">
           <h3 v-if="files?.length > 0">Files</h3>
           <v-row v-if="files?.length > 0" id="files">
@@ -52,8 +54,87 @@
             </v-col>
           </v-row>
 
-          <div v-if="duplicatedFiles?.length > 0" id="duplicated_files">
-            {{ duplicatedFiles }}
+          <!-- duplicated files -->
+          <div v-if="files === null" id="duplicated_files">
+            <h3 style="text-align: left; margin-left: 3em">Duplicate files</h3>
+            <div v-if="duplicatedFiles?.length == 0" style="text-align: left">
+              No duplicates found.
+            </div>
+            <v-row v-for="file in duplicatedFiles" :key="file.id">
+              <v-col class="d-flex child-flex" cols="8">
+                <v-card elevation="4" class="ma-4">
+                  <v-img
+                    :data="{ id: file?.id }"
+                    :src="'file://' + file?.preview_path"
+                    aspect-ratio="1"
+                    :title="file.source_filename"
+                    width="140"
+                    contain
+                    class="bg-grey-lighten-2 pointer-clickable"
+                  />
+                  <v-card-text>
+                    {{ file.width }} x {{ file.height }}
+                  </v-card-text>
+                  <v-card-actions class="pt-0">
+                    <v-btn
+                      variant="text"
+                      color="red"
+                      @click="deleteFile(file.id)"
+                    >
+                      Remove
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+                <div class="pt-10">
+                  similarity
+                  <br />
+                  {{ imageSimilarity(file.distance) }}%
+                </div>
+                <v-card elevation="4" class="ma-4">
+                  <v-img
+                    :data="{ id: file?.f2_id }"
+                    :src="'file://' + file?.f2_preview_path"
+                    :title="file.f2_source_filename"
+                    aspect-ratio="1"
+                    width="140"
+                    contain
+                    class="bg-grey-lighten-2 pointer-clickable"
+                  />
+                  <v-card-text>
+                    {{ file.f2_width }} x {{ file.f2_height }}
+                  </v-card-text>
+                  <v-card-actions class="pt-0">
+                    <v-btn
+                      variant="text"
+                      color="red"
+                      @click="deleteFile(file.f2_id)"
+                    >
+                      Remove
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+            </v-row>
+            <v-dialog v-model="isShowConfirmDeleteFile">
+              <v-card>
+                <v-card-actions>
+                  <v-btn
+                    variant="text"
+                    color="red"
+                    @click="deleteFile(fileIdForDeletion)"
+                  >
+                    Remove
+                  </v-btn>
+                  <v-btn
+                    variant="text"
+                    color="grey"
+                    @click="isShowConfirmDeleteFile = false"
+                  >
+                    Cancel
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </div>
         </v-col>
       </v-row>
@@ -110,8 +191,7 @@ import DialogShowFile from '@/components/DialogShowFile.vue';
 import TaskQueue from '@/services/task_queue.js';
 import constants from '@/config/constants.json';
 import FabricJobTagSourceStrategy from '@/services/tag_sources_strategies/fabric_tag_source_strateges.js';
-
-const DUPLICATE_HAMMING_THRESHOLD = 7; // TODO: вынести в настройки
+import { imageSimilarity } from '@/services/image_distance.js';
 
 export default {
   name: 'WindowMain',
@@ -138,12 +218,14 @@ export default {
       currentFile: null,
       currentFileUrls: null,
       currentFileTags: [],
-      duplicatedFiles: [],
       files: [],
       task_queues: {},
       showDialogUrlForImport: false,
       urlForImport: null,
-      appOptions: {}
+      appOptions: {},
+      duplicatedFiles: null,
+      isShowConfirmDeleteFile: false,
+      fileIdForDeletion: null
     };
   },
   watch: {
@@ -302,14 +384,33 @@ export default {
         }
       }
     },
-    async lookUpDups(threshold = DUPLICATE_HAMMING_THRESHOLD) {
-      let dups = await window.sqliteApi.queryAll(
-        'SELECT files.*, files2.id AS f2_id, files2.preview_path AS f2_preview_path, files2.width AS f2_width, files2.height AS f2_height, hamming(files.imagehash, files2.imagehash) AS distance FROM files JOIN files AS files2 ON files.id > files2.id WHERE distance < ?',
-        [threshold]
-      );
+    async lookUpDups() {
+      let dups = await window.sqliteApi.findDuplicateFiles();
       this.hideFile();
+      this.hideFiles();
       this.duplicatedFiles = dups;
       this.toast(`${dups.length} pairs found`);
+    },
+    hideFiles() {
+      this.files = null;
+    },
+    deleteFile(file_id) {
+      if (!this.isShowConfirmDeleteFile) {
+        this.isShowConfirmDeleteFile = true;
+        this.fileIdForDeletion = file_id;
+        return;
+      } else {
+        window.fileApi.removeFileById(file_id).then(() => {
+          this.duplicatedFiles = this.duplicatedFiles.filter(
+            (r) => r.id != file_id && r.f2_id != file_id
+          );
+          this.isShowConfirmDeleteFile = false;
+          this.toast('File has removed');
+        });
+      }
+    },
+    imageSimilarity(threshold) {
+      return imageSimilarity(threshold);
     },
     toast(message) {
       this.statusMessage = message;
