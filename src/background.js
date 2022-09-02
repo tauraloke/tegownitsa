@@ -9,10 +9,72 @@ import getDb from './db.js';
 import config from './config/store.js';
 import menu from './menu.js';
 import path from 'path';
-import contextMenu from 'electron-context-menu';
+//import contextMenu from 'electron-context-menu';
 import UpdateService from './services/update_service.js';
 
-contextMenu();
+import { ipcMain } from 'electron';
+ipcMain.on('webview-context-link', (event, data) => {
+  console.log(event, data);
+  const WebViewMenu = Menu.buildFromTemplate([
+    {
+      label: 'Open in new tab',
+      click: (_menuItem, browserWindow) => {
+        browserWindow.webContents.send('execute', 'openPreferencesDialog');
+      }
+    },
+    {
+      role: 'copy'
+    }
+  ]);
+
+  WebViewMenu.popup(win);
+});
+/*
+contextMenu({
+  menu: (actions, props, browserWindow, dictionarySuggestions, event1) => [
+    ...dictionarySuggestions,
+    actions.separator(),
+    actions.copyLink({
+      transform: (content) => `modified_link_${content}`
+    }),
+    actions.separator(),
+    {
+      label: 'Unicorn',
+      click(item, window, event) {
+        console.log(
+          'item:',
+          item,
+          'window:',
+          window,
+          'event:',
+          event,
+          'actions:',
+          actions,
+          'props:',
+          props,
+          'browserWindow:',
+          browserWindow,
+          'dictionarySuggestions:',
+          dictionarySuggestions,
+          'event1:',
+          event1
+        );
+      }
+    },
+    actions.separator(),
+    actions.copy({
+      transform: (content) => `modified_copy_${content}`
+    }),
+    {
+      label: 'Invisible',
+      visible: false
+    },
+    actions.paste({
+      transform: (content) => `modified_paste_${content}`
+    })
+  ]
+});
+*/
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([

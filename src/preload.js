@@ -15,3 +15,9 @@ contextBridge.exposeInMainWorld('busApi', {
     return ipcRenderer.on('execute', listener);
   }
 });
+
+contextBridge.exposeInMainWorld('contextMenuApi', {
+  call: (msg) => {
+    return ipcRenderer.send('webview-context-link', msg);
+  }
+});
