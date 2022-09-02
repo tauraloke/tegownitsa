@@ -20,6 +20,7 @@
             <form-add-new-tag-to-file
               v-if="currentFile"
               :file-id="currentFile?.id"
+              :tags="tags"
               @after-add-tag="afterAddTagHandler($event)"
             />
             <list-tag-groups

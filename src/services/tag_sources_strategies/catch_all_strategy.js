@@ -1,6 +1,6 @@
 import BaseStrategy from './base_strategy.js';
 import tagResources from '@/config/tag_resources.js';
-import Job from '@/services/job.js';
+import TaskQueue from '@/services/task_queue.js';
 
 export default class CatchAllStrategy extends BaseStrategy {
   run({ file, jobList, candidatesList }) {
@@ -8,7 +8,8 @@ export default class CatchAllStrategy extends BaseStrategy {
       let match = candidatesList[i];
       let resource = tagResources.find((r) => match?.sourceUrl?.match(r.mask));
       if (resource) {
-        Job.addJobTask(
+        console.log(`Added task for #${file.id} to resource ${resource.name}`);
+        TaskQueue.addJobTask(
           jobList,
           resource.name,
           resource.locale,

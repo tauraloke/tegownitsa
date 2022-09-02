@@ -17,7 +17,7 @@
         closable-chips
         multiple
         clearable
-      ></v-autocomplete>
+      />
     </v-row>
     <v-row>
       <v-text-field

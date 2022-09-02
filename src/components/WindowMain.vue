@@ -107,7 +107,7 @@ import ListTagGroups from '@/components/ListTagGroups.vue';
 import DialogPreferences from '@/components/DialogPreferences.vue';
 import DialogShowFile from '@/components/DialogShowFile.vue';
 
-import Job from '@/services/job.js';
+import TaskQueue from '@/services/task_queue.js';
 import constants from '@/config/constants.json';
 import FabricJobTagSourceStrategy from '@/services/tag_sources_strategies/fabric_tag_source_strateges.js';
 
@@ -176,26 +176,19 @@ export default {
         this.setTheme(isDark);
       }
     });
-    window.configApi
-      .getConfig('tag_source_iqdb_bottom_cooldown')
-      .then((bottom_cooldown) => {
-        window.configApi
-          .getConfig('tag_source_iqdb_top_cooldown')
-          .then((top_cooldown) => {
-            this.task_queues.iqdb = new Job(bottom_cooldown, top_cooldown);
-            this.task_queues.danbooru = new Job(bottom_cooldown, top_cooldown);
-            this.task_queues.konachan = new Job(bottom_cooldown, top_cooldown);
-            this.task_queues.yandere = new Job(bottom_cooldown, top_cooldown);
-            this.task_queues.gelbooru = new Job(bottom_cooldown, top_cooldown);
-            this.task_queues.sankaku = new Job(bottom_cooldown, top_cooldown);
-            this.task_queues.eshuushuu = new Job(bottom_cooldown, top_cooldown);
-            this.task_queues.zerochan = new Job(bottom_cooldown, top_cooldown);
-            this.task_queues.anime_pictures = new Job(
-              bottom_cooldown,
-              top_cooldown
-            );
-          });
+    window.configApi.getConfig('tag_source_iqdb_bottom_cooldown').then((bc) => {
+      window.configApi.getConfig('tag_source_iqdb_top_cooldown').then((tc) => {
+        this.task_queues.iqdb = new TaskQueue(bc, tc);
+        this.task_queues.danbooru = new TaskQueue(bc, tc);
+        this.task_queues.konachan = new TaskQueue(bc, tc);
+        this.task_queues.yandere = new TaskQueue(bc, tc);
+        this.task_queues.gelbooru = new TaskQueue(bc, tc);
+        this.task_queues.sankaku = new TaskQueue(bc, tc);
+        this.task_queues.eshuushuu = new TaskQueue(bc, tc);
+        this.task_queues.zerochan = new TaskQueue(bc, tc);
+        this.task_queues.anime_pictures = new TaskQueue(bc, tc);
       });
+    });
   },
   methods: {
     async searchFilesByTag(tag_title) {

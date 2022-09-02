@@ -2,9 +2,9 @@
 
 import sourceTypes from '../config/source_type.json';
 
-export default class Job {
-  constructor(cooldown_low, cooldown_top) {
-    this.cooldown_low = cooldown_low * 1000;
+export default class TaskQueue {
+  constructor(cooldown_bottom, cooldown_top) {
+    this.cooldown_bottom = cooldown_bottom * 1000;
     this.cooldown_top = cooldown_top * 1000;
     this.active = false;
     this.timer = null;
@@ -12,8 +12,8 @@ export default class Job {
   }
   nextCooldown() {
     return Math.floor(
-      this.cooldown_low +
-        Math.random() * (this.cooldown_top - this.cooldown_low)
+      this.cooldown_bottom +
+        Math.random() * (this.cooldown_top - this.cooldown_bottom)
     );
   }
   start() {

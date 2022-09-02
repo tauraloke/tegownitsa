@@ -1,6 +1,6 @@
 import BaseStrategy from './base_strategy.js';
 import tagResources from '@/config/tag_resources.js';
-import Job from '@/services/job.js';
+import TaskQueue from '@/services/task_queue.js';
 
 export default class IqdbCatchFirstStrategy extends BaseStrategy {
   run({ file, jobList, candidatesList }) {
@@ -9,10 +9,8 @@ export default class IqdbCatchFirstStrategy extends BaseStrategy {
       bestMatch?.sourceUrl?.match(r.mask)
     );
     if (resource) {
-      console.log(
-        `Added job task for #${file.id} to resource ${resource.name}`
-      );
-      Job.addJobTask(
+      console.log(`Added task for #${file.id} to resource ${resource.name}`);
+      TaskQueue.addJobTask(
         jobList,
         resource.name,
         resource.locale,
