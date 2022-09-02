@@ -38,7 +38,7 @@
     "exif-parser": "^0.1.12",
     "install": "^0.13.0",
     "iqdb-client": "^2.0.0",
-    "npm": "^8.19.0",
+    "npm": "^8.19.1",
     "roboto-fontface": "*",
     "sharp": "^0.30.7",
     "sharp-phash": "^2.0.0",
