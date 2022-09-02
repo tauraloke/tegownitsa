@@ -9,6 +9,9 @@ export default class IqdbCatchFirstStrategy extends BaseStrategy {
       bestMatch?.sourceUrl?.match(r.mask)
     );
     if (resource) {
+      console.log(
+        `Added job task for #${file.id} to resource ${resource.name}`
+      );
       Job.addJobTask(
         jobList,
         resource.name,

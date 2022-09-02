@@ -1,8 +1,16 @@
 <template>
-  <!-- TODO: заменить на всплывающий диалог -->
-  <v-text-field v-model="newTagTitle" label="New tag title" />
-  <v-text-field v-model="newTagLocale" label="locale" />
-  <v-btn :disabled="!newTagTitle" color="success" @click="addTagToCurrentFile()"
+  <v-text-field
+    v-model="newTagTitle"
+    solo
+    label="Type a tag title to add a new one"
+  />
+  <v-text-field v-if="newTagTitle" v-model="newTagLocale" solo label="locale" />
+  <v-btn
+    v-if="newTagLocale && newTagTitle"
+    :disabled="!newTagTitle"
+    color="success"
+    width="100%"
+    @click="addTagToCurrentFile()"
     >Add</v-btn
   >
 </template>

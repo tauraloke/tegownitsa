@@ -16,18 +16,19 @@
       <v-card-text>
         <v-row>
           <v-col cols="12" md="4">
-            <h3>Tags</h3>
+            <h3 style="text-align: center" class="mb-4">Tags</h3>
             <form-add-new-tag-to-file
               v-if="currentFile"
               :file-id="currentFile?.id"
               @after-add-tag="afterAddTagHandler($event)"
             />
             <list-tag-groups
-              :tags-groupped="tagsGroupped(tags)"
+              :tags="tags"
               @search-by-title="
                 $emit('search-by-tag', $event);
                 hideComponent();
               "
+              @tag-added="tags.push($event)"
             />
           </v-col>
           <v-col cols="12" md="8">
@@ -97,13 +98,11 @@
 
 <script>
 import FormAddNewTagToFile from '@/components/FormAddNewTagToFile.vue';
-import MixinTagsGroupped from '@/components/MixinTagsGroupped.js';
 import ListTagGroups from '@/components/ListTagGroups.vue';
 
 export default {
   name: 'DialogShowFile',
   components: { FormAddNewTagToFile, ListTagGroups },
-  mixins: [MixinTagsGroupped],
   emits: ['search-by-tag', 'toast'],
   data() {
     return {

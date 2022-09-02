@@ -23,8 +23,9 @@
           <div id="tags">
             <h3>Tags</h3>
             <list-tag-groups
-              :tags-groupped="tagsGroupped(tags)"
+              :tags="tags"
               @search-by-title="searchFilesByTag($event)"
+              @tag-added="tags.push($event)"
             />
           </div>
         </v-col>
@@ -105,7 +106,6 @@ import FormSearchFiles from '@/components/FormSearchFiles.vue';
 import ListTagGroups from '@/components/ListTagGroups.vue';
 import DialogPreferences from '@/components/DialogPreferences.vue';
 import DialogShowFile from '@/components/DialogShowFile.vue';
-import MixinTagsGroupped from '@/components/MixinTagsGroupped.js';
 
 import Job from '@/services/job.js';
 import constants from '@/config/constants.json';
@@ -121,7 +121,6 @@ export default {
     DialogPreferences,
     DialogShowFile
   },
-  mixins: [MixinTagsGroupped],
   setup() {
     const theme = useTheme();
     return {
@@ -338,6 +337,7 @@ export default {
       for (let i = 0; i < this.files.length; i++) {
         let file = this.files[i];
         this.task_queues.iqdb.addTask(async () => {
+          console.log(`Looking #${file.id} ${file['preview_path']} at IQDB`);
           let response = await window.network.lookupIqdbFile(
             file['preview_path']
           );

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-sheet
-      v-for="group in tagsGroupped"
+      v-for="group in tagsGroupped(tags)"
       :key="group.id"
       elevation="3"
       rounded="xl"
@@ -15,7 +15,7 @@
             :key="tag?.id"
             :title="tag?.locales.map((l) => l.title)"
             :closable="isClosable(tag)"
-            @click:close.stop="removeTagFromFile(tag.file_tag_id, tag.id)"
+            @click:close.stop="removeTagFromFile(tag)"
             @click="searchFilesByTag(tag?.locales?.[0]?.title)"
           >
             <span class="text-truncate">
@@ -26,25 +26,37 @@
       </div>
     </v-sheet>
   </v-container>
+
+  <v-snackbar v-model="isRestoreToastVisible">
+    Tag '{{ tagToRestoring?.locales?.[0]?.title }}' has unlinked from this file.
+    <template #actions>
+      <v-btn plain @click="restoreTag(tagToRestoring)"> Restore </v-btn>
+    </template>
+  </v-snackbar>
 </template>
 
 <script>
+import tagNamespaces from '@/config/tag_namespaces.json';
+import { swap } from '@/services/utils.js';
+const tagNameSpacesById = swap(tagNamespaces);
+
 export default {
   name: 'ListTagGroups',
   props: {
-    tagsGroupped: {
+    tags: {
       type: Object,
       required: true
     }
   },
-  emits: { 'search-by-title': null },
+  emits: { 'search-by-title': null, 'tag-added': null },
   data() {
     return {
       searchCaption: null,
       searchTags: null,
-      entries: [],
       isLoading: false,
-      search: null
+      search: null,
+      isRestoreToastVisible: false,
+      tagToRestoring: null
     };
   },
   methods: {
@@ -57,10 +69,42 @@ export default {
     editTag(_tag_id) {
       // TODO
     },
-    removeTagFromFile(file_id, tag_id) {
-      alert(file_id + '~' + tag_id);
-      return false;
-      // TODO
+    removeTagFromFile(tag) {
+      window.sqliteApi.unlinkTag(tag.file_tag_id);
+      this.isRestoreToastVisible = true;
+      this.tagToRestoring = tag;
+    },
+    restoreTag(tag) {
+      console.log('Restoring tag', tag);
+      if (!tag.locales?.[0]?.title || !tag?.file_id) {
+        return false;
+      }
+      window.sqliteApi.addTag(
+        tag.file_id,
+        tagNameSpacesById[tag.namespace_id].toLowerCase() +
+          ':' +
+          tag.locales?.[0]?.title,
+        tag.locales?.[0]?.locale,
+        tag.source_type
+      );
+      this.$emit('tag-added', tag);
+      this.isRestoreToastVisible = false;
+      this.tagToRestoring = null;
+    },
+    tagsGroupped(tags) {
+      let groups = [];
+      for (let i = 0; i < tags.length; i++) {
+        let tag = tags[i];
+        if (!groups[tag.namespace_id]) {
+          groups[tag.namespace_id] = {
+            name: tagNameSpacesById[tag.namespace_id],
+            id: tag.namespace_id,
+            tags: []
+          };
+        }
+        groups[tag.namespace_id].tags.push(tag);
+      }
+      return Object.values(groups);
     }
   }
 };

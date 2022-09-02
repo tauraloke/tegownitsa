@@ -201,7 +201,6 @@ export default {
         if (!this.isWatchersActive) {
           return true;
         }
-        console.log(newOptions);
         let changedKey = null;
         for (let key in previousOptions) {
           if (newOptions[key] != previousOptions[key]) {

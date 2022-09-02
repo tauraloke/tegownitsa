@@ -51,6 +51,8 @@ async function _getTagList(query, params = []) {
       tags[row['tag_id']]['source_type'] || row['source_type'];
     tags[row['tag_id']]['file_tag_id'] =
       tags[row['tag_id']]['file_tag_id'] || row['file_tag_id'];
+    tags[row['tag_id']]['file_id'] =
+      tags[row['tag_id']]['file_id'] || row['file_id'];
     tags[row['tag_id']]['file_count'] =
       tags[row['tag_id']]['file_count'] || row['file_count'];
     tags[row['tag_id']]['namespace_id'] =

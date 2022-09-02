@@ -59,7 +59,9 @@ export async function run(_event, db, file_id, title, locale, source_type) {
       id: tag_id,
       locales: [{ locale, title }],
       file_tag_id: file_tag_id,
-      namespace_id: namespace_id
+      namespace_id: namespace_id,
+      source_type: source_type,
+      file_id: file_id
     };
   } catch (error) {
     console.log(error);
