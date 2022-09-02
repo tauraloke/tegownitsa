@@ -13,11 +13,8 @@ new ApiConnector().connectPreloadHandlers();
 contextBridge.exposeInMainWorld('busApi', {
   executeListener: (listener) => {
     return ipcRenderer.on('execute', listener);
-  }
-});
-
-contextBridge.exposeInMainWorld('contextMenuApi', {
-  call: (msg) => {
-    return ipcRenderer.send('webview-context-link', msg);
+  },
+  showContextMenu: (msg) => {
+    return ipcRenderer.send('context-menu-message', msg);
   }
 });

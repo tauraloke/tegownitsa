@@ -15,6 +15,8 @@
             :key="tag?.id"
             :title="tag?.locales.map((l) => l.title)"
             :closable="isClosable(tag)"
+            :data-tag-id="tag?.id"
+            class="editable-tag-container"
             @click:close.stop="removeTagFromFile(tag)"
             @click="searchFilesByTag(tag?.locales?.[0]?.title)"
           >

@@ -7,17 +7,17 @@
 <script>
 document.addEventListener(
   'contextmenu',
-  function (e) {
-    e = e || window.event;
+  function (event) {
+    event = event || window.event;
     let msg = {
-      tagName: e?.target?.tagName || e?.srcElement?.tagName,
-      text: e?.target?.textContent,
-      href: e?.target?.getAttribute ? e?.target?.getAttribute('href') : ''
+      srcUrl: event?.target?.src,
+      tagId: event?.target
+        ?.closest('.editable-tag-container')
+        ?.getAttribute('data-tag-id'),
+      x: event.x,
+      y: event.y
     };
-
-    //if (msg.tagName.toLowerCase() === 'a' && msg.href.substring(0, 1) !== '#') {
-    window.contextMenuApi.call(msg);
-    //}
+    window.busApi.showContextMenu(msg);
   },
   false
 );
