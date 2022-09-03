@@ -115,6 +115,7 @@ ${debugInfo()}`;
       }
     ]),
     {
+      label: i18n.t('main_menu.file'),
       role: 'fileMenu',
       submenu: [
         {
@@ -146,6 +147,7 @@ ${debugInfo()}`;
   // Linux and Windows
   const otherTemplate = [
     {
+      label: i18n.t('main_menu.file'),
       role: 'fileMenu',
       submenu: [
         {
@@ -190,6 +192,7 @@ ${debugInfo()}`;
       ]
     },
     {
+      label: i18n.t('main_menu.edit'),
       role: 'editMenu',
       submenu: [
         {
@@ -230,9 +233,54 @@ ${debugInfo()}`;
       ]
     },
     {
-      role: 'viewMenu'
+      label: i18n.t('main_menu.view'),
+      role: 'viewMenu',
+      submenu: [
+        {
+          label: i18n.t('main_menu.reload'),
+          icon: path.join(__static, 'menu', 'settings.png'),
+          role: 'reload'
+        },
+        {
+          label: i18n.t('main_menu.force_reload'),
+          icon: path.join(__static, 'menu', 'settings.png'),
+          role: 'forceReload'
+        },
+        {
+          label: i18n.t('main_menu.toggle_developer_tools'),
+          icon: path.join(__static, 'menu', 'settings.png'),
+          role: 'toggleDevTools'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: i18n.t('main_menu.actual_size'),
+          icon: path.join(__static, 'menu', 'settings.png'),
+          role: 'resetZoom'
+        },
+        {
+          label: i18n.t('main_menu.zoom_in'),
+          icon: path.join(__static, 'menu', 'settings.png'),
+          role: 'zoomIn'
+        },
+        {
+          label: i18n.t('main_menu.zoom_out'),
+          icon: path.join(__static, 'menu', 'settings.png'),
+          role: 'zoomOut'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: i18n.t('main_menu.toggle_full_screen'),
+          icon: path.join(__static, 'menu', 'settings.png'),
+          role: 'toggleFullScreen'
+        }
+      ]
     },
     {
+      label: i18n.t('main_menu.help'),
       role: 'help',
       submenu: helpSubmenu
     }

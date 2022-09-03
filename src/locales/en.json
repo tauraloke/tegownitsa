@@ -13,10 +13,21 @@
     "settings": "Settings…",
     "scan_files": "Scan text on current files",
     "find_dups": "Find duplicates",
-    "load_tags_from_iqbd": "Load tags from IQDB for current files"
+    "load_tags_from_iqbd": "Load tags from IQDB for current files",
+    "reload": "Reload",
+    "force_reload": "Force Reload",
+    "toggle_developer_tools": "Toggle Developer Tools",
+    "actual_size": "Actual size",
+    "zoom_in": "Zoom in",
+    "zoom_out": "Zoom out",
+    "toggle_full_screen": "Toggle Full Screen",
+    "file": "File",
+    "edit": "Edit",
+    "view": "View",
+    "help": "Help"
   },
   "about": {
-    "copyright": "Created by Tauraloke Esteru and Github contributors",
-    "text": "Yet another image tag manager"
+    "copyright": "Created by Tauraloke Esteru and Github contributors.",
+    "text": "Yet another image tag manager."
   }
 }
