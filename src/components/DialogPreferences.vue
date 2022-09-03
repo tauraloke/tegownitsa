@@ -4,19 +4,19 @@
       <v-tabs v-model="tab" direction="vertical" color="primary">
         <v-tab value="application">
           <v-icon start> mdi-application-cog-outline </v-icon>
-          Application
+          {{ $t('settings.application') }}
         </v-tab>
         <v-tab value="tesseract">
           <v-icon start> mdi-cube-outline </v-icon>
-          Tesseract OCR
+          {{ $t('settings.tesseract_ocr') }}
         </v-tab>
         <v-tab value="tag_sources">
           <v-icon start> mdi-source-pull </v-icon>
-          Tag sources
+          {{ $t('settings.tag_sources') }}
         </v-tab>
         <v-tab value="duplicates">
           <v-icon start> mdi-card-multiple-outline </v-icon>
-          Duplicates
+          {{ $t('settings.duplicates') }}
         </v-tab>
       </v-tabs>
       <v-window v-model="tab" direction="vertical">
@@ -25,22 +25,22 @@
             <v-card-text>
               <v-switch
                 v-model="options.dark_theme"
-                hint="This toggles the dark theme"
+                :hint="$t('settings.this_toggles_the_dark_theme')"
                 inset
                 true-icon="mdi-weather-night"
                 false-icon="mdi-weather-sunny"
-                label="Theme Light/Dark"
+                :label="$t('settings.theme_light_dark')"
                 persistent-hint
                 class="mb-4"
               ></v-switch>
 
               <v-select
                 v-model="options.lang"
-                hint="Choose interface language"
+                :hint="$t('settings.choose_interface_language')"
                 :items="availableLanguages"
                 item-title="title"
                 item-value="value"
-                label="Language"
+                :label="$t('settings.language')"
                 variant="outlined"
                 persistent-hint
                 single-line
@@ -49,7 +49,7 @@
 
               <v-checkbox
                 v-model="options.has_auto_updates"
-                label="Enable auto updates"
+                :label="$t('settings.enable_auto_updates')"
               />
             </v-card-text>
           </v-card>
@@ -59,7 +59,7 @@
             <v-card-text>
               <v-select
                 v-model="options.tesseract_psm"
-                hint="Page Segmentation Mode"
+                :hint="$t('settings.page_segmentation_mode')"
                 :items="tesseractPSM"
                 item-title="description"
                 item-value="value"
@@ -71,7 +71,7 @@
               />
               <v-select
                 v-model="options.tesseract_oem"
-                hint="Engine Mode"
+                :hint="$t('settings.engine_mode')"
                 :items="tesseractOEM"
                 item-title="description"
                 item-value="value"
@@ -90,7 +90,7 @@
                 item-value="value"
                 chips
                 small-chips
-                label="Languages"
+                :label="$t('settings.tesseract_languages')"
                 multiple
               />
             </v-card-text>
@@ -101,11 +101,11 @@
             <v-card-text>
               <v-select
                 v-model="options.tag_source_strategies"
-                hint="Strategies to enrich tag pool from outer search engines"
+                :hint="$t('settings.enrich_tags_strategies')"
                 :items="tagSourceStrategiesList"
                 item-title="title"
                 item-value="value"
-                label="Strategy"
+                :label="$t('settings.strategy')"
                 variant="outlined"
                 persistent-hint
                 single-line
@@ -118,14 +118,13 @@
                 :max="1"
               ></v-slider>
               <div class="text-caption mb-8">
-                Similarity threshold for IQDB results (higher is a stronger
-                filter)
+                {{ $t('settings.iqdb_similarity_threshold') }}
               </div>
 
               <v-text-field
                 v-model="options.tag_source_saucenao_api_key"
-                label="Saucenao key"
-                hint="You need an API key to seek by Saucenao API"
+                :label="$t('settings.saucenao_key')"
+                :hint="$t('settings.api_key_saucenao_hint')"
                 class="mb-8"
               />
 
@@ -137,7 +136,7 @@
                 thumb-label="always"
               ></v-range-slider>
               <div class="text-caption mb-8">
-                Cooldown of requests to IQDB.org server.
+                {{ $t('settings.iqdb_cooldown') }}
               </div>
             </v-card-text>
           </v-card>
@@ -153,8 +152,7 @@
                 class="mt-8"
               ></v-slider>
               <div class="text-caption mb-8">
-                Similarity threshold for finding local duplicates (higher is
-                stronger filter).
+                {{ $t('settings.similarity_threshold_hint') }}
               </div>
             </v-card-text>
           </v-card>
@@ -183,11 +181,11 @@ export default {
       isWatchersActive: false,
       tagSourceStrategiesList: [
         {
-          title: 'Catch the first one',
+          title: this.$t('settings.tag_source.strategies.catch_first'),
           value: tagSourceStrategies.CATCH_FIRST_ONE
         },
         {
-          title: 'Catch tags from any related resources',
+          title: this.$t('settings.tag_source.strategies.catch_all'),
           value: tagSourceStrategies.CATCH_ALL
         }
       ],
@@ -216,17 +214,29 @@ export default {
         { description: 'DEFAULT', value: 3 }
       ],
       tesseractLanguages: [
-        { title: 'Chinese (trad.)', value: 'chi_tra' },
-        { title: 'Chinese (trad., vertical)', value: 'chi_tra_vert' },
-        { title: 'Chinese (simp.)', value: 'chi_sim' },
-        { title: 'Chinese (simp., vertical)', value: 'chi_sim_vert' },
-        { title: 'English', value: 'eng' },
-        { title: 'French ', value: 'fra' },
-        { title: 'Japanese', value: 'jpn' },
-        { title: 'Japanese (vertical)', value: 'jpn_vert' },
-        { title: 'Portuguese', value: 'por' },
-        { title: 'Russian', value: 'rus' },
-        { title: 'Spanish', value: 'spa' }
+        { title: this.$t('settings.languages.chinese_trad'), value: 'chi_tra' },
+        {
+          title: this.$t('settings.languages.chinese_trad_vert'),
+          value: 'chi_tra_vert'
+        },
+        {
+          title: this.$t('settings.languages.chinese_simpl'),
+          value: 'chi_sim'
+        },
+        {
+          title: this.$t('settings.languages.chinese_simpl_vert'),
+          value: 'chi_sim_vert'
+        },
+        { title: this.$t('settings.languages.english'), value: 'eng' },
+        { title: this.$t('settings.languages.french'), value: 'fra' },
+        { title: this.$t('settings.languages.japanese'), value: 'jpn' },
+        {
+          title: this.$t('settings.languages.japanese_vertical'),
+          value: 'jpn_vert'
+        },
+        { title: this.$t('settings.languages.portuguese'), value: 'por' },
+        { title: this.$t('settings.languages.russian'), value: 'rus' },
+        { title: this.$t('settings.languages.spanish'), value: 'spa' }
       ],
       iqdbCooldownRange: [30, 60], // dumb init values
       availableLanguages: availableLanguages

@@ -30,9 +30,13 @@
   </v-container>
 
   <v-snackbar v-model="isRestoreToastVisible">
-    Tag '{{ tagToRestoring?.locales?.[0]?.title }}' has unlinked from this file.
+    {{
+      $t('toast.tag_unlinked_from_file', [tagToRestoring?.locales?.[0]?.title])
+    }}
     <template #actions>
-      <v-btn plain @click="restoreTag(tagToRestoring)"> Restore </v-btn>
+      <v-btn plain @click="restoreTag(tagToRestoring)">
+        {{ $t('button.restore') }}
+      </v-btn>
     </template>
   </v-snackbar>
 </template>

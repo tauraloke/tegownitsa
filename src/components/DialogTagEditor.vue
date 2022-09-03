@@ -2,14 +2,20 @@
   <v-dialog v-model="isDialogVisible" scrollable>
     <v-card v-if="tag">
       <v-toolbar>
-        <v-toolbar-title> Edit tag #{{ tag?.id }} </v-toolbar-title>
+        <v-toolbar-title>
+          {{ $t('dialog_tag_editor.edit_tag_x', [tag?.id]) }}
+        </v-toolbar-title>
         <v-toolbar-items>
-          <v-btn icon="mdi-close" title="Go back" @click="hideComponent()" />
+          <v-btn
+            icon="mdi-close"
+            :title="$t('button.back')"
+            @click="hideComponent()"
+          />
         </v-toolbar-items>
       </v-toolbar>
       <v-card-text>
         <v-row class="justify-center">
-          Tag is linked to {{ tag.file_count }} files.
+          {{ $t('dialog_tag_editor.tag_linked_to_x_files', [tag.file_count]) }}
         </v-row>
         <v-row
           v-for="(locale, index) in tagLocales"
@@ -22,20 +28,20 @@
             v-if="tagLocales?.length > 1"
             icon="mdi-close"
             class="ma-2"
-            title="Remove locale"
+            :title="$t('dialog_tag_editor.remove_locale')"
             @click="tagLocales = tagLocales.filter((_, i) => i != index)"
           />
         </v-row>
         <v-row class="ma-8 justify-center">
           <v-btn @click="tagLocales.push({ title: '', locale: 'en' })">
-            Add a new row
+            {{ $t('dialog_tag_editor.add_new_row') }}
           </v-btn>
           <v-btn
             :disabled="tagLocales.map((t) => t.title).join('') == ''"
             color="success ml-10"
             @click="updateTag()"
           >
-            Update the tag
+            {{ $t('dialog_tag-editor.update_tag') }}
           </v-btn>
         </v-row>
       </v-card-text>

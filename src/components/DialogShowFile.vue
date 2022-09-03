@@ -6,13 +6,19 @@
           {{ currentFile.source_filename }}
         </v-toolbar-title>
         <v-toolbar-items>
-          <v-btn icon="mdi-close" title="Go back" @click="hideComponent()" />
+          <v-btn
+            icon="mdi-close"
+            :title="$t('button.back')"
+            @click="hideComponent()"
+          />
         </v-toolbar-items>
       </v-toolbar>
       <v-card-text>
         <v-row>
           <v-col cols="12" md="4">
-            <h3 style="text-align: center" class="mb-4">Tags</h3>
+            <h3 style="text-align: center" class="mb-4">
+              {{ $t('main_window.tags') }}
+            </h3>
             <form-add-new-tag-to-file
               v-if="currentFile"
               :file-id="currentFile?.id"
@@ -44,12 +50,13 @@
               elevation="4"
               class="ma-2 pa-4"
             >
-              <h4>Exif data</h4>
+              <h4>{{ $t('dialog_show_file.exif_data') }}</h4>
               <div v-if="currentFileDateCreated">
-                Create date: {{ currentFileDateCreated }}
+                {{ $t('dialog_show_file.create_data') }}:
+                {{ currentFileDateCreated }}
               </div>
               <div v-if="currentFileCoords">
-                Coordinates:
+                {{ $t('dialog_show_file.coordinates') }}:
                 <a
                   :href="
                     'https://www.google.com/maps/place/' + currentFileCoords
@@ -60,14 +67,14 @@
                 </a>
               </div>
               <div v-if="currentFileModel">
-                Maked by: {{ currentFileModel }}
+                {{ $t('dialog_show_file.maked_by') }}: {{ currentFileModel }}
               </div>
             </v-card>
             <v-card elevation="4" class="ma-2 clickable-i">
               <v-textarea
                 v-model="currentFile.caption"
-                label="recognized text on image"
-                title="Click to floppy to save changes"
+                :label="$t('dialog_show_file.recognized_text_on_image')"
+                :title="$t('dialog_show_file.click_to_floppy_to_save_changes')"
                 class="clickable-i"
                 :append-inner-icon="fileCaptionTextareaIcon"
                 @click:control="clickedOnCaptionTextarea($event)"
@@ -78,7 +85,7 @@
             </v-card>
             <div v-if="urls && urls.length > 0" id="file_info_sources">
               <v-card elevation="4" class="ma-2 pa-8">
-                <h5>Sources</h5>
+                <h5>{{ $t('dialog_show_file.sources') }}</h5>
                 <ul>
                   <li v-for="url in urls" :key="url">
                     <a :href="url" target="_blank">{{ url }}</a>
@@ -175,7 +182,12 @@ export default {
         this.currentFile?.caption,
         this.currentFile?.id
       ]);
-      this.$emit('toast', `Caption updated for file #${this.currentFile?.id}`);
+      this.$emit(
+        'toast',
+        this.$t('dialog_show_file.caption_updated_for_file_x', [
+          this.currentFile?.id
+        ])
+      );
     },
     clickedOnCaptionTextarea(event) {
       if (event?.path?.[0]?.nodeName == 'I') {

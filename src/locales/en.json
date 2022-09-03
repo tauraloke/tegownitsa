@@ -47,7 +47,10 @@
     "close": "Close",
     "cancel": "Cancel",
     "upload": "Upload",
-    "remove": "Remove"
+    "remove": "Remove",
+    "restore": "Restore",
+    "add": "Add",
+    "back": "Go back"
   },
   "toast": {
     "preferences_saved": "Preferences saved",
@@ -64,6 +67,73 @@
     "file_path_has_imported": "File {0} has imported.",
     "folder_path_has_imported": "Folder {0} has imported.",
     "found_x_results_by_caption": "Found {0} results by caption '{1}'",
-    "found_x_results_by_tag": "Found {0} results by tag '{1}'"
+    "found_x_results_by_tag": "Found {0} results by tag '{1}'",
+    "tag_unlinked_from_file": "Tag '{0}' has unlinked from this file."
+  },
+  "form_search_files": {
+    "find_by_tags_print_and_choose": "Find by tags: print and choose",
+    "find_by_caption_print_and_enter": "Find by caption: print and enter"
+  },
+  "form_add_new_tag_to_file": {
+    "type_tag_title": "Type a tag title to add a new one"
+  },
+  "dialog_tag_editor": {
+    "remove_locale": "Remove locale",
+    "edit_tag_x": "Edit tag #{0}",
+    "tag_linked_to_x_files": "Tag is linked to {0} files.",
+    "add_new_row": "Add a new row"
+  },
+  "dialog_tag-editor": {
+    "update_tag": "Update the tag"
+  },
+  "dialog_show_file": {
+    "exif_data": "Exif data",
+    "create_data": "Create date:",
+    "coordinates": "Coordinates",
+    "maked_by": "Maked by",
+    "recognized_text_on_image": "recognized text on image",
+    "click_to_floppy_to_save_changes": "Click to floppy to save changes",
+    "sources": "Sources",
+    "caption_updated_for_file_x": "Caption updated for file #{0}"
+  },
+  "settings": {
+    "application": "Application",
+    "tesseract_ocr": "Tesseract OCR",
+    "tag_sources": "Tag sources",
+    "duplicates": "Duplicates",
+    "theme_light_dark": "Theme Light/Dark",
+    "this_toggles_the_dark_theme": "This toggles the dark theme",
+    "choose_interface_language": "Choose interface language",
+    "language": "Language",
+    "enable_auto_updates": "Enable auto updates",
+    "page_segmentation_mode": "Page Segmentation Mode",
+    "engine_mode": "Engine Mode",
+    "tesseract_languages": "Languages",
+    "enrich_tags_strategies": "Strategies to enrich tag pool from outer search engines",
+    "strategy": "Strategy",
+    "iqdb_similarity_threshold": "Similarity threshold for IQDB results (higher is a stronger filter)",
+    "saucenao_key": "Saucenao key",
+    "api_key_saucenao_hint": "You need an API key to seek by Saucenao API",
+    "iqdb_cooldown": "Cooldown of requests to IQDB.org server",
+    "similarity_threshold_hint": "Similarity threshold for finding local duplicates (higher is stronger filter).",
+    "tag_source": {
+      "strategies": {
+        "catch_first": "Catch the first one",
+        "catch_all": "Catch all related ones"
+      }
+    },
+    "languages": {
+      "chinese_trad": "Chinese (trad.)",
+      "chinese_trad_vert": "Chinese (trad., vertical)",
+      "chinese_simpl": "Chinese (simpl.)",
+      "chinese_simpl_vert": "Chinese (simpl., vertical)",
+      "english": "English",
+      "french": "French",
+      "japanese": "Japanese",
+      "japanese_vertical": "Japanese (vertical)",
+      "portuguese": "Portuguese",
+      "russian": "Russian",
+      "spanish": "Spanish"
+    }
   }
 }

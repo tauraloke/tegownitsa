@@ -4,7 +4,7 @@
     v-model:search="newTagTitleSearch"
     :items="tagEntries"
     clearable
-    label="Type a tag title to add a new one"
+    :label="$t('form_add_new_tag_to_file.type_tag_title')"
   />
   <v-text-field v-if="newTagTitle" v-model="newTagLocale" solo label="locale" />
   <v-btn
@@ -14,7 +14,7 @@
     width="100%"
     @click="addTagToCurrentFile()"
   >
-    Add
+    {{ $t('button.add') }}
   </v-btn>
 </template>
 

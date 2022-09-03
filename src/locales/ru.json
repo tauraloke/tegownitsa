@@ -47,7 +47,10 @@
     "cancel": "Отмена",
     "upload": "Загрузить",
     "close": "Закрыть",
-    "remove": "Удалить"
+    "remove": "Удалить",
+    "restore": "Восстановить",
+    "add": "Добавить",
+    "back": "Вернуться"
   },
   "toast": {
     "preferences_saved": "Настройки сохранены",
@@ -64,6 +67,71 @@
     "file_path_has_imported": "Файл {0} импортирован.",
     "folder_path_has_imported": "Папка {0} импортирована.",
     "found_x_results_by_caption": "Найдено {0} результатов по тексту '{1}'",
-    "found_x_results_by_tag": "Найдено {0} результатов по тегу '{1}'"
+    "found_x_results_by_tag": "Найдено {0} результатов по тегу '{1}'",
+    "tag_unlinked_from_file": "Тег \"{0}\" отсоединен от этого файла."
+  },
+  "form_search_files": {
+    "find_by_tags_print_and_choose": "Поиск по тегам: печатайте и выбирайте",
+    "find_by_caption_print_and_enter": "Найти по тексту при картинке"
+  },
+  "form_add_new_tag_to_file": {
+    "type_tag_title": "Введите название нового тега для добавления"
+  },
+  "dialog_tag_editor": {
+    "tag_linked_to_x_files": "Тег связан с {0} файлами.",
+    "edit_tag_x": "Редактировать тег #{0}",
+    "remove_locale": "Удалить синоним",
+    "add_new_row": "Добавить строку"
+  },
+  "dialog_tag-editor": {
+    "update_tag": "Обновить тег"
+  },
+  "dialog_show_file": {
+    "exif_data": "Данные EXIF",
+    "create_data": "Дата создания:",
+    "coordinates": "Координаты",
+    "maked_by": "Сделано",
+    "recognized_text_on_image": "распознанный текст на изображении",
+    "click_to_floppy_to_save_changes": "Нажмите на дискету, чтобы сохранить изменения",
+    "sources": "Источники",
+    "caption_updated_for_file_x": "Текст обновлен для файла #{0}"
+  },
+  "settings": {
+    "application": "Приложение",
+    "tesseract_ocr": "Тессеракт OCR",
+    "tag_sources": "Источники тегов",
+    "duplicates": "Дубликаты",
+    "theme_light_dark": "Светлая/ночная тема",
+    "this_toggles_the_dark_theme": "Это переключает темную тему",
+    "choose_interface_language": "Выберите язык интерфейса",
+    "language": "Язык",
+    "enable_auto_updates": "Включить автоматические обновления",
+    "page_segmentation_mode": "Режим сегментации страницы",
+    "engine_mode": "Режим движка",
+    "tesseract_languages": "Языки",
+    "enrich_tags_strategies": "Стратегии обогащения пула тегов из внешних поисковых систем",
+    "strategy": "Стратегия",
+    "iqdb_similarity_threshold": "Порог сходства для результатов IQDB (чем выше, тем жёстче фильтр)",
+    "saucenao_key": "Ключ api Saucenao",
+    "api_key_saucenao_hint": "Вам понадобится ключ API для поиска по Saucenao API",
+    "iqdb_cooldown": "Промежуток между запросами к серверу IQDB.org",
+    "similarity_threshold_hint": "Порог подобия для поиска локальных дубликатов (чем выше, тем жёстче фильтр).",
+    "tag_source": {
+      "strategies": {
+        "catch_first": "Захватить первый результат в выдаче",
+        "catch_all": "Захватить все результаты из выдачи"
+      }
+    },
+    "languages": {
+      "chinese_trad": "Китайский (традиц.)",
+      "chinese_trad_vert": "Китайский (традиц., вертикальный)",
+      "english": "Английский",
+      "french": "Французский",
+      "japanese": "Японский",
+      "japanese_vertical": "Японский (вертикальный)",
+      "portuguese": "Португальский",
+      "russian": "Русский",
+      "spanish": "Испанский"
+    }
   }
 }

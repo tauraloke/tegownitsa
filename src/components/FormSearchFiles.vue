@@ -10,7 +10,7 @@
         hide-selected
         item-title="title"
         item-value="title"
-        label="Find by tags: print and choose"
+        :label="$t('form_search_files.find_by_tags_print_and_choose')"
         prepend-icon="mdi-database-search"
         return-object
         chips
@@ -22,7 +22,7 @@
     <v-row>
       <v-text-field
         v-model="searchCaption"
-        label="Find by caption: print and enter"
+        :label="$t('form_search_files.find_by_caption_print_and_enter')"
         clearable
         append-icon="mdi-magnify"
         @click:append="$emit('by-caption', searchCaption || '')"
