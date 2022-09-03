@@ -68,9 +68,6 @@ export default {
     searchFilesByTag(title) {
       this.$emit('search-by-title', title);
     },
-    editTag(_tag_id) {
-      // TODO
-    },
     removeTagFromFile(tag) {
       window.sqliteApi.unlinkTag(tag.file_tag_id);
       this.isRestoreToastVisible = true;

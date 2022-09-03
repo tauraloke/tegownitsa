@@ -117,6 +117,7 @@
             </v-row>
             <v-dialog v-model="isShowConfirmDeleteFile">
               <v-card>
+                <v-card-text> Remove this file? </v-card-text>
                 <v-card-actions>
                   <v-btn
                     variant="text"
@@ -167,6 +168,11 @@
       @option-changed="updateAppOptions"
     />
 
+    <dialog-tag-editor
+      ref="dialog_tag_editor"
+      @tag-updated="redrawTag($event)"
+    />
+
     <v-snackbar v-model="isStatusMessageVisible">
       {{ statusMessage }}
       <template #actions>
@@ -187,6 +193,7 @@ import FormSearchFiles from '@/components/FormSearchFiles.vue';
 import ListTagGroups from '@/components/ListTagGroups.vue';
 import DialogPreferences from '@/components/DialogPreferences.vue';
 import DialogShowFile from '@/components/DialogShowFile.vue';
+import DialogTagEditor from '@/components/DialogTagEditor.vue';
 
 import TaskQueue from '@/services/task_queue.js';
 import constants from '@/config/constants.json';
@@ -199,7 +206,8 @@ export default {
     FormSearchFiles,
     ListTagGroups,
     DialogPreferences,
-    DialogShowFile
+    DialogShowFile,
+    DialogTagEditor
   },
   setup() {
     const theme = useTheme();
@@ -244,8 +252,10 @@ export default {
         'lookUpDups',
         'loadTagsFromIQDB',
         'openPreferencesDialog',
-        'setTheme'
+        'setTheme',
+        'openTagEditor'
       ];
+      console.log(`Menu method ${method} with args`, args);
       if (method in allowedMenuMethods) {
         return false;
       }
@@ -273,6 +283,9 @@ export default {
     });
   },
   methods: {
+    openTagEditor(tag_id) {
+      this.$refs.dialog_tag_editor.showComponent(tag_id);
+    },
     async searchFilesByTag(tag_title) {
       this.$refs.form_search_files.reset(tag_title);
     },
@@ -454,6 +467,16 @@ export default {
     updateAppOptions(name, value) {
       this.toast('Preferences saved');
       this.appOptions[name] = value;
+    },
+    redrawTag({ newLocales, tagId }) {
+      this.tags = this.tags.map((t) => {
+        if (t.id != tagId) {
+          return t;
+        }
+        t.locales = newLocales;
+        return t;
+      });
+      this.$refs.dialog_show_file.updateTag({ newLocales, tagId });
     }
   }
 };

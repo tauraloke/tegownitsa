@@ -6,11 +6,7 @@
           {{ currentFile.source_filename }}
         </v-toolbar-title>
         <v-toolbar-items>
-          <v-btn
-            icon="mdi-close"
-            title="Go back"
-            @click="isDialogVisible = null"
-          />
+          <v-btn icon="mdi-close" title="Go back" @click="hideComponent()" />
         </v-toolbar-items>
       </v-toolbar>
       <v-card-text>
@@ -186,6 +182,18 @@ export default {
         this.updateCaption();
         this.fileCaptionTextareaIcon = 'mdi-floppy';
       }
+    },
+    updateTag({ newLocales, tagId }) {
+      if (!this.isDialogVisible) {
+        return false;
+      }
+      this.tags = this.tags.map((t) => {
+        if (t.id != tagId) {
+          return t;
+        }
+        t.locales = newLocales;
+        return t;
+      });
     }
   }
 };

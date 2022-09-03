@@ -19,11 +19,14 @@ export default class UpdateService {
       return false;
     }
     if (!is.development) {
-      setInterval(() => {
+      try {
         autoUpdater.checkForUpdates();
-      }, this.cooldown_hour * 1000 * 60 * 60);
-
-      autoUpdater.checkForUpdates();
+        setInterval(() => {
+          autoUpdater.checkForUpdates();
+        }, this.cooldown_hour * 1000 * 60 * 60);
+      } catch (error) {
+        console.log('Cannot use autoupdater', error);
+      }
     }
 
     autoUpdater.on('checking-for-update', () => {

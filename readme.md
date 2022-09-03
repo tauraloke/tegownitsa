@@ -92,8 +92,10 @@ npm start
 
 ## Next goals
 
-- [ ] (In progress) Adjust HTML and styles in the application.
+- [x] Adjust HTML and styles in the application.
+- [x] Move Tesseract language list to settings.
+- [ ] Make job interface for scanning and tag search.
 - [ ] Pagination.
 - [ ] Add Saucenao API requests with a private token.
-- [x] Move Tesseract language list to settings.
 - [ ] i18n.
+
