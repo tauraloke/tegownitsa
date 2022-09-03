@@ -16,5 +16,8 @@ contextBridge.exposeInMainWorld('busApi', {
   },
   showContextMenu: (msg) => {
     return ipcRenderer.send('context-menu-message', msg);
+  },
+  changeLanguage: (lang) => {
+    return ipcRenderer.send('update-language', lang);
   }
 });

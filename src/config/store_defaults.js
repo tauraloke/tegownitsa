@@ -20,5 +20,6 @@ module.exports = {
   tag_source_iqdb_top_cooldown: 60,
   image_similarity_threshold: imageSimilarity(
     constants.BASE_DUPLICATE_HAMMING_THRESHOLD
-  )
+  ),
+  lang: 'en'
 };

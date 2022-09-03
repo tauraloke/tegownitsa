@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <header>
+      <v-btn @click="toggleLanguage()">{{ $t('toggle_language') }}</v-btn>
       <v-btn @click="openFolder()">Import folder</v-btn>
       <v-btn @click="openFile()">Import file</v-btn>
       <v-btn @click="importFileFromUrl()">Import file from url</v-btn>
@@ -477,6 +478,11 @@ export default {
         return t;
       });
       this.$refs.dialog_show_file.updateTag({ newLocales, tagId });
+    },
+    // TODO: remove
+    toggleLanguage() {
+      window.busApi.changeLanguage('ru');
+      this.$i18n.locale = 'ru';
     }
   }
 };

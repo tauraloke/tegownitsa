@@ -19,17 +19,20 @@ import config from './config/store.js';
 import menu from './menu.js';
 import path from 'path';
 import UpdateService from './services/update_service.js';
+import i18n from './i18n.backend.js';
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ]);
 
+i18n.init();
+
 let win;
 
 async function createWindow() {
   // Create the browser window.
-  Menu.setApplicationMenu(menu);
+  Menu.setApplicationMenu(menu(i18n));
   win = new BrowserWindow({
     width: 800,
     height: 600,
@@ -169,4 +172,11 @@ ipcMain.on('context-menu-message', (_event, msg) => {
     const WebViewMenu = Menu.buildFromTemplate(template);
     WebViewMenu.popup(win);
   }
+});
+
+// Language switcher listener
+ipcMain.on('update-language', async (_event, lang) => {
+  i18n.changeLanguage(lang);
+  console.log(`Language switched to '${lang}'`);
+  Menu.setApplicationMenu(menu(i18n));
 });

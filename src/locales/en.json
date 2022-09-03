@@ -1,0 +1,22 @@
+{
+  "main_menu": {
+    "import_image_from_file": "Import image from file…",
+    "import_image_from_folder": "Import image from folder…",
+    "import_image_from_url": "Import image from direct URL…",
+    "import_image_from_clipboard": "Import image from clipboard…",
+    "quit": "Quit",
+    "website": "Website",
+    "about": "About Tegownitsa",
+    "source_code": "Source code",
+    "report": "Report an Issue…",
+    "preferences": "Preferences…",
+    "settings": "Settings…",
+    "scan_files": "Scan text on current files",
+    "find_dups": "Find duplicates",
+    "load_tags_from_iqbd": "Load tags from IQDB for current files"
+  },
+  "about": {
+    "copyright": "Created by Tauraloke Esteru and Github contributors",
+    "text": "Yet another image tag manager"
+  }
+}
