@@ -25,8 +25,10 @@ module.exports = defineConfig({
       builderOptions: {
         appId: 'com.electron.Tegownitsa',
         asarUnpack: ['**/node_modules/sharp/**'],
-        extraFiles:
-          process.platform == 'win32' ? ['./libs/sqlite/fuzzy.dll'] : null,
+        extraFiles: [
+          ...(process.platform == 'win32' ? ['./libs/sqlite/fuzzy.dll'] : []),
+          ...(process.platform == 'darwin' ? ['./libs/sqlite/fuzzy.dylib'] : [])
+        ],
         win: {
           icon: './build/icon.png'
         },
