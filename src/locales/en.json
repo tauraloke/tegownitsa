@@ -1,4 +1,9 @@
 {
+  "context_menu": {
+    "copy_image_to_clipboard": "Copy image to clipboard",
+    "edit_tag": "Edit tag",
+    "inspect_element": "Inspect element"
+  },
   "main_menu": {
     "import_image_from_file": "Import image from file…",
     "import_image_from_folder": "Import image from folder…",
@@ -29,5 +34,23 @@
   "about": {
     "copyright": "Created by Tauraloke Esteru and Github contributors.",
     "text": "Yet another image tag manager."
+  },
+  "main_window": {
+    "duplicate_files": "Duplicate images",
+    "no_duplicates_found": "No duplicates found.",
+    "files": "Files",
+    "tags": "Tags",
+    "similarity": "Similarity",
+    "remove_this_file": "Remove this file?"
+  },
+  "button": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "upload": "Upload",
+    "remove": "Remove"
+  },
+  "toast": {
+    "preferences_saved": "Preferences saved",
+    "start_loading_tags": "Start loading tags for {0} files"
   }
 }

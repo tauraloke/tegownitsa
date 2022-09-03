@@ -26,6 +26,11 @@ import WindowMain from '@/components/WindowMain.vue';
 
 export default {
   name: 'App',
-  components: { WindowMain }
+  components: { WindowMain },
+  mounted() {
+    window.configApi.getConfig('lang').then((lang) => {
+      this.$i18n.locale = lang;
+    });
+  }
 };
 </script>

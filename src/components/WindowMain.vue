@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <header>
-      <v-btn @click="toggleLanguage()">{{ $t('toggle_language') }}</v-btn>
       <v-btn @click="openFolder()">Import folder</v-btn>
       <v-btn @click="openFile()">Import file</v-btn>
       <v-btn @click="importFileFromUrl()">Import file from url</v-btn>
@@ -23,7 +22,7 @@
         <!-- tags -->
         <v-col cols="12" sm="4">
           <div id="tags">
-            <h3>Tags</h3>
+            <h3>{{ $t('main_window.tags') }}</h3>
             <list-tag-groups
               :tags="tags"
               @search-by-title="searchFilesByTag($event)"
@@ -34,8 +33,8 @@
 
         <!-- files -->
         <v-col cols="12" sm="8">
-          <h3 v-if="files?.length > 0">Files</h3>
-          <v-row v-if="files?.length > 0" id="files">
+          <h3 v-if="files?.length > 0">{{ $t('main_window.files') }}</h3>
+          <v-row v-if="files?.length > 0" id="files" class="mt-4">
             <v-col
               v-for="file in files"
               :key="file.id"
@@ -57,9 +56,11 @@
 
           <!-- duplicated files -->
           <div v-if="files === null" id="duplicated_files">
-            <h3 style="text-align: left; margin-left: 3em">Duplicate files</h3>
+            <h3 style="text-align: left; margin-left: 3em; margin-bottom: 2em">
+              {{ $t('main_window.duplicate_files') }}
+            </h3>
             <div v-if="duplicatedFiles?.length == 0" style="text-align: left">
-              No duplicates found.
+              {{ $t('main_window.no_duplicates_found') }}
             </div>
             <v-row v-for="file in duplicatedFiles" :key="file.id">
               <v-col class="d-flex child-flex" cols="8">
@@ -82,12 +83,12 @@
                       color="red"
                       @click="deleteFile(file.id)"
                     >
-                      Remove
+                      {{ $t('button.remove') }}
                     </v-btn>
                   </v-card-actions>
                 </v-card>
                 <div class="pt-10">
-                  similarity
+                  {{ $t('main_window.similarity') }}
                   <br />
                   {{ imageSimilarity(file.distance) }}%
                 </div>
@@ -110,7 +111,7 @@
                       color="red"
                       @click="deleteFile(file.f2_id)"
                     >
-                      Remove
+                      {{ $t('button.remove') }}
                     </v-btn>
                   </v-card-actions>
                 </v-card>
@@ -118,21 +119,23 @@
             </v-row>
             <v-dialog v-model="isShowConfirmDeleteFile">
               <v-card>
-                <v-card-text> Remove this file? </v-card-text>
+                <v-card-text>
+                  {{ $t('main_window.remove_this_file') }}
+                </v-card-text>
                 <v-card-actions>
                   <v-btn
                     variant="text"
                     color="red"
                     @click="deleteFile(fileIdForDeletion)"
                   >
-                    Remove
+                    {{ $t('button.remove') }}
                   </v-btn>
                   <v-btn
                     variant="text"
                     color="grey"
                     @click="isShowConfirmDeleteFile = false"
                   >
-                    Cancel
+                    {{ $t('button.cancel') }}
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -158,8 +161,12 @@
           />
         </v-card-text>
         <v-card-actions class="justify-center">
-          <v-btn @click="importFileFromUrl()">Upload</v-btn>
-          <v-btn @click="showDialogUrlForImport = false">Cancel</v-btn>
+          <v-btn @click="importFileFromUrl()">
+            {{ $t('button.upload') }}
+          </v-btn>
+          <v-btn @click="showDialogUrlForImport = false">{{
+            $t('button.cancel')
+          }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -179,7 +186,7 @@
       <template #actions>
         <v-btn
           icon="mdi-close"
-          title="Close"
+          title="$t('button.close')"
           @click="isStatusMessageVisible = null"
         />
       </template>
@@ -431,7 +438,7 @@ export default {
       this.isStatusMessageVisible = true;
     },
     async loadTagsFromIQDB() {
-      this.toast(`Start loading tags for ${this.files.length} files`);
+      this.toast(this.$t('toast.start_loading_tags', [this.files.length]));
       let strategy = FabricJobTagSourceStrategy.getStrategy({
         key: await window.configApi.getConfig('tag_source_strategies'),
         engine: 'iqdb'
@@ -466,7 +473,7 @@ export default {
       this.$refs.dialog_preferences.showComponent();
     },
     updateAppOptions(name, value) {
-      this.toast('Preferences saved');
+      this.toast(this.$t('toast.preferences_saved'));
       this.appOptions[name] = value;
     },
     redrawTag({ newLocales, tagId }) {
@@ -478,11 +485,6 @@ export default {
         return t;
       });
       this.$refs.dialog_show_file.updateTag({ newLocales, tagId });
-    },
-    // TODO: remove
-    toggleLanguage() {
-      window.busApi.changeLanguage('ru');
-      this.$i18n.locale = 'ru';
     }
   }
 };

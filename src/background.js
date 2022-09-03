@@ -134,7 +134,7 @@ ipcMain.on('context-menu-message', (_event, msg) => {
   let template = [];
   if (msg.srcUrl) {
     template.push({
-      label: 'Copy image to clipboard',
+      label: i18n.t('context_menu.copy_image_to_clipboard'),
       click: () => {
         clipboard.writeImage(
           nativeImage.createFromPath(
@@ -150,7 +150,7 @@ ipcMain.on('context-menu-message', (_event, msg) => {
   }
   if (msg.tagId) {
     template.push({
-      label: 'Edit tag',
+      label: i18n.t('context_menu.edit_tag'),
       click: (_event, browserWindow) => {
         browserWindow.webContents.send('execute', 'openTagEditor', msg.tagId);
       }
@@ -158,7 +158,7 @@ ipcMain.on('context-menu-message', (_event, msg) => {
   }
   if (isDevelopment) {
     template.push({
-      label: 'Inspect element',
+      label: i18n.t('context_menu.inspect_element'),
       click: (_event, browserWindow) => {
         browserWindow.inspectElement(msg.x, msg.y);
 

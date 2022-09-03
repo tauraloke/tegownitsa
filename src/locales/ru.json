@@ -1,4 +1,9 @@
 {
+  "context_menu": {
+    "copy_image_to_clipboard": "Скопировать картинку в буфер обмена",
+    "edit_tag": "Редактировать тег",
+    "inspect_element": "Инспектировать элемент"
+  },
   "main_menu": {
     "import_image_from_file": "Импортировать картинку из файла…",
     "import_image_from_folder": "Загрузить картинки из папки…",
@@ -29,5 +34,23 @@
   "about": {
     "copyright": "Сделано Тауралоке Эстеру и контрибьютерами Гитхаба.",
     "text": "Ещё один каталогизатор картинок."
+  },
+  "main_window": {
+    "duplicate_files": "Дубликаты файлов",
+    "no_duplicates_found": "Дубликатов не найдено.",
+    "files": "Файлы",
+    "tags": "Теги",
+    "similarity": "Сходство",
+    "remove_this_file": "Удалить этот файл?"
+  },
+  "button": {
+    "cancel": "Отмена",
+    "upload": "Загрузить",
+    "close": "Закрыть",
+    "remove": "Удалить"
+  },
+  "toast": {
+    "preferences_saved": "Настройки сохранены",
+    "start_loading_tags": "Начать загрузку тегов для {0} файлов"
   }
 }

@@ -31,7 +31,21 @@
                 false-icon="mdi-weather-sunny"
                 label="Theme Light/Dark"
                 persistent-hint
+                class="mb-4"
               ></v-switch>
+
+              <v-select
+                v-model="options.lang"
+                hint="Choose interface language"
+                :items="availableLanguages"
+                item-title="title"
+                item-value="value"
+                label="Language"
+                variant="outlined"
+                persistent-hint
+                single-line
+                class="mb-4"
+              />
 
               <v-checkbox
                 v-model="options.has_auto_updates"
@@ -154,6 +168,7 @@
 import constants from '../config/constants.json';
 import storeDefaults from '../.json_bus/store_defaults.json';
 import tagSourceStrategies from '../config/tag_source_strategies.json';
+import availableLanguages from '../config/available_languages.js';
 
 let previousOptions = {};
 
@@ -213,18 +228,29 @@ export default {
         { title: 'Russian', value: 'rus' },
         { title: 'Spanish', value: 'spa' }
       ],
-      iqdbCooldownRange: [30, 60] // dumb init values
+      iqdbCooldownRange: [30, 60], // dumb init values
+      availableLanguages: availableLanguages
     };
   },
   watch: {
     options: {
       handler: function (newOptions) {
-        if (!this.isWatchersActive) {
+        if (!this.isWatchersActive || !this.isDialogVisible) {
           return true;
         }
         let changedKey = null;
         for (let key in previousOptions) {
-          if (newOptions[key] != previousOptions[key]) {
+          let isChanged = false;
+          if (key === 'tesseract_languages') {
+            if (newOptions[key].join() != previousOptions[key].join()) {
+              isChanged = true;
+            }
+          } else {
+            if (newOptions[key] != previousOptions[key]) {
+              isChanged = true;
+            }
+          }
+          if (isChanged) {
             changedKey = key;
             previousOptions[key] = newOptions[key];
             break;
@@ -275,6 +301,10 @@ export default {
         } else {
           return;
         }
+      }
+      if (key === 'lang') {
+        this.$root.$i18n.locale = value;
+        window.busApi.changeLanguage(value);
       }
       window.configApi.setConfig(key, value);
       this.$emit('option-changed', key, value);

@@ -84,7 +84,10 @@
   },
   "overrides": {
     "cheerio": "1.0.0-rc.10",
-    "parse5-htmlparser2-tree-adapter": "^6.0.0"
+    "parse5-htmlparser2-tree-adapter": "^6.0.0",
+    "vue-cli-plugin-electron-builder": {
+      "electron-builder": "^23.0.6"
+    }
   },
   "productName": "Tegownitsa",
   "repository": "tauraloke/tegownitsa",
