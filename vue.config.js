@@ -51,6 +51,7 @@ module.exports = defineConfig({
         },
         linux: {
           target: ['AppImage', 'deb'],
+          icon: './build/icon.png',
           category: 'Images;Network;Tags'
         }
       }

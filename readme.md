@@ -86,13 +86,14 @@ npm start
   `MIT license`.
   - [VueJS](https://vuejs.org/) is a frontend framework. `MIT license`.
   - [Vuetify](https://vuetifyjs.com/) is an UI framefork for Vue applications. `MIT license`.
+  - [Vue18n](https://kazupon.github.io/vue-i18n/) for localizations. `MIT license`.
 
 - API
   - [IQDB](https://iqdb.org/) is independent image search engine and using to
   download tag data. We recommend do not commit requests by this application too
-  often. Default timeout is 10-15 seconds now.
+  often. Default timeout range in application is 30-60 seconds now.
   - Bunch of boorus. You can't download tags from a booru if this one is blocked.
-  Default timeout is 10-15 seconds.
+  Default timeout range is 30-60 seconds.
   - [Fuzzy](https://github.com/nalgeon/sqlean/blob/main/docs/fuzzy.md) is SQLite
   library using for duplicate detection by a hamming distance between
   [perceptive hashes](https://www.phash.org/) of images. `MIT license`.

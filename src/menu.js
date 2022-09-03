@@ -175,7 +175,7 @@ ${debugInfo()}`;
           }
         },
         {
-          label: i18n.t('main_menu.import_image_from_url'),
+          label: i18n.t('main_menu.import_image_from_clipboard'),
           icon: path.join(__static, 'menu', 'clipboard.png'),
           click(_menuItem, browserWindow, _event) {
             browserWindow.webContents.send('execute', 'importFromClipboard');
@@ -238,17 +238,17 @@ ${debugInfo()}`;
       submenu: [
         {
           label: i18n.t('main_menu.reload'),
-          icon: path.join(__static, 'menu', 'settings.png'),
+          icon: path.join(__static, 'menu', 'reload.png'),
           role: 'reload'
         },
         {
           label: i18n.t('main_menu.force_reload'),
-          icon: path.join(__static, 'menu', 'settings.png'),
+          icon: path.join(__static, 'menu', 'force_reload.png'),
           role: 'forceReload'
         },
         {
           label: i18n.t('main_menu.toggle_developer_tools'),
-          icon: path.join(__static, 'menu', 'settings.png'),
+          icon: path.join(__static, 'menu', 'developer_tools.png'),
           role: 'toggleDevTools'
         },
         {
@@ -256,17 +256,17 @@ ${debugInfo()}`;
         },
         {
           label: i18n.t('main_menu.actual_size'),
-          icon: path.join(__static, 'menu', 'settings.png'),
+          icon: path.join(__static, 'menu', 'actual_size.png'),
           role: 'resetZoom'
         },
         {
           label: i18n.t('main_menu.zoom_in'),
-          icon: path.join(__static, 'menu', 'settings.png'),
+          icon: path.join(__static, 'menu', 'zoom_in.png'),
           role: 'zoomIn'
         },
         {
           label: i18n.t('main_menu.zoom_out'),
-          icon: path.join(__static, 'menu', 'settings.png'),
+          icon: path.join(__static, 'menu', 'zoom_out.png'),
           role: 'zoomOut'
         },
         {
@@ -274,7 +274,7 @@ ${debugInfo()}`;
         },
         {
           label: i18n.t('main_menu.toggle_full_screen'),
-          icon: path.join(__static, 'menu', 'settings.png'),
+          icon: path.join(__static, 'menu', 'full_screen.png'),
           role: 'toggleFullScreen'
         }
       ]
