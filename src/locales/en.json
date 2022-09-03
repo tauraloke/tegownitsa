@@ -51,6 +51,19 @@
   },
   "toast": {
     "preferences_saved": "Preferences saved",
-    "start_loading_tags": "Start loading tags for {0} files"
+    "start_loading_tags": "Start loading tags for {0} files",
+    "file_has_removed": "File has removed",
+    "dups_length_pairs_found": "{0} pairs found",
+    "unknown_scan_error": "Something wrong with scanning...",
+    "file_has_imported": "File has imported from url '{0}'.",
+    "cannot_copy_file_from_url": "Can't copy file from {0}.",
+    "cannot_upload_file_from_url": "Can't upload file from {0}.",
+    "form_cancelled": "Form is cancelled",
+    "file_has_imported_from_clipboard": "File has imported from a clipboard.",
+    "clipboard_empty": "Clipboard is empty.",
+    "file_path_has_imported": "File {0} has imported.",
+    "folder_path_has_imported": "Folder {0} has imported.",
+    "found_x_results_by_caption": "Found {0} results by caption '{1}'",
+    "found_x_results_by_tag": "Found {0} results by tag '{1}'"
   }
 }

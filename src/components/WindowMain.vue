@@ -300,7 +300,12 @@ export default {
     async searchFilesByTags(tags_titles) {
       this.hideFile();
       this.files = await window.sqliteApi.findFilesByTags(tags_titles);
-      this.toast(`Found ${this.files.length} results by tag '${tags_titles}'`);
+      this.toast(
+        this.$t('toast.found_x_results_by_tag', [
+          this.files.length,
+          tags_titles
+        ])
+      );
     },
     async searchFilesByCaption(caption = '') {
       this.hideFile();
@@ -310,7 +315,12 @@ export default {
         [caption, caption]
       );
       this.files = files;
-      this.toast(`Found ${this.files.length} results by caption '${caption}'`);
+      this.toast(
+        this.$t('toast.found_x_results_by_caption', [
+          this.files.length,
+          caption
+        ])
+      );
     },
     async showFile(file) {
       this.$refs.dialog_show_file.showComponent(file);
@@ -324,7 +334,7 @@ export default {
       let path = folder.filePaths[0];
       console.log(`Loading folder ${path}`);
       await window.fileApi.addFilesFromFolder(path);
-      this.toast(`Folder ${path} has imported.`);
+      this.toast(this.$t('toast.folder_path_has_imported', [path]));
     },
     async openFile() {
       let file = await window.fileApi.openFile();
@@ -334,17 +344,17 @@ export default {
       let path = file.filePaths[0];
       console.log(`Chosen file ${path}`);
       await window.fileApi.addFile(path);
-      this.toast(`File ${path} has imported.`);
+      this.toast(this.$t('toast.file_path_has_imported', [path]));
     },
     async importFromClipboard() {
       const tmpFilePath = await window.fileApi.saveTempFileFromClipboard();
       if (!tmpFilePath) {
-        this.toast('Clipboard is empty.');
+        this.toast(this.$t('toast.clipboard_empty'));
         return false;
       }
       await window.fileApi.addFile(tmpFilePath);
       await window.fileApi.removeFile(tmpFilePath);
-      this.toast('File has imported from a clipboard.');
+      this.toast(this.$t('toast.file_has_imported_from_clipboard'));
     },
     async importFileFromUrl() {
       if (!this.showDialogUrlForImport) {
@@ -354,24 +364,28 @@ export default {
       }
       this.showDialogUrlForImport = false;
       if (!this.urlForImport) {
-        this.toast('Form is cancelled');
+        this.toast(this.$t('toast.form_cancelled'));
         return false;
       }
       const tmpFilePath = await window.fileApi.saveTempFileFromUrl(
         this.urlForImport
       );
       if (!tmpFilePath) {
-        this.toast(`Can't upload file from ${this.urlForImport}.`);
+        this.toast(
+          this.$t('toast.cannot_upload_file_from_url', [this.urlForImport])
+        );
         return false;
       }
       let { file_id } = await window.fileApi.addFile(tmpFilePath);
       await window.fileApi.removeFile(tmpFilePath);
       if (!file_id) {
-        this.toast(`Can't copy file from ${this.urlForImport}.`);
+        this.toast(
+          this.$t('toast.cannot_copy_file_from_url', [this.urlForImport])
+        );
         return false;
       }
       await window.sqliteApi.addUrlToFile(this.urlForImport, file_id);
-      this.toast(`File has imported from url '${this.urlForImport}'.`);
+      this.toast(this.$t('toast.file_has_imported', [this.urlForImport]));
     },
     async showAllTags() {
       this.tags = await window.sqliteApi.getAllTags();
@@ -401,7 +415,7 @@ export default {
           this.files[i].caption = caption;
         } catch (e) {
           console.error(e);
-          this.toast('Something wrong with scanning...');
+          this.toast(this.$t('toast.unknown_scan_error'));
         }
       }
     },
@@ -410,7 +424,7 @@ export default {
       this.hideFile();
       this.hideFiles();
       this.duplicatedFiles = dups;
-      this.toast(`${dups.length} pairs found`);
+      this.toast(this.$t('toast.dups_length_pairs_found', [dups.length]));
     },
     hideFiles() {
       this.files = null;
@@ -426,7 +440,7 @@ export default {
             (r) => r.id != file_id && r.f2_id != file_id
           );
           this.isShowConfirmDeleteFile = false;
-          this.toast('File has removed');
+          this.toast(this.$t('toast.file_has_removed'));
         });
       }
     },

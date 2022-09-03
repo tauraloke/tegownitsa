@@ -51,6 +51,19 @@
   },
   "toast": {
     "preferences_saved": "Настройки сохранены",
-    "start_loading_tags": "Начать загрузку тегов для {0} файлов"
+    "start_loading_tags": "Начать загрузку тегов для {0} файлов",
+    "file_has_removed": "Файл удален",
+    "dups_length_pairs_found": "Найдено {0} пар",
+    "unknown_scan_error": "Что-то не так со сканированием...",
+    "file_has_imported": "Файл был скачан с '{0}'.",
+    "cannot_copy_file_from_url": "Невозможно скопировать файл из {0}.",
+    "cannot_upload_file_from_url": "Не удается загрузить файл из {0}.",
+    "form_cancelled": "Форма отменена",
+    "file_has_imported_from_clipboard": "Файл импортирован из буфера обмена.",
+    "clipboard_empty": "Буфер обмена не содержит картинку.",
+    "file_path_has_imported": "Файл {0} импортирован.",
+    "folder_path_has_imported": "Папка {0} импортирована.",
+    "found_x_results_by_caption": "Найдено {0} результатов по тексту '{1}'",
+    "found_x_results_by_tag": "Найдено {0} результатов по тегу '{1}'"
   }
 }
