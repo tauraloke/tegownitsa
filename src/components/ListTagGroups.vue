@@ -52,9 +52,13 @@ export default {
     tags: {
       type: Object,
       required: true
+    },
+    closableTags: {
+      type: Boolean,
+      default: false
     }
   },
-  emits: { 'search-by-title': null, 'tag-added': null },
+  emits: { 'search-by-title': null, 'tag-added': null, 'tag-removed': null },
   data() {
     return {
       searchCaption: null,
@@ -67,13 +71,14 @@ export default {
   },
   methods: {
     isClosable(tag) {
-      return !!tag.file_tag_id;
+      return this.closableTags && !!tag.file_tag_id;
     },
     searchFilesByTag(title) {
       this.$emit('search-by-title', title);
     },
     removeTagFromFile(tag) {
       window.sqliteApi.unlinkTag(tag.file_tag_id);
+      this.$emit('tag-removed', tag);
       this.isRestoreToastVisible = true;
       this.tagToRestoring = tag;
     },

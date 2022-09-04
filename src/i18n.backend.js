@@ -1,4 +1,3 @@
-// TODO: экспортировать подключение к
 import config from './config/store.js';
 
 let language = 'en';

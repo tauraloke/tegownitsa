@@ -150,6 +150,8 @@
     <dialog-show-file
       ref="dialog_show_file"
       @search-by-tag="searchFilesByTag($event)"
+      @added-tag="tags.push($event)"
+      @tag-removed="tags = tags.filter((t) => t.id != $event?.id)"
       @toast="toast($event)"
     />
 
@@ -247,8 +249,15 @@ export default {
     };
   },
   watch: {
-    'appOptions.dark_theme': function (newValue, _oldValue) {
-      this.setTheme(newValue);
+    'appOptions.dark_theme': function (value) {
+      this.setTheme(value);
+      return true;
+    },
+    files: function (value) {
+      window.sqliteApi.getTagsForFiles(value.map((f) => f.id)).then((tags) => {
+        this.tags = tags;
+      });
+      return true;
     }
   },
   mounted() {
@@ -311,7 +320,6 @@ export default {
     },
     async searchFilesByCaption(caption = '') {
       this.hideFile();
-      this.tags = [];
       let files = await window.sqliteApi.queryAll(
         'SELECT * FROM files WHERE caption LIKE "%" || ? || "%" OR source_filename LIKE "%" || ? || "%"',
         [caption, caption]

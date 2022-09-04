@@ -47,9 +47,9 @@ export async function run(_event, db, file_id, title, locale, source_type) {
       'INSERT INTO file_tags (file_id, tag_id, source_type) VALUES (?, ?, ?)',
       [file_id, tag_id, source_type]
     );
-    let file_tag_id = (
-      await db.query('SELECT last_insert_rowid() AS file_tag_id')
-    ).file_tag_id;
+    let { file_tag_id } = await db.query(
+      'SELECT last_insert_rowid() AS file_tag_id'
+    );
     await db.query('UPDATE tags SET file_count = file_count + 1 WHERE id = ?', [
       tag_id
     ]);

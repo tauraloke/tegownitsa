@@ -27,11 +27,13 @@
             />
             <list-tag-groups
               :tags="tags"
+              closable-tags
               @search-by-title="
                 $emit('search-by-tag', $event);
                 hideComponent();
               "
               @tag-added="tags.push($event)"
+              @tag-removed="$emit('tag-removed', $event)"
             />
           </v-col>
           <v-col cols="12" md="8">
@@ -107,7 +109,7 @@ import ListTagGroups from '@/components/ListTagGroups.vue';
 export default {
   name: 'DialogShowFile',
   components: { FormAddNewTagToFile, ListTagGroups },
-  emits: ['search-by-tag', 'toast'],
+  emits: ['search-by-tag', 'toast', 'added-tag', 'tag-removed'],
   data() {
     return {
       isDialogVisible: false,
@@ -153,6 +155,7 @@ export default {
     }
   },
   methods: {
+    // Callable from parent component
     async showComponent(file) {
       if (!file?.id) {
         return false;
@@ -172,6 +175,7 @@ export default {
     },
     async afterAddTagHandler(event) {
       this.tags.push(event);
+      this.$emit('added-tag', event);
     },
     async updateCaption() {
       if (!this.currentFile?.id) {
@@ -195,6 +199,7 @@ export default {
         this.fileCaptionTextareaIcon = 'mdi-floppy';
       }
     },
+    // Callable from parent component
     updateTag({ newLocales, tagId }) {
       if (!this.isDialogVisible) {
         return false;
