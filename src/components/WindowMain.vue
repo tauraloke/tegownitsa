@@ -73,6 +73,7 @@
                     width="140"
                     contain
                     class="bg-grey-lighten-2 pointer-clickable"
+                    @click="showFile(file)"
                   />
                   <v-card-text>
                     {{ file.width }} x {{ file.height }}
@@ -101,6 +102,7 @@
                     width="140"
                     contain
                     class="bg-grey-lighten-2 pointer-clickable"
+                    @click="showFile(file.f2_id)"
                   />
                   <v-card-text>
                     {{ file.f2_width }} x {{ file.f2_height }}
@@ -323,6 +325,9 @@ export default {
       );
     },
     async showFile(file) {
+      if (typeof file === 'number') {
+        file = await window.sqliteApi.getFile(file);
+      }
       this.$refs.dialog_show_file.showComponent(file);
     },
     async hideFile() {
