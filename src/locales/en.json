@@ -135,5 +135,8 @@
       "russian": "Russian",
       "spanish": "Spanish"
     }
+  },
+  "list": {
+    "empty": "No tags in list"
   }
 }

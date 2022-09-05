@@ -1,5 +1,8 @@
 <template>
   <v-container>
+    <div v-if="!tags || tags.length == 0" style="text-align: center">
+      {{ $t('list.empty') }}
+    </div>
     <v-sheet
       v-for="group in tagsGroupped(tags)"
       :key="group.id"

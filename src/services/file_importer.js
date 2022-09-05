@@ -13,7 +13,7 @@ import {
 } from '../config/constants.json';
 import { EXIF } from '../config/source_type.json';
 import { randomDigit } from './utils.js';
-import { run } from '../api/sqlite_api/add_tag.js';
+import { run as addTag } from '../api/sqlite_api/add_tag.js';
 
 const PREVIEW_WIDTH = 140;
 
@@ -69,7 +69,7 @@ class FileImporter {
     //save keywords
     let source_type = EXIF;
     for (let i in tags) {
-      await run({}, this.db, file_id, tags[i], locale, source_type);
+      await addTag({}, this.db, file_id, tags[i], locale, source_type);
     }
   }
   async getPHash(absolutePath, fileImage) {

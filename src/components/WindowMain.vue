@@ -190,7 +190,7 @@
       <template #actions>
         <v-btn
           icon="mdi-close"
-          title="$t('button.close')"
+          :title="$t('button.close')"
           @click="isStatusMessageVisible = null"
         />
       </template>
@@ -254,6 +254,10 @@ export default {
       return true;
     },
     files: function (value) {
+      if (!value) {
+        this.tags = [];
+        return true;
+      }
       window.sqliteApi.getTagsForFiles(value.map((f) => f.id)).then((tags) => {
         this.tags = tags;
       });
