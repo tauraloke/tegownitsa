@@ -11,6 +11,7 @@ Now you can put your image collection in order... Or not.
 - Scan images and find them by a recognized text if you remember it.
 - Lurk tags or mark tags by your own hands.
 - Find images by tag net.
+- You can edit tags after right click.
 - Export images via a right click on an image and copying to clipboard.
 - Great! Now you have remembered the image you want... Perhaps.
 
