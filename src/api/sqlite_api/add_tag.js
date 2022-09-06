@@ -1,6 +1,9 @@
 import tagNamespaces from '../../config/tag_namespaces.json';
 
+const SQLITE_TRANSACTION_TIMEOUT = 100;
+
 export async function run(_event, db, file_id, title, locale, source_type) {
+  console.log('Add tag', title, locale, source_type);
   title = title.trim();
   if (!title || !locale || !file_id) {
     return false;
@@ -17,6 +20,9 @@ export async function run(_event, db, file_id, title, locale, source_type) {
     }
   }
   let namespace_id = tagNamespaces[namespace.toUpperCase()] || 0;
+  await new Promise(
+    (resolve) => setTimeout(resolve, SQLITE_TRANSACTION_TIMEOUT) //
+  ); // there is a problem with previous transactions
   try {
     await db.run('BEGIN TRANSACTION');
   } catch (error) {
