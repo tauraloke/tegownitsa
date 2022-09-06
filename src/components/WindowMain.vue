@@ -192,6 +192,26 @@
         />
       </template>
     </v-snackbar>
+
+    <v-footer v-if="jobs.length > 0" app>
+      {{ jobs.length }}
+      <div v-for="job in jobs" :key="job.uid">
+        <span>{{ job.name }} #{{ job.uid }}</span>
+        ---
+        <strong>{{ jobProgresses[job.uid] }}%</strong>
+        <v-progress-linear
+          v-model="jobProgresses[job.uid]"
+          color="blue-grey"
+          height="25"
+        >
+          <template #default="{ value }">
+            <span>{{ job.name }} #{{ job.uid }}</span>
+            :
+            <strong>{{ Math.ceil(value) }}%</strong>
+          </template>
+        </v-progress-linear>
+      </div>
+    </v-footer>
   </v-app>
 </template>
 
@@ -202,7 +222,9 @@ import DialogPreferences from '@/components/DialogPreferences.vue';
 import DialogShowFile from '@/components/DialogShowFile.vue';
 import DialogTagEditor from '@/components/DialogTagEditor.vue';
 
+import Job from '@/services/job.js';
 import TaskQueue from '@/services/task_queue.js';
+import IqdbTask from '@/services/tasks/iqdb_task.js';
 import constants from '@/config/constants.json';
 import FabricJobTagSourceStrategy from '@/services/tag_sources_strategies/fabric_tag_source_strateges.js';
 import { imageSimilarity } from '@/services/image_distance.js';
@@ -218,6 +240,7 @@ export default {
   },
   data() {
     return {
+      testProgress: 87, //TODO:REMOVE
       statusMessage: '',
       isStatusMessageVisible: false,
       tags: [],
@@ -225,12 +248,17 @@ export default {
       currentFileUrls: null,
       currentFileTags: [],
       files: [],
+      /** @type Object<string, TaskQueue> */
       task_queues: {},
       showDialogUrlForImport: false,
       urlForImport: null,
       duplicatedFiles: null,
       isShowConfirmDeleteFile: false,
-      fileIdForDeletion: null
+      fileIdForDeletion: null,
+      /** @type Job[] */
+      jobs: [],
+      /** @type Object<string, number> */
+      jobProgresses: {}
     };
   },
   watch: {
@@ -461,24 +489,24 @@ export default {
       if (iqdb_threshold === undefined) {
         iqdb_threshold = 0.8;
       }
+      let iqdbJob = new Job({
+        name: 'retrieving iqdb tags',
+        taskTotalCount: this.files.length,
+        queue: this.task_queues.iqdb,
+        vueComponent: this
+      });
+      iqdbJob.start();
       for (let i = 0; i < this.files.length; i++) {
-        let file = this.files[i];
-        this.task_queues.iqdb.addTask(async () => {
-          console.log(`Looking #${file.id} ${file['preview_path']} at IQDB`);
-          let response = await window.network.lookupIqdbFile(
-            file['preview_path']
-          );
-          if (response.ok && response?.data?.length > 0) {
-            let candidatesList = response.data?.filter(
-              (b) => b?.similarity > iqdb_threshold
-            );
-            strategy.run({
-              file,
-              jobList: this.task_queues,
-              candidatesList: candidatesList
-            });
-          }
-        });
+        let iqdbTask = new IqdbTask(
+          {
+            file: this.files[i],
+            iqdb_threshold,
+            strategy,
+            task_queues: this.task_queues
+          },
+          iqdbJob
+        );
+        this.task_queues.iqdb.addTask(iqdbTask);
       }
     },
     openPreferencesDialog() {
