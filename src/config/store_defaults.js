@@ -21,5 +21,6 @@ module.exports = {
   image_similarity_threshold: imageSimilarity(
     constants.BASE_DUPLICATE_HAMMING_THRESHOLD
   ),
-  lang: 'en'
+  lang: 'en',
+  import_exif_tags_as_tags: true
 };

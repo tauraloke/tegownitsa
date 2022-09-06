@@ -51,6 +51,11 @@
                 v-model="options.has_auto_updates"
                 :label="$t('settings.enable_auto_updates')"
               />
+
+              <v-checkbox
+                v-model="options.import_exif_tags_as_tags"
+                :label="$t('settings.import_exif_tags_as_tags')"
+              />
             </v-card-text>
           </v-card>
         </v-window-item>

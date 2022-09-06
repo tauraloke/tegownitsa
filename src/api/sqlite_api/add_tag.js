@@ -17,7 +17,18 @@ export async function run(_event, db, file_id, title, locale, source_type) {
     }
   }
   let namespace_id = tagNamespaces[namespace.toUpperCase()] || 0;
-  await db.run('BEGIN TRANSACTION');
+  try {
+    await db.run('BEGIN TRANSACTION');
+  } catch (error) {
+    console.log('Trying to begin transaction: failed', {
+      file_id,
+      title,
+      locale,
+      source_type,
+      error
+    });
+    return false;
+  }
   try {
     let tag = await db.query(
       'SELECT tags.id from tags LEFT JOIN tag_locales ON tags.id=tag_locales.tag_id WHERE tag_locales.title=? AND tag_locales.locale=? AND tags.namespace_id=?',

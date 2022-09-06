@@ -157,7 +157,9 @@ class FileImporter {
       imagehash,
       metadata
     );
-    await this.extractExifTags(file_id, exif);
+    if (config.get('import_exif_tags_as_tags')) {
+      await this.extractExifTags(file_id, exif);
+    }
 
     return { full_path: newFilePathInStorage, file_id: file_id };
   }
