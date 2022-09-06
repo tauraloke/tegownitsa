@@ -175,10 +175,7 @@
       </v-card>
     </v-dialog>
 
-    <dialog-preferences
-      ref="dialog_preferences"
-      @option-changed="updateAppOptions"
-    />
+    <dialog-preferences ref="dialog_preferences" />
 
     <dialog-tag-editor
       ref="dialog_tag_editor"
@@ -199,8 +196,6 @@
 </template>
 
 <script>
-import { useTheme } from 'vuetify';
-
 import FormSearchFiles from '@/components/FormSearchFiles.vue';
 import ListTagGroups from '@/components/ListTagGroups.vue';
 import DialogPreferences from '@/components/DialogPreferences.vue';
@@ -221,15 +216,6 @@ export default {
     DialogShowFile,
     DialogTagEditor
   },
-  setup() {
-    const theme = useTheme();
-    return {
-      theme,
-      setTheme: (isDark) => {
-        theme.global.name.value = isDark ? 'dark' : 'light';
-      }
-    };
-  },
   data() {
     return {
       statusMessage: '',
@@ -242,17 +228,12 @@ export default {
       task_queues: {},
       showDialogUrlForImport: false,
       urlForImport: null,
-      appOptions: {},
       duplicatedFiles: null,
       isShowConfirmDeleteFile: false,
       fileIdForDeletion: null
     };
   },
   watch: {
-    'appOptions.dark_theme': function (value) {
-      this.setTheme(value);
-      return true;
-    },
     files: function (value) {
       if (!value) {
         this.tags = [];
@@ -288,7 +269,7 @@ export default {
     this.showAllTags();
     window.configApi.getConfig('dark_theme').then((isDark) => {
       if (isDark) {
-        this.setTheme(isDark);
+        this.$root.setTheme(isDark);
       }
     });
     window.configApi.getConfig('tag_source_iqdb_bottom_cooldown').then((bc) => {
@@ -502,10 +483,6 @@ export default {
     },
     openPreferencesDialog() {
       this.$refs.dialog_preferences.showComponent();
-    },
-    updateAppOptions(name, value) {
-      this.toast(this.$t('toast.preferences_saved'));
-      this.appOptions[name] = value;
     },
     redrawTag({ newLocales, tagId }) {
       this.tags = this.tags.map((t) => {

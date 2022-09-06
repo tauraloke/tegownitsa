@@ -135,7 +135,10 @@
       "russian": "Russian",
       "spanish": "Spanish"
     },
-    "import_exif_tags_as_tags": "Extract exif tags to tag pool of imported image"
+    "import_exif_tags_as_tags": "Extract exif tags to tag pool of imported image",
+    "dialog": {
+      "title": "Preferences"
+    }
   },
   "list": {
     "empty": "No tags in list"

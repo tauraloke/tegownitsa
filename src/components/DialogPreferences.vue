@@ -1,5 +1,17 @@
 <template>
   <v-dialog v-model="isDialogVisible">
+    <v-toolbar>
+      <v-toolbar-title>
+        {{ dialogTitle }}
+      </v-toolbar-title>
+      <v-toolbar-items>
+        <v-btn
+          icon="mdi-close"
+          :title="$t('button.back')"
+          @click="hideComponent()"
+        />
+      </v-toolbar-items>
+    </v-toolbar>
     <v-card class="d-flex flex-row">
       <v-tabs v-model="tab" direction="vertical" color="primary">
         <v-tab value="application">
@@ -181,6 +193,8 @@ export default {
   data() {
     return {
       isDialogVisible: false,
+      dialogTitle: this.$t('settings.dialog.title'),
+      dialogTitleTimeout: null,
       tab: 'application',
       options: {},
       isWatchersActive: false,
@@ -304,7 +318,11 @@ export default {
   },
   methods: {
     showComponent() {
+      this.dialogTitle = this.$t('settings.dialog.title');
       this.isDialogVisible = true;
+    },
+    hideComponent() {
+      this.isDialogVisible = false;
     },
     _updateOption(key, value) {
       console.log('Update option', key, value);
@@ -322,7 +340,17 @@ export default {
         window.busApi.changeLanguage(value);
       }
       window.configApi.setConfig(key, value);
-      this.$emit('option-changed', key, value);
+      if (key == 'dark_theme') {
+        this.$root.setTheme(value);
+      }
+      this.blinkTitle(this.$t('toast.preferences_saved'));
+    },
+    blinkTitle(msg) {
+      this.dialogTitle = msg;
+      clearTimeout(this.dialogTitleTimeout);
+      this.dialogTitleTimeout = setTimeout(() => {
+        this.dialogTitle = this.$t('settings.dialog.title');
+      }, 4000);
     }
   }
 };
