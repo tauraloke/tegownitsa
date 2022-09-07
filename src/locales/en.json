@@ -68,7 +68,8 @@
     "folder_path_has_imported": "Folder {0} has imported.",
     "found_x_results_by_caption": "Found {0} results by caption '{1}'",
     "found_x_results_by_tag": "Found {0} results by tag '{1}'",
-    "tag_unlinked_from_file": "Tag '{0}' has unlinked from this file."
+    "tag_unlinked_from_file": "Tag '{0}' has unlinked from this file.",
+    "no_new_files_in_folder": "No new file in a folder"
   },
   "form_search_files": {
     "find_by_tags_print_and_choose": "Find by tags: print and choose",
@@ -148,6 +149,7 @@
     "done": "Job is done",
     "scan_selected_files": "Scan selected files",
     "retrieving_tags_from_sources": "Retrieving tags",
-    "cancel": "Cancel this job"
+    "cancel": "Cancel this job",
+    "import_folder": "Importing folder"
   }
 }

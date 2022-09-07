@@ -109,7 +109,7 @@ npm start
 - [x] Adjust HTML and styles in the application.
 - [x] Move Tesseract language list to settings.
 - [x] i18n.
-- [ ] Make job interface for scanning and tag search.
+- [x] Make job interface for scanning and tag search.
 - [ ] Pagination.
 - [ ] Add Saucenao API requests with a private token.
 

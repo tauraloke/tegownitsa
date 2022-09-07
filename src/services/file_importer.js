@@ -40,7 +40,7 @@ class FileImporter {
       extname(absolutePath)
     );
   }
-  async extractExifTags(file_id, exif) {
+  extractExifTags(file_id, exif) {
     // try to extract exif tags
     if (!exif) {
       return false;
@@ -69,7 +69,7 @@ class FileImporter {
     //save keywords
     let source_type = EXIF;
     for (let i in tags) {
-      await addTag({}, this.db, file_id, tags[i], locale, source_type);
+      addTag({}, this.db, file_id, tags[i], locale, source_type);
     }
   }
   async getPHash(absolutePath, fileImage) {
@@ -98,10 +98,11 @@ class FileImporter {
     metadata
   ) {
     let { file_id } = await this.db.query(
-      'INSERT INTO files (full_path, preview_path, source_filename, imagehash, width, height, caption, exif_make, exif_model, exif_latitude, exif_longitude, exif_create_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id AS file_id;',
+      'INSERT INTO files (full_path, preview_path, source_path, source_filename, imagehash, width, height, caption, exif_make, exif_model, exif_latitude, exif_longitude, exif_create_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id AS file_id;',
       [
         newFilePathInStorage,
         newPreviewPathInStorage,
+        absolutePath,
         basename(absolutePath),
         imagehash,
         metadata.width,
@@ -155,7 +156,7 @@ class FileImporter {
       metadata
     );
     if (config.get('import_exif_tags_as_tags')) {
-      await this.extractExifTags(file_id, exif);
+      this.extractExifTags(file_id, exif);
     }
 
     return { full_path: newFilePathInStorage, file_id: file_id };

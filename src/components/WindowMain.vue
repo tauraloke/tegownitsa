@@ -366,8 +366,26 @@ export default {
       if (!(folder && folder.filePaths && folder.filePaths[0])) return false;
       let path = folder.filePaths[0];
       console.log(`Loading folder ${path}`);
-      await window.fileApi.addFilesFromFolder(path);
-      this.toast(this.$t('toast.folder_path_has_imported', [path]));
+      /** @type string[] */
+      let fileList = await window.fileApi.getNewFilenamesFromFolder(path);
+      console.log('length', fileList.length); //TODO: remove
+      if (fileList.length == 0) {
+        this.toast(this.$t('toast.no_new_files_in_folder'));
+        return false;
+      }
+      let job = new Job({
+        name: this.$t('jobs.import_folder'),
+        vueComponent: this,
+        taskTotalCount: fileList.length
+      });
+      job.start();
+      for (let i = 0; i < fileList.length; i++) {
+        if (!job?.isActive()) {
+          break;
+        }
+        await window.fileApi.addFile(fileList[i]);
+        job.incrementProgress(1);
+      }
     },
     async openFile() {
       let file = await window.fileApi.openFile();
@@ -440,6 +458,9 @@ export default {
       scanJob.start();
 
       for (let i = 0; i < filesToScan.length; i++) {
+        if (!scanJob?.isActive()) {
+          break;
+        }
         let file = filesToScan[i];
         try {
           console.log('Scan file: ', file);

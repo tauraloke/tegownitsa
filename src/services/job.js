@@ -35,6 +35,7 @@ export default class Job {
     this.vueComponent.jobs.push(this);
     this.vueComponent.jobProgresses[this.uid] = 0;
     this.timeStart = Date.now();
+    this.active = true;
   }
   /**
    * @param {number} step
@@ -55,6 +56,9 @@ export default class Job {
       this.destroy();
     }
   }
+  isActive() {
+    return this.active;
+  }
   getTimeLeft() {
     if (this.solvedTaskCount == 0) {
       return '?';
@@ -72,10 +76,10 @@ export default class Job {
     this.destroy();
   }
   destroy() {
+    this.active = false;
     this.vueComponent.jobProgresses[this.uid] = undefined;
     this.vueComponent.jobs = this.vueComponent.jobs.filter(
       (j) => j.uid != this.uid
     );
-    delete this;
   }
 }

@@ -68,7 +68,8 @@
     "folder_path_has_imported": "Папка {0} импортирована.",
     "found_x_results_by_caption": "Найдено {0} результатов по тексту '{1}'",
     "found_x_results_by_tag": "Найдено {0} результатов по тегу '{1}'",
-    "tag_unlinked_from_file": "Тег \"{0}\" отсоединен от этого файла."
+    "tag_unlinked_from_file": "Тег \"{0}\" отсоединен от этого файла.",
+    "no_new_files_in_folder": "Нет новых файлов в папке"
   },
   "form_search_files": {
     "find_by_tags_print_and_choose": "Поиск по тегам: печатайте и выбирайте",
@@ -148,6 +149,7 @@
     "done": "Задача выполнена",
     "scan_selected_files": "Распознать текст",
     "retrieving_tags_from_sources": "Добыча тегов",
-    "cancel": "Отменить это задание"
+    "cancel": "Отменить это задание",
+    "import_folder": "Импорт папки"
   }
 }
