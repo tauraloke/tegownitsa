@@ -193,8 +193,8 @@
       </template>
     </v-snackbar>
 
-    <v-footer v-if="jobs.length > 0" app>
-      <v-row v-for="job in jobs" :key="job.uid" width="100%">
+    <v-footer v-if="jobs.length > 0" app style="display: block !important">
+      <v-row v-for="job in jobs" :key="job.uid">
         <v-col cols="12" sm="11">
           <v-progress-linear
             v-model="jobProgresses[job.uid]"
