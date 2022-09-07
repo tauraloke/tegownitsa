@@ -97,8 +97,8 @@ class FileImporter {
     imagehash,
     metadata
   ) {
-    await this.db.query(
-      'INSERT INTO files (full_path, preview_path, source_filename, imagehash, width, height, caption, exif_make, exif_model, exif_latitude, exif_longitude, exif_create_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
+    let { file_id } = await this.db.query(
+      'INSERT INTO files (full_path, preview_path, source_filename, imagehash, width, height, caption, exif_make, exif_model, exif_latitude, exif_longitude, exif_create_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id AS file_id;',
       [
         newFilePathInStorage,
         newPreviewPathInStorage,
@@ -113,9 +113,6 @@ class FileImporter {
         exif.GPSLongitude,
         exif.CreateDate
       ]
-    );
-    let { file_id } = await this.db.query(
-      'SELECT MAX(id) AS file_id FROM files'
     );
     return file_id;
   }
