@@ -1,7 +1,5 @@
 import tagNamespaces from '../../config/tag_namespaces.json';
 
-const SQLITE_TRANSACTION_TIMEOUT = 100;
-
 export async function run(_event, db, file_id, title, locale, source_type) {
   console.log('Add tag', title, locale, source_type);
   title = title.trim();
@@ -20,57 +18,40 @@ export async function run(_event, db, file_id, title, locale, source_type) {
     }
   }
   let namespace_id = tagNamespaces[namespace.toUpperCase()] || 0;
-  await new Promise(
-    (resolve) => setTimeout(resolve, SQLITE_TRANSACTION_TIMEOUT) //
-  ); // there is a problem with previous transactions
-  try {
-    await db.run('BEGIN TRANSACTION');
-  } catch (error) {
-    console.log('Trying to begin transaction: failed', {
-      file_id,
-      title,
-      locale,
-      source_type,
-      error
-    });
-    return false;
-  }
+
   try {
     let tag = await db.query(
       'SELECT tags.id from tags LEFT JOIN tag_locales ON tags.id=tag_locales.tag_id WHERE tag_locales.title=? AND tag_locales.locale=? AND tags.namespace_id=?',
       [title, locale, namespace_id]
     );
     if (tag) {
+      // check tags for dups in this file
       tag_id = tag['id'];
+      let checkDup = await db.query(
+        'SELECT * FROM file_tags WHERE file_id=? AND tag_id=? AND source_type=?',
+        [file_id, tag_id, source_type]
+      );
+      if (checkDup) {
+        return false;
+      }
     } else {
-      await db.run('INSERT INTO tags (id, namespace_id) VALUES (null, ?)', [
-        namespace_id
-      ]);
-      tag_id = (await db.query('SELECT last_insert_rowid() AS tag_id')).tag_id;
+      // create tag
+      ({ tag_id } = await db.query(
+        'INSERT INTO tags (id, namespace_id) VALUES (null, ?) RETURNING id AS tag_id',
+        [namespace_id]
+      ));
       await db.query(
         'INSERT INTO tag_locales (tag_id, title, locale) VALUES (?, ?, ?)',
         [tag_id, title, locale]
       );
     }
-    let checkDup = await db.query(
-      'SELECT * FROM file_tags WHERE file_id=? AND tag_id=? AND source_type=?',
-      [file_id, tag_id, source_type]
-    );
-    if (checkDup) {
-      await db.run('COMMIT');
-      return false;
-    }
-    await db.query(
-      'INSERT INTO file_tags (file_id, tag_id, source_type) VALUES (?, ?, ?)',
-      [file_id, tag_id, source_type]
-    );
     let { file_tag_id } = await db.query(
-      'SELECT last_insert_rowid() AS file_tag_id'
+      'INSERT INTO file_tags (file_id, tag_id, source_type) VALUES (?, ?, ?) RETURNING id AS file_tag_id',
+      [file_id, tag_id, source_type]
     );
-    await db.query('UPDATE tags SET file_count = file_count + 1 WHERE id = ?', [
+    await db.run('UPDATE tags SET file_count = file_count + 1 WHERE id = ?', [
       tag_id
     ]);
-    await db.run('COMMIT');
 
     return {
       id: tag_id,
@@ -82,7 +63,6 @@ export async function run(_event, db, file_id, title, locale, source_type) {
     };
   } catch (error) {
     console.log(error);
-    await db.run('ROLLBACK');
     return false;
   }
 }
