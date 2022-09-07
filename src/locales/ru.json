@@ -41,7 +41,8 @@
     "files": "Файлы",
     "tags": "Теги",
     "similarity": "Сходство",
-    "remove_this_file": "Удалить этот файл?"
+    "remove_this_file": "Удалить этот файл?",
+    "no_files_to_scan": "Нет новых файлов для сканирования"
   },
   "button": {
     "cancel": "Отмена",
@@ -54,7 +55,6 @@
   },
   "toast": {
     "preferences_saved": "Настройки сохранены",
-    "start_loading_tags": "Начать загрузку тегов для {0} файлов",
     "file_has_removed": "Файл удален",
     "dups_length_pairs_found": "Найдено {0} пар",
     "unknown_scan_error": "Что-то не так со сканированием...",
@@ -131,7 +131,9 @@
       "japanese_vertical": "Японский (вертикальный)",
       "portuguese": "Португальский",
       "russian": "Русский",
-      "spanish": "Испанский"
+      "spanish": "Испанский",
+      "chinese_simpl": "Китайский (упрощ.)",
+      "chinese_simpl_vert": "Китайский (упрощ., вертикальный)"
     },
     "import_exif_tags_as_tags": "Извлекать теги exif в пул тегов индексируемого изображения",
     "dialog": {
@@ -140,5 +142,11 @@
   },
   "list": {
     "empty": "Нет тегов в списке"
+  },
+  "jobs": {
+    "time_left": "Прогноз оставшегося времени",
+    "done": "Задача выполнена",
+    "scan_selected_files": "Распознать текст",
+    "retrieving_tags_from_sources": "Добыча тегов"
   }
 }

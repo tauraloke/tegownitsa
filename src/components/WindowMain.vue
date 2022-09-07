@@ -194,23 +194,20 @@
     </v-snackbar>
 
     <v-footer v-if="jobs.length > 0" app>
-      {{ jobs.length }}
-      <div v-for="job in jobs" :key="job.uid">
-        <span>{{ job.name }} #{{ job.uid }}</span>
-        ---
-        <strong>{{ jobProgresses[job.uid] }}%</strong>
+      <v-row v-for="job in jobs" :key="job.uid">
         <v-progress-linear
           v-model="jobProgresses[job.uid]"
           color="blue-grey"
           height="25"
         >
           <template #default="{ value }">
-            <span>{{ job.name }} #{{ job.uid }}</span>
-            :
-            <strong>{{ Math.ceil(value) }}%</strong>
+            #{{ job.uid }} | <strong>{{ job.name }}</strong> |
+            {{ job.solvedTaskCount }} / {{ job.taskTotalCount }} ({{
+              Math.ceil(value)
+            }}%) | {{ $t('jobs.time_left') }}: {{ job.getTimeLeft() }}
           </template>
         </v-progress-linear>
-      </div>
+      </v-row>
     </v-footer>
   </v-app>
 </template>
@@ -240,7 +237,6 @@ export default {
   },
   data() {
     return {
-      testProgress: 87, //TODO:REMOVE
       statusMessage: '',
       isStatusMessageVisible: false,
       tags: [],
@@ -417,11 +413,23 @@ export default {
       this.tags = await window.sqliteApi.getAllTags();
     },
     async scanSelectedFiles() {
-      for (let i = 0; i < this.files.length; i++) {
-        let file = this.files[i];
-        if (file?.caption != constants.CAPTION_YET_NOT_SCANNED) {
-          continue;
-        }
+      let filesToScan = this.files.filter(
+        (f) => f?.caption == constants.CAPTION_YET_NOT_SCANNED
+      );
+      if (filesToScan.length == 0) {
+        this.toast(this.$t('main_window.no_files_to_scan'));
+        return false;
+      }
+
+      let scanJob = new Job({
+        name: this.$t('jobs.scan_selected_files'),
+        taskTotalCount: filesToScan.length,
+        vueComponent: this
+      });
+      scanJob.start();
+
+      for (let i = 0; i < filesToScan.length; i++) {
+        let file = filesToScan[i];
         try {
           console.log('Scan file: ', file);
           let recognized = await window.ocrApi.recognize(file['full_path']);
@@ -438,10 +446,12 @@ export default {
             'UPDATE files SET caption=? WHERE id=?;',
             [caption, file['id']]
           );
-          this.files[i].caption = caption;
+          filesToScan[i].caption = caption;
+          scanJob.incrementProgress(1);
         } catch (e) {
           console.error(e);
           this.toast(this.$t('toast.unknown_scan_error'));
+          scanJob.destroy();
         }
       }
     },
@@ -478,7 +488,6 @@ export default {
       this.isStatusMessageVisible = true;
     },
     async loadTagsFromIQDB() {
-      this.toast(this.$t('toast.start_loading_tags', [this.files.length]));
       let strategy = FabricJobTagSourceStrategy.getStrategy({
         key: await window.configApi.getConfig('tag_source_strategies'),
         engine: 'iqdb'
@@ -490,7 +499,7 @@ export default {
         iqdb_threshold = 0.8;
       }
       let iqdbJob = new Job({
-        name: 'retrieving iqdb tags',
+        name: this.$t('jobs.retrieving_tags_from_sources'),
         taskTotalCount: this.files.length,
         queue: this.task_queues.iqdb,
         vueComponent: this

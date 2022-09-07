@@ -41,7 +41,8 @@
     "files": "Files",
     "tags": "Tags",
     "similarity": "Similarity",
-    "remove_this_file": "Remove this file?"
+    "remove_this_file": "Remove this file?",
+    "no_files_to_scan": "No new files to scan"
   },
   "button": {
     "close": "Close",
@@ -54,7 +55,6 @@
   },
   "toast": {
     "preferences_saved": "Preferences saved",
-    "start_loading_tags": "Start loading tags for {0} files",
     "file_has_removed": "File has removed",
     "dups_length_pairs_found": "{0} pairs found",
     "unknown_scan_error": "Something wrong with scanning...",
@@ -142,5 +142,11 @@
   },
   "list": {
     "empty": "No tags in list"
+  },
+  "jobs": {
+    "time_left": "Remaining Time Prediction",
+    "done": "Job is done",
+    "scan_selected_files": "Scan selected files",
+    "retrieving_tags_from_sources": "Retrieving tags"
   }
 }

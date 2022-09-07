@@ -4,11 +4,23 @@ import { randomDigit } from './utils.js';
 // eslint-disable-next-line no-unused-vars
 import TaskQueue from './task_queue.js';
 
+/**
+ * @param {number} digits
+ * @returns {string}
+ */
+function prepareTimeDigits(digits) {
+  digits = Math.floor(digits);
+  if (digits < 10) {
+    return `0${digits}`;
+  }
+  return digits.toString();
+}
+
 export default class Job {
   /**
    * @param {object} arg
    * @param {number} arg.taskTotalCount
-   * @param {TaskQueue} arg.queue
+   * @param {TaskQueue|null} arg.queue
    * @param {object} arg.vueComponent
    */
   constructor({ name, taskTotalCount, queue, vueComponent }) {
@@ -39,20 +51,30 @@ export default class Job {
     }
   }
   getTimeLeft() {
-    if (this.solvedTaskCount) {
-      return -1;
+    if (this.solvedTaskCount == 0) {
+      return '?';
     }
     let elapsedTime = Date.now() - this.timeStart;
-    return elapsedTime * (this.taskTotalCount / this.solvedTaskCount - 1);
+    let timeLeftSec =
+      (elapsedTime * (this.taskTotalCount / this.solvedTaskCount - 1)) / 1000;
+    let hours = prepareTimeDigits(timeLeftSec / 3600);
+    let munutes = prepareTimeDigits((timeLeftSec % 3600) / 60);
+    let seconds = prepareTimeDigits(timeLeftSec % 60);
+    return `${hours}:${munutes}:${seconds}`;
   }
   cancel() {
-    this.queue.cancelTaskByJob(this.uid);
+    this.queue?.cancelTaskByJob(this.uid);
     this.destroy();
   }
   destroy() {
     this.vueComponent.jobProgresses[this.uid] = undefined;
     this.vueComponent.jobs = this.vueComponent.jobs.filter(
       (j) => j.uid != this.uid
+    );
+    this.vueComponent?.toast(
+      `${this.vueComponent.$t('jobs.done')}: ${this.name}, ${
+        this.solvedTaskCount
+      }/${this.taskTotalCount}`
     );
     delete this;
   }
