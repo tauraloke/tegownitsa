@@ -147,6 +147,7 @@
     "time_left": "Прогноз оставшегося времени",
     "done": "Задача выполнена",
     "scan_selected_files": "Распознать текст",
-    "retrieving_tags_from_sources": "Добыча тегов"
+    "retrieving_tags_from_sources": "Добыча тегов",
+    "cancel": "Отменить это задание"
   }
 }

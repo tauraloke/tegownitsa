@@ -147,6 +147,7 @@
     "time_left": "Remaining Time Prediction",
     "done": "Job is done",
     "scan_selected_files": "Scan selected files",
-    "retrieving_tags_from_sources": "Retrieving tags"
+    "retrieving_tags_from_sources": "Retrieving tags",
+    "cancel": "Cancel this job"
   }
 }

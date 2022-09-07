@@ -194,19 +194,30 @@
     </v-snackbar>
 
     <v-footer v-if="jobs.length > 0" app>
-      <v-row v-for="job in jobs" :key="job.uid">
-        <v-progress-linear
-          v-model="jobProgresses[job.uid]"
-          color="blue-grey"
-          height="25"
-        >
-          <template #default="{ value }">
-            #{{ job.uid }} | <strong>{{ job.name }}</strong> |
-            {{ job.solvedTaskCount }} / {{ job.taskTotalCount }} ({{
-              Math.ceil(value)
-            }}%) | {{ $t('jobs.time_left') }}: {{ job.getTimeLeft() }}
-          </template>
-        </v-progress-linear>
+      <v-row v-for="job in jobs" :key="job.uid" width="100%">
+        <v-col cols="12" sm="11">
+          <v-progress-linear
+            v-model="jobProgresses[job.uid]"
+            color="blue-grey"
+            height="25"
+          >
+            <template #default="{ value }">
+              #{{ job.uid }} | <strong>{{ job.name }}</strong> |
+              {{ job.solvedTaskCount }} / {{ job.taskTotalCount }} ({{
+                Math.ceil(value)
+              }}%) | {{ $t('jobs.time_left') }}: {{ job.getTimeLeft() }}
+            </template>
+          </v-progress-linear>
+        </v-col>
+        <v-col cols="12" sm="1">
+          <a
+            :title="$t('jobs.cancel')"
+            style="cursor: pointer"
+            @click="job.cancel()"
+          >
+            {{ $t('button.cancel') }}
+          </a>
+        </v-col>
       </v-row>
     </v-footer>
   </v-app>

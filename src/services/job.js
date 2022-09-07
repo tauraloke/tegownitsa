@@ -47,6 +47,11 @@ export default class Job {
     }
     if (this.solvedTaskCount == this.taskTotalCount) {
       console.log(`Job ${this.name} is done`);
+      this.vueComponent?.toast(
+        `${this.vueComponent.$t('jobs.done')}: ${this.name}, ${
+          this.solvedTaskCount
+        }/${this.taskTotalCount}`
+      );
       this.destroy();
     }
   }
@@ -70,11 +75,6 @@ export default class Job {
     this.vueComponent.jobProgresses[this.uid] = undefined;
     this.vueComponent.jobs = this.vueComponent.jobs.filter(
       (j) => j.uid != this.uid
-    );
-    this.vueComponent?.toast(
-      `${this.vueComponent.$t('jobs.done')}: ${this.name}, ${
-        this.solvedTaskCount
-      }/${this.taskTotalCount}`
     );
     delete this;
   }
