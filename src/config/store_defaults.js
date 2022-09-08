@@ -22,5 +22,6 @@ module.exports = {
     constants.BASE_DUPLICATE_HAMMING_THRESHOLD
   ),
   lang: 'en',
-  import_exif_tags_as_tags: true
+  import_exif_tags_as_tags: true,
+  tag_source_threshold_saucenao: 80
 };

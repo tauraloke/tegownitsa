@@ -138,6 +138,16 @@
                 {{ $t('settings.iqdb_similarity_threshold') }}
               </div>
 
+              <v-slider
+                v-model="options.tag_source_threshold_saucenao"
+                thumb-label="always"
+                :min="0"
+                :max="100"
+              ></v-slider>
+              <div class="text-caption mb-8">
+                {{ $t('settings.iqdb_similarity_threshold') }}
+              </div>
+
               <v-text-field
                 v-model="options.tag_source_saucenao_api_key"
                 :label="$t('settings.saucenao_key')"

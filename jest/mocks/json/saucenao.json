@@ -1,0 +1,318 @@
+{
+  "header": {
+    "user_id": "some_number",
+    "account_type": "1",
+    "short_limit": "4",
+    "long_limit": "100",
+    "long_remaining": 94,
+    "short_remaining": 3,
+    "status": 0,
+    "results_requested": 16,
+    "index": {},
+    "search_depth": "128",
+    "minimum_similarity": 36.67,
+    "query_image_display": "userdata/nope.jpg.png",
+    "query_image": "nope.jpg",
+    "results_returned": 16
+  },
+  "results": [
+    {
+      "header": {
+        "similarity": "94.07",
+        "thumbnail": "https://img3.saucenao.com/dA/53841/538410952.jpg?auth=Pd2sLbunoyrTa4-Q-9teHQ&exp=1663095600",
+        "index_id": 34,
+        "index_name": "Index #34: deviantArt - 538410952.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": ["https://deviantart.com/view/538410952"],
+        "title": "Frostfire Yrel - altered version",
+        "da_id": "538410952",
+        "author_name": "Noxychu",
+        "author_url": "http://noxychu.deviantart.com"
+      }
+    },
+    {
+      "header": {
+        "similarity": "46.46",
+        "thumbnail": "https://img3.saucenao.com/furaffinity/1537/15371395.jpg?auth=LK0QcigIBwEhHT31RvSccg&exp=1663095600",
+        "index_id": 40,
+        "index_name": "Index #40: FurAffinity - 15371395.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": ["https://www.furaffinity.net/view/15371395"],
+        "title": "Snowpuppies!",
+        "fa_id": 15371395,
+        "author_name": "Noxychu",
+        "author_url": "https://www.furaffinity.net/user/noxychu"
+      }
+    },
+    {
+      "header": {
+        "similarity": "35.67",
+        "thumbnail": "https://img1.saucenao.com/res/pixiv/2554/25549161_s.jpg?auth=YnGEWSlODWoA34TG2Foz5w&exp=1663095600",
+        "index_id": 5,
+        "index_name": "Index #5: Pixiv Images - 25549161_s.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": [
+          "https://www.pixiv.net/member_illust.php?mode=medium&illust_id=25549161"
+        ],
+        "title": "ぎゅ！",
+        "pixiv_id": 25549161,
+        "member_name": "あいこ",
+        "member_id": 1143591
+      }
+    },
+    {
+      "header": {
+        "similarity": "35.53",
+        "thumbnail": "https://img1.saucenao.com/res/pixiv/8675/manga/86754002_p6.jpg?auth=h1QBsirD41DTH5sJT_SzYw&exp=1663095600",
+        "index_id": 5,
+        "index_name": "Index #5: Pixiv Images - 86754002_p6.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": [
+          "https://www.pixiv.net/member_illust.php?mode=medium&illust_id=86754002"
+        ],
+        "title": "キャスギルぐだ♀ついったろぐ①",
+        "pixiv_id": 86754002,
+        "member_name": "たかはし",
+        "member_id": 676644
+      }
+    },
+    {
+      "header": {
+        "similarity": "35.03",
+        "thumbnail": "https://img3.saucenao.com/booru/c/1/c179bb908c43191503bc653588173544_6.jpg?auth=ZrZJhyVp9ohr4Yk2i8ZQBw&exp=1663095600",
+        "index_id": 29,
+        "index_name": "Index #29: e621.net - c179bb908c43191503bc653588173544_6.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": ["https://e621.net/post/show/624965"],
+        "e621_id": 624965,
+        "creator": "chris rahn",
+        "material": "",
+        "characters": "",
+        "source": ""
+      }
+    },
+    {
+      "header": {
+        "similarity": "34.57",
+        "thumbnail": "https://img3.saucenao.com/vpc/frame.php?expires=1663095600&auth=xu9XxH9zdaTlkkEhxRDFInbxEmw&rsz=0&enc=YW5pbWUvTWFqb2trbyBNZWctY2hhbi_jgJDjgqLjg4vjg6HjgJEg6a2U5aWz44Gj5a2Q44Oh44Kw44Gh44KD44KTIOesrDE06KmxIOOAjOW5u-OBruerqueQtOOAje-8iDY0MMOXNDgwIFdNVjkpLmF2aS45NzE2Ni56aXA&sub=27329-26-1142058.jpg",
+        "index_id": 21,
+        "index_name": "Index #21: Anime* - 27329-26-1142058.jpg (97166)",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": [
+          "https://anidb.net/anime/1906",
+          "https://myanimelist.net/anime/3388/",
+          "https://anilist.co/anime/3388/"
+        ],
+        "source": "Majokko Meg-chan",
+        "anidb_aid": 1906,
+        "mal_id": 3388,
+        "anilist_id": 3388,
+        "part": "14",
+        "year": "1974-1975",
+        "est_time": "00:19:02 / 00:24:51"
+      }
+    },
+    {
+      "header": {
+        "similarity": "34.39",
+        "thumbnail": "https://img3.saucenao.com/artstation/1315/13150258_51009240.jpg?auth=9dDB2zmoWi4rQa4JY86org&exp=1663095600",
+        "index_id": 39,
+        "index_name": "Index #39: Artstation - 13150258_51009240.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": ["https://www.artstation.com/artwork/PeZbYZ"],
+        "title": "Commission",
+        "as_project": "PeZbYZ",
+        "author_name": "Jay Peg",
+        "author_url": "https://www.artstation.com/jaypeg"
+      }
+    },
+    {
+      "header": {
+        "similarity": "34.31",
+        "thumbnail": "https://img3.saucenao.com/skeb/397/397873-20804-n_hyr%2Bworks%2B5-0.jpg?auth=i6u-9UkoBgJrfoJ9Vdi1Hg&exp=1663095600",
+        "index_id": 44,
+        "index_name": "Index #44: Skeb - 397873-20804-n_hyr+works+5-0.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": ["https://skeb.jp//@n_hyr/works/5"],
+        "path": "/@n_hyr/works/5",
+        "creator": "@n_hyr",
+        "creator_name": "いづみはじめ",
+        "author_name": null,
+        "author_url": "https://skeb.jp/@n_hyr"
+      }
+    },
+    {
+      "header": {
+        "similarity": "34.07",
+        "thumbnail": "https://img3.saucenao.com/ehentai/f6/dd/f6ddd588b9cd148a33a487d54c4aea10ae022600.jpg?auth=3sf5u7obL8dwK6KRt51Szg&exp=1663095600",
+        "index_id": 38,
+        "index_name": "Index #38: H-Misc (E-Hentai) - f6ddd588b9cd148a33a487d54c4aea10ae022600.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "source": "AYAKASHI H",
+        "creator": ["fugetsu taku", "toma", "tottori sakyuu", "apricot"],
+        "eng_name": "[APRICOT] AYAKASHI H",
+        "jp_name": "[APRICOT] アヤカシエッチ"
+      }
+    },
+    {
+      "header": {
+        "similarity": "33.97",
+        "thumbnail": "https://img1.saucenao.com/res/pixiv/5610/manga/56109421_p12.jpg?auth=E3ch0cIKsriPnMQtB1EVzA&exp=1663095600",
+        "index_id": 5,
+        "index_name": "Index #5: Pixiv Images - 56109421_p12.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": [
+          "https://www.pixiv.net/member_illust.php?mode=medium&illust_id=56109421"
+        ],
+        "title": "コナンまとめ４",
+        "pixiv_id": 56109421,
+        "member_name": "akico",
+        "member_id": 1624791
+      }
+    },
+    {
+      "header": {
+        "similarity": "33.89",
+        "thumbnail": "https://img3.saucenao.com/dA2/84874/848744570.jpg?auth=vG1Q0MSWjf-t1em1uI99oQ&exp=1663095600",
+        "index_id": 34,
+        "index_name": "Index #34: deviantArt2 - 848744570.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": ["https://deviantart.com/view/848744570"],
+        "title": "MU",
+        "da_id": "848744570",
+        "author_name": "un1k-dp",
+        "author_url": "https://www.deviantart.com/un1k-dp"
+      }
+    },
+    {
+      "header": {
+        "similarity": "33.87",
+        "thumbnail": "https://img3.saucenao.com/twitter/2/n/N/C22lUIkUoAAm2nN.jpg?auth=CKe_iiMxF1qBTYqtcIvb5g&exp=1663095600",
+        "index_id": 41,
+        "index_name": "Index #41: Twitter - C22lUIkUoAAm2nN.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": ["https://twitter.com/i/web/status/823496456069750784"],
+        "created_at": "2017-01-23T11:43:49Z",
+        "tweet_id": "823496456069750784",
+        "twitter_user_id": "17748991",
+        "twitter_user_handle": "Miyukiko"
+      }
+    },
+    {
+      "header": {
+        "similarity": "33.86",
+        "thumbnail": "https://img3.saucenao.com/vpc/frame.php?expires=1663095600&auth=UwY2JcoWdSGiMybGJ8dDwmxA9kQ&rsz=0&enc=YW5pbWUvSnV1c2hpbmtpIFBhbmRvcmEvW0Fub255bmVrb10gSnV1c2hpbmtpIFBhbmRvcmEgLSAyNiBbMTA4MHBdLm1rdi4xMDMxMjcuemlw&sub=16543-20-689939.jpg",
+        "index_id": 21,
+        "index_name": "Index #21: Anime* - 16543-20-689939.jpg (103127)",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": [
+          "https://anidb.net/anime/12252",
+          "https://myanimelist.net/anime/33531/",
+          "https://anilist.co/anime/100341/"
+        ],
+        "source": "Juushinki Pandora",
+        "anidb_aid": 12252,
+        "mal_id": 33531,
+        "anilist_id": 100341,
+        "part": "26",
+        "year": "2018-2018",
+        "est_time": "00:11:30 / 00:23:42"
+      }
+    },
+    {
+      "header": {
+        "similarity": "33.46",
+        "thumbnail": "https://img1.saucenao.com/res/pixiv_historical/741/7415620_s.jpg?auth=sxh27XwhXcK8floGN5LUfw&exp=1663095600",
+        "index_id": 6,
+        "index_name": "Index #6: Pixiv Historical - 7415620_s.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": [
+          "https://www.pixiv.net/member_illust.php?mode=medium&illust_id=7415620"
+        ],
+        "title": "いいことあるよ",
+        "pixiv_id": 7415620,
+        "member_name": "ゆき　むら",
+        "member_id": 1184503
+      }
+    },
+    {
+      "header": {
+        "similarity": "33.19",
+        "thumbnail": "https://img1.saucenao.com/res/bcy/cosplay/8/89335.jpg?auth=NLszOmUZeCBCOJhxvHiOfg&exp=1663095600",
+        "index_id": 32,
+        "index_name": "Index #32: bcy.net Cosplay - 89335.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": ["https://bcy.net/coser/detail/9476"],
+        "title": "【排球！！】[菅原孝支]不要为难前辈了，前辈想不到标题！ 鸽鸽王子小莎",
+        "bcy_id": 89335,
+        "member_name": "鸽鸽王子小莎",
+        "member_id": 48334,
+        "member_link_id": 9476,
+        "bcy_type": "coser"
+      }
+    },
+    {
+      "header": {
+        "similarity": "33.16",
+        "thumbnail": "https://img3.saucenao.com/booru/2/0/207f6c8d2b6a337876121e55c4a109c9_3.jpg?auth=IdQAGc_vkZPpLgihZpCTLA&exp=1663095600",
+        "index_id": 26,
+        "index_name": "Index #26: Konachan - 207f6c8d2b6a337876121e55c4a109c9_3.jpg",
+        "dupes": 0,
+        "hidden": 0
+      },
+      "data": {
+        "ext_urls": ["https://konachan.com/post/show/250752"],
+        "konachan_id": 250752,
+        "creator": "mizunashi (second run)",
+        "material": "flower knight girl",
+        "characters": "easter cactus",
+        "source": "https://www.pixiv.net/member_illust.php?mode=medium&illust_id=65094485"
+      }
+    }
+  ]
+}
