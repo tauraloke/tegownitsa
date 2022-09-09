@@ -3,7 +3,7 @@
 import BaseTask from './base_task.js';
 // eslint-disable-next-line no-unused-vars
 import BaseStrategy from '../tag_sources_strategies/base_strategy.js';
-import IqdbResponseExtractor from '../response_extractor/iqdb_response_extractor.js';
+import SaucenaoResponseExtractor from '../response_extractor/saucenao_response_extractor.js';
 // eslint-disable-next-line no-unused-vars
 import Job from '../job.js';
 
@@ -25,8 +25,8 @@ export default class IqdbTask extends BaseTask {
       `Looking #${this.file.id} ${this.file['preview_path']} at IQDB`
     );
 
-    let response = new IqdbResponseExtractor(
-      await window.network.lookupIqdbFile(this.file['preview_path']),
+    let response = new SaucenaoResponseExtractor(
+      await window.network.lookupSaucenaoFile(this.file['preview_path']),
       this.similarityThreshold
     );
     if (response.isValid()) {

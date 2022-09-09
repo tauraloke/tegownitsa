@@ -9,6 +9,9 @@
       <v-btn @click="showAllTags()">Show all tags</v-btn>
       <v-btn @click="lookUpDups()">Find duplicates</v-btn>
       <v-btn @click="loadTagsFromIQDB()">Load tags from IQDB</v-btn>
+      <v-btn title="(limited: 100 per day)" @click="loadTagsFromSaucenao()">
+        Load tags from Saucenao
+      </v-btn>
 
       <form-search-files
         ref="form_search_files"
@@ -233,8 +236,9 @@ import DialogTagEditor from '@/components/DialogTagEditor.vue';
 import Job from '@/services/job.js';
 import TaskQueue from '@/services/task_queue.js';
 import IqdbTask from '@/services/tasks/iqdb_task.js';
+import SaucenaoTask from '@/services/tasks/saucenao_task.js';
 import constants from '@/config/constants.json';
-import FabricJobTagSourceStrategy from '@/services/tag_sources_strategies/fabric_tag_source_strateges.js';
+import getStrategy from '@/services/tag_sources_strategies/get_strategy.js';
 import { imageSimilarity } from '@/services/image_distance.js';
 
 export default {
@@ -318,6 +322,7 @@ export default {
         this.task_queues.eshuushuu = new TaskQueue(bc, tc);
         this.task_queues.zerochan = new TaskQueue(bc, tc);
         this.task_queues.anime_pictures = new TaskQueue(bc, tc);
+        this.task_queues.saucenao = new TaskQueue(31, 40);
       });
     });
   },
@@ -520,34 +525,59 @@ export default {
       this.isStatusMessageVisible = true;
     },
     async loadTagsFromIQDB() {
-      let strategy = FabricJobTagSourceStrategy.getStrategy({
-        key: await window.configApi.getConfig('tag_source_strategies'),
-        engine: 'iqdb'
+      let strategy = getStrategy({
+        key: await window.configApi.getConfig('tag_source_strategies')
       });
-      let iqdb_threshold = await window.configApi.getConfig(
+      let similarityThreshold = await window.configApi.getConfig(
         'tag_source_threshold_iqdb'
       );
-      if (iqdb_threshold === undefined) {
-        iqdb_threshold = 0.8;
+      if (similarityThreshold === undefined) {
+        similarityThreshold = 0.8;
       }
-      let iqdbJob = new Job({
+      let job = new Job({
         name: this.$t('jobs.retrieving_tags_from_sources'),
         taskTotalCount: this.files.length,
         queue: this.task_queues.iqdb,
         vueComponent: this
       });
-      iqdbJob.start();
+      job.start();
       for (let i = 0; i < this.files.length; i++) {
-        let iqdbTask = new IqdbTask(
-          {
-            file: this.files[i],
-            iqdb_threshold,
-            strategy,
-            task_queues: this.task_queues
-          },
-          iqdbJob
-        );
+        let iqdbTask = new IqdbTask({
+          file: this.files[i],
+          similarityThreshold,
+          strategy,
+          task_queues: this.task_queues,
+          job
+        });
         this.task_queues.iqdb.addTask(iqdbTask);
+      }
+    },
+    async loadTagsFromSaucenao() {
+      let strategy = getStrategy({
+        key: await window.configApi.getConfig('tag_source_strategies')
+      });
+      let similarityThreshold = await window.configApi.getConfig(
+        'tag_source_threshold_saucenao'
+      );
+      if (similarityThreshold === undefined) {
+        similarityThreshold = 80;
+      }
+      let job = new Job({
+        name: this.$t('jobs.retrieving_tags_from_sources'),
+        taskTotalCount: this.files.length,
+        queue: this.task_queues.iqdb,
+        vueComponent: this
+      });
+      job.start();
+      for (let i = 0; i < this.files.length; i++) {
+        let saucenaoTask = new SaucenaoTask({
+          file: this.files[i],
+          similarityThreshold,
+          strategy,
+          task_queues: this.task_queues,
+          job
+        });
+        this.task_queues.saucenao.addTask(saucenaoTask);
       }
     },
     openPreferencesDialog() {

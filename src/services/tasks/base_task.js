@@ -6,11 +6,10 @@ import Job from '../job.js';
 export default class BaseTask {
   /**
    * @param {object} options
-   * @param {Job|null} job
+   * @param {Job?} options.job
    */
-  constructor(options, job = null) {
-    this.options = options;
-    this.job = job;
+  constructor(options) {
+    Object.assign(this, {}, options);
   }
   /**
    * @param {number} step
