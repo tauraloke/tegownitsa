@@ -18,6 +18,7 @@ test('Sankaku parser extracts tags', async () => {
     'ultimate madoka',
     'inngawokoetehigekiwotatsuinori',
     'Madoka☆Magica 10000+ bookmarks',
-    'Starry Sky Dress'
+    'Starry Sky Dress',
+    'creator:midii'
   ]);
 });
