@@ -322,6 +322,7 @@ export default {
         this.task_queues.eshuushuu = new TaskQueue(bc, tc);
         this.task_queues.zerochan = new TaskQueue(bc, tc);
         this.task_queues.anime_pictures = new TaskQueue(bc, tc);
+        this.task_queues.pixiv = new TaskQueue(bc, tc);
         this.task_queues.saucenao = new TaskQueue(31, 40);
       });
     });
@@ -373,7 +374,6 @@ export default {
       console.log(`Loading folder ${path}`);
       /** @type string[] */
       let fileList = await window.fileApi.getNewFilenamesFromFolder(path);
-      console.log('length', fileList.length); //TODO: remove
       if (fileList.length == 0) {
         this.toast(this.$t('toast.no_new_files_in_folder'));
         return false;

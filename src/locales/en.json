@@ -139,7 +139,10 @@
     "import_exif_tags_as_tags": "Extract exif tags to tag pool of imported image",
     "dialog": {
       "title": "Preferences"
-    }
+    },
+    "saucenao_similarity_threshold": "Saucenao similarity threshold",
+    "saucenao_limit_message": "You can check your Saucenao current daily limits",
+    "here": "here"
   },
   "list": {
     "empty": "No tags in list"

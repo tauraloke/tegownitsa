@@ -139,7 +139,10 @@
     "import_exif_tags_as_tags": "Извлекать теги exif в пул тегов индексируемого изображения",
     "dialog": {
       "title": "Настройки"
-    }
+    },
+    "saucenao_similarity_threshold": "Порог сходства поиска через Saucenao",
+    "saucenao_limit_message": "Вы можете проверить свой текущий дневной лимит на Saucenao",
+    "here": "здесь"
   },
   "list": {
     "empty": "Нет тегов в списке"

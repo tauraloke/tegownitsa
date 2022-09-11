@@ -28,13 +28,14 @@ export default class ParseTagResourceTask extends BaseTask {
       this.url,
       this.resource_name
     );
+    console.log('parse_tag_resourse_task', tags); // TODO: remove
     let source_type = sourceTypes[this.resource_name.toUpperCase()];
     for (let i in tags) {
       let title = tags[i];
       console.log(`add tag ${title} to file ${this.file['id']}`);
       await window.sqliteApi.addTag(
         this.file['id'],
-        this.title,
+        title,
         this.locale,
         source_type
       );

@@ -126,7 +126,7 @@
                 variant="outlined"
                 persistent-hint
                 single-line
-                class="mb-8"
+                class="mb-12"
               />
               <v-slider
                 v-model="options.tag_source_threshold_iqdb"
@@ -134,26 +134,9 @@
                 :min="0"
                 :max="1"
               ></v-slider>
-              <div class="text-caption mb-8">
+              <div class="text-caption mb-12">
                 {{ $t('settings.iqdb_similarity_threshold') }}
               </div>
-
-              <v-slider
-                v-model="options.tag_source_threshold_saucenao"
-                thumb-label="always"
-                :min="0"
-                :max="100"
-              ></v-slider>
-              <div class="text-caption mb-8">
-                {{ $t('settings.iqdb_similarity_threshold') }}
-              </div>
-
-              <v-text-field
-                v-model="options.tag_source_saucenao_api_key"
-                :label="$t('settings.saucenao_key')"
-                :hint="$t('settings.api_key_saucenao_hint')"
-                class="mb-8"
-              />
 
               <v-range-slider
                 v-model="iqdbCooldownRange"
@@ -162,8 +145,35 @@
                 max="120"
                 thumb-label="always"
               ></v-range-slider>
-              <div class="text-caption mb-8">
+              <div class="text-caption mb-12">
                 {{ $t('settings.iqdb_cooldown') }}
+              </div>
+
+              <v-slider
+                v-model="options.tag_source_threshold_saucenao"
+                thumb-label="always"
+                :min="0"
+                :max="100"
+              ></v-slider>
+              <div class="text-caption mb-12">
+                {{ $t('settings.saucenao_similarity_threshold') }}
+              </div>
+
+              <v-text-field
+                v-model="options.tag_source_saucenao_api_key"
+                :label="$t('settings.saucenao_key')"
+                :hint="$t('settings.api_key_saucenao_hint')"
+                class="mb-12"
+              />
+
+              <div>
+                {{ $t('settings.saucenao_limit_message') }}
+                <a
+                  href="https://saucenao.com/user.php?page=search-usage"
+                  target="_blank"
+                >
+                  {{ $t('settings.here') }}
+                </a>
               </div>
             </v-card-text>
           </v-card>

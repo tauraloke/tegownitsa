@@ -110,6 +110,6 @@ npm start
 - [x] Move Tesseract language list to settings.
 - [x] i18n.
 - [x] Make job interface for scanning and tag search.
+- [x] Add Saucenao API requests with a private token.
 - [ ] Pagination.
-- [ ] Add Saucenao API requests with a private token.
 
