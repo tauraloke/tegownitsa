@@ -53,7 +53,7 @@ Only windows environment (due to `sharp` package).
 
 - Build linux and windows dists (see above).
 
-- Upload *.Appimage, latest-linux.yml; *.exe, latest.yml, *.exe.blockmap to Github by an uploader "[creating new release](https://github.com/tauraloke/tegownitsa/releases/new)".
+- Upload *.Appimage, latest-linux.yml; *.exe, latest.yml, *.exe.blockmap to Github by the uploader "[creating new release](https://github.com/tauraloke/tegownitsa/releases/new)".
 
 New version will be downloaded silently after a next launch of the app and applied after window' exit.
 
