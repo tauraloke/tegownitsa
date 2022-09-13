@@ -6,7 +6,7 @@ const Parser =
 test('Danbooru parser extracts tags', async () => {
   let parser = new Parser('');
   parser.getBuffer = () => {
-    return fs.readFileSync(path.join('jest', 'mocks', 'html', 'danbooru.txt'));
+    return fs.readFileSync(path.join('jest', 'mocks', 'json', 'danbooru.json'));
   };
   let tags = await parser.extractTags();
   expect(tags).toEqual([
@@ -33,9 +33,9 @@ test('Danbooru parser extracts tags', async () => {
     'solo',
     'standing',
     'very_long_hair',
-    'creator:helloimtea',
-    'series:genshin_impact',
     'character:columbina_(genshin_impact)',
+    'series:genshin_impact',
+    'creator:helloimtea',
     'meta:commentary_request',
     'meta:highres'
   ]);
