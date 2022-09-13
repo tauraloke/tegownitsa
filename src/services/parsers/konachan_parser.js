@@ -1,6 +1,6 @@
 import BasicMetaMoebooruParser from './basic_meta_moebooru_parser.js';
 
-class KonachanParser extends BasicMetaMoebooruParser {
+export default class KonachanParser extends BasicMetaMoebooruParser {
   getClassTemplate() {
     return 'li.tag-type-%namespace%';
   }
@@ -8,5 +8,3 @@ class KonachanParser extends BasicMetaMoebooruParser {
     return 'data-name';
   }
 }
-
-export default KonachanParser;

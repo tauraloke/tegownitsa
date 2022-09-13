@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const Parser = require('../../../src/services/parsers/pixiv_parser.js').default;
 
-test('Sankaku parser extracts tags', async () => {
+test('Pixiv parser extracts tags', async () => {
   let parser = new Parser('');
   parser.getBuffer = () => {
     return fs.readFileSync(path.join('jest', 'mocks', 'json', 'pixiv.json'));

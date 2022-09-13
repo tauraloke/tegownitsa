@@ -7,5 +7,6 @@ module.exports = [
   { mask: /shuushuu\.net/, locale: 'en', name: 'eshuushuu' },
   { mask: /zerochan\.net/, locale: 'en', name: 'zerochan' },
   { mask: /anime-pictures\.net/, locale: 'en', name: 'anime_pictures' },
-  { mask: /pixiv\.net/, locale: 'en', name: 'pixiv' }
+  { mask: /pixiv\.net/, locale: 'en', name: 'pixiv' },
+  { mask: /deviantart\.com/, locale: 'en', name: 'deviantart' }
 ];

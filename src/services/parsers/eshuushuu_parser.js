@@ -1,6 +1,6 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
 
-class EshuushuuParser extends AbstractBasicParser {
+export default class EshuushuuParser extends AbstractBasicParser {
   getTagGroups() {
     return {
       1: '',
@@ -19,5 +19,3 @@ class EshuushuuParser extends AbstractBasicParser {
     return _tags;
   }
 }
-
-export default EshuushuuParser;

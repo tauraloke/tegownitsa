@@ -1,7 +1,7 @@
 import fetchUrl from 'node-fetch';
 import { load } from 'cheerio';
 
-class AbstractBasicParser {
+export default class AbstractBasicParser {
   constructor(url) {
     if (url.match('^//')) {
       url = `https:${url}`;
@@ -34,5 +34,3 @@ class AbstractBasicParser {
     throw { error: 'Direct call of an interface method!' };
   }
 }
-
-export default AbstractBasicParser;

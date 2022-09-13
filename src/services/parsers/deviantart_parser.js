@@ -1,17 +1,17 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
 import fetchUrl from 'node-fetch';
 
-export default class PixivParser extends AbstractBasicParser {
+export default class DeviantartParser extends AbstractBasicParser {
   getItemId() {
     if (this.itemId) {
       return this.itemId;
     }
-    let parseUrl = this.url.match(/\/artworks\/([0-9]+)/);
+    let parseUrl = this.url.match(/-([0-9]+)$/);
     if (parseUrl && parseUrl[1]) {
       this.itemId = parseUrl[1];
       return this.itemId;
     }
-    parseUrl = this.url.match(/illust_id=([0-9]+)/);
+    parseUrl = this.url.match(/\/([0-9]+)$/);
     if (parseUrl && parseUrl[1]) {
       this.itemId = parseUrl[1];
       return this.itemId;
@@ -24,7 +24,7 @@ export default class PixivParser extends AbstractBasicParser {
     }
     this.buffer = await (
       await fetchUrl(
-        `https://www.pixiv.net/ajax/illust/${this.getItemId()}?lang=en`
+        `https://www.deviantart.com/_napi/da-deviation/shared_api/deviation/extended_fetch?deviationid=${this.getItemId()}&type=art&include_session=false`
       )
     ).text();
     return this.buffer;
@@ -32,19 +32,11 @@ export default class PixivParser extends AbstractBasicParser {
   async extractTags() {
     try {
       let json = JSON.parse(await this.getBuffer());
-      let tags = json.body.tags.tags
-        .map((t) => {
-          if (t.translation && t.translation.en) {
-            return t.translation.en;
-          }
-          if (t.romaji) {
-            return t.romaji;
-          }
-          return t.tag;
-        })
+      let tags = json.deviation.extended.tags
+        .map((t) => t.name)
         .filter((t) => t);
-      if (json.body.userAccount) {
-        tags.push(`creator:${json.body.userAccount}`);
+      if (json.deviation.author.username) {
+        tags.push(`creator:${json.deviation.author.username}`);
       }
       return tags;
     } catch (error) {

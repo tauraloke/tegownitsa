@@ -1,7 +1,7 @@
 import BasicMoebooruParser from './basic_moebooru_parser.js';
 
 // @Abstract
-class BasicMetaMoebooruParser extends BasicMoebooruParser {
+export default class BasicMetaMoebooruParser extends BasicMoebooruParser {
   // @Abstract
   getTagAttr() {
     throw { error: 'Direct call of an abstract method' };
@@ -21,5 +21,3 @@ class BasicMetaMoebooruParser extends BasicMoebooruParser {
     return _tags;
   }
 }
-
-export default BasicMetaMoebooruParser;

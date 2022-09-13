@@ -1,6 +1,6 @@
 import BasicHTMLMoebooruParser from './basic_html_moebooru_parser.js';
 
-class GelbooruParser extends BasicHTMLMoebooruParser {
+export default class GelbooruParser extends BasicHTMLMoebooruParser {
   getClassTemplate() {
     return '.tag-type-%namespace% > a';
   }
@@ -14,5 +14,3 @@ class GelbooruParser extends BasicHTMLMoebooruParser {
     };
   }
 }
-
-export default GelbooruParser;

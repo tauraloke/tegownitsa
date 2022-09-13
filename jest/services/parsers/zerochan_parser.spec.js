@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const Parser = require('../../../src/services/parsers/zerochan_parser.js').default;
+const Parser =
+  require('../../../src/services/parsers/zerochan_parser.js').default;
 
 test('Zerochan parser extracts tags', async () => {
   let parser = new Parser('');

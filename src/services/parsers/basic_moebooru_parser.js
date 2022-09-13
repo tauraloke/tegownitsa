@@ -1,6 +1,6 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
 
-class BasicMoebooruParser extends AbstractBasicParser {
+export default class BasicMoebooruParser extends AbstractBasicParser {
   getTagGroups() {
     return {
       general: '',
@@ -11,5 +11,3 @@ class BasicMoebooruParser extends AbstractBasicParser {
     };
   }
 }
-
-export default BasicMoebooruParser;

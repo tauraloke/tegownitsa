@@ -22,7 +22,7 @@ export default class IqdbTask extends BaseTask {
   }
   async run() {
     console.log(
-      `Looking #${this.file.id} ${this.file['preview_path']} at IQDB`
+      `Looking #${this.file.id} ${this.file['preview_path']} at Saucenao`
     );
 
     let response = new SaucenaoResponseExtractor(

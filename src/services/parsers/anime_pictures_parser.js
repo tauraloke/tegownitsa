@@ -1,6 +1,6 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
 
-class AnimePicturesParser extends AbstractBasicParser {
+export default class AnimePicturesParser extends AbstractBasicParser {
   getTagGroups() {
     return {
       '': '',
@@ -23,5 +23,3 @@ class AnimePicturesParser extends AbstractBasicParser {
     return _tags;
   }
 }
-
-export default AnimePicturesParser;

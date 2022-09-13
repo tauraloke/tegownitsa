@@ -1,7 +1,7 @@
 import BasicMoebooruParser from './basic_moebooru_parser.js';
 
 // @Abstract
-class BasicHTMLMoebooruParser extends BasicMoebooruParser {
+export default class BasicHTMLMoebooruParser extends BasicMoebooruParser {
   tagGroupsExtractor(groupName, prefix, $) {
     let _tags = [];
     $(this.getClassTemplate().replace('%namespace%', groupName)).each(function (
@@ -15,5 +15,3 @@ class BasicHTMLMoebooruParser extends BasicMoebooruParser {
     return _tags;
   }
 }
-
-export default BasicHTMLMoebooruParser;

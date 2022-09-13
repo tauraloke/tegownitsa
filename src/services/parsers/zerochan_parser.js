@@ -1,6 +1,6 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
 
-class ZerochanParser extends AbstractBasicParser {
+export default class ZerochanParser extends AbstractBasicParser {
   getTagGroups() {
     return {
       mangaka: 'creator:',
@@ -21,5 +21,3 @@ class ZerochanParser extends AbstractBasicParser {
     return _tags;
   }
 }
-
-export default ZerochanParser;

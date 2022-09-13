@@ -28,7 +28,6 @@ export default class ParseTagResourceTask extends BaseTask {
       this.url,
       this.resource_name
     );
-    console.log('parse_tag_resourse_task', tags); // TODO: remove
     let source_type = sourceTypes[this.resource_name.toUpperCase()];
     for (let i in tags) {
       let title = tags[i];

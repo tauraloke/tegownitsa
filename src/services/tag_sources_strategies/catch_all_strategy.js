@@ -15,6 +15,7 @@ export default class CatchAllStrategy extends BaseStrategy {
    */
   run({ file, queueList, apiResponse }) {
     let items = apiResponse.getCandidates();
+    console.log('saucenao results', items); // TODO: remove
     for (let i = 0; i < items.length; i++) {
       let item = items[i];
       let url = apiResponse.extractUrl(item);

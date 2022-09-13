@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const Parser = require('../../../src/services/parsers/yandere_parser.js').default;
+const Parser =
+  require('../../../src/services/parsers/yandere_parser.js').default;
 
 test('Yandere parser extracts tags', async () => {
   let parser = new Parser('');
