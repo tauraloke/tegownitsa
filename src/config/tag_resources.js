@@ -8,5 +8,6 @@ module.exports = [
   { mask: /zerochan\.net/, locale: 'en', name: 'zerochan' },
   { mask: /anime-pictures\.net/, locale: 'en', name: 'anime_pictures' },
   { mask: /pixiv\.net/, locale: 'en', name: 'pixiv' },
-  { mask: /deviantart\.com/, locale: 'en', name: 'deviantart' }
+  { mask: /deviantart\.com/, locale: 'en', name: 'deviantart' },
+  { mask: /furaffinity\.net/, locale: 'en', name: 'furaffinity' }
 ];
