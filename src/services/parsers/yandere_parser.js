@@ -1,7 +1,10 @@
-import BasicHTMLMoebooruParser from './basic_html_moebooru_parser.js';
+import BasicJsonMoebooruParser from './basic_json_moebooru_parser.js';
 
-export default class YandereParser extends BasicHTMLMoebooruParser {
-  getClassTemplate() {
-    return '.tag-type-%namespace% a:nth-of-type(2)';
+export default class YandereParser extends BasicJsonMoebooruParser {
+  /**
+   * @returns {string}
+   */
+  getFetchUrl() {
+    return `https://yande.re/post.json?tags=id:${this.getItemId()}&api_version=2&include_tags=1`;
   }
 }

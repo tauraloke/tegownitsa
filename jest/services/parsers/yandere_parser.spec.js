@@ -6,27 +6,20 @@ const Parser =
 test('Yandere parser extracts tags', async () => {
   let parser = new Parser('');
   parser.getBuffer = () => {
-    return fs.readFileSync(path.join('jest', 'mocks', 'html', 'yandere.txt'));
+    return fs.readFileSync(path.join('jest', 'mocks', 'json', 'yandere.json'));
   };
   let tags = await parser.extractTags();
   expect(tags).toEqual([
+    'series:ao_no_exorcist',
+    'character:kamiki_izumo',
+    'megane',
+    'character:moriyama_shiemi',
+    'character:okumura_rin',
+    'character:okumura_yukio',
     'seifuku',
-    'sketch',
-    'sweater',
-    'creator:yokota takumi',
-    'series:love live! nijigasaki high school idol club',
-    'character:asaka karin',
-    'character:emma verde',
-    'character:konoe kanata',
-    'character:mia taylor',
-    'character:mifune shioriko',
-    'character:miyashita ai',
-    'character:nakasu kasumi',
-    'character:ousaka shizuku',
-    'character:takasaki yuu',
-    'character:tennouji rina',
-    'character:uehara ayumu',
-    'character:yuuki setsuna',
-    'character:zhong lanzhu'
+    'character:shima_renzou',
+    'skirt_lift',
+    'tagme',
+    'thighhighs'
   ]);
 });

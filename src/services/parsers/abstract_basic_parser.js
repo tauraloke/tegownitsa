@@ -2,14 +2,21 @@ import fetchUrl from 'node-fetch';
 import { load } from 'cheerio';
 
 export default class AbstractBasicParser {
+  /**
+   * @param {string} url
+   */
   constructor(url) {
     if (url.match('^//')) {
       url = `https:${url}`;
     }
     this.url = url;
   }
+  getFetchUrl() {
+    return this.url;
+  }
   async getBuffer() {
-    this.buffer = this.buffer || (await (await fetchUrl(this.url)).text());
+    this.buffer =
+      this.buffer || (await (await fetchUrl(this.getFetchUrl())).text());
     return this.buffer;
   }
   // @Abstract

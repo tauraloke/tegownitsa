@@ -1,5 +1,4 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
-import fetchUrl from 'node-fetch';
 
 export default class DeviantartParser extends AbstractBasicParser {
   getItemId() {
@@ -18,16 +17,8 @@ export default class DeviantartParser extends AbstractBasicParser {
     }
     throw `Cannot parse url ${this.url}`;
   }
-  async getBuffer() {
-    if (this.buffer) {
-      return this.buffer;
-    }
-    this.buffer = await (
-      await fetchUrl(
-        `https://www.deviantart.com/_napi/da-deviation/shared_api/deviation/extended_fetch?deviationid=${this.getItemId()}&type=art&include_session=false`
-      )
-    ).text();
-    return this.buffer;
+  getFetchUrl() {
+    return `https://www.deviantart.com/_napi/da-deviation/shared_api/deviation/extended_fetch?deviationid=${this.getItemId()}&type=art&include_session=false`;
   }
   async extractTags() {
     try {

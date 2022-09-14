@@ -1,5 +1,4 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
-import fetchUrl from 'node-fetch';
 
 export default class DanbooruParser extends AbstractBasicParser {
   getItemId() {
@@ -18,16 +17,8 @@ export default class DanbooruParser extends AbstractBasicParser {
     }
     throw `Cannot parse url ${this.url}`;
   }
-  async getBuffer() {
-    if (this.buffer) {
-      return this.buffer;
-    }
-    this.buffer = await (
-      await fetchUrl(
-        `https://danbooru.donmai.us/posts/${this.getItemId()}.json`
-      )
-    ).text();
-    return this.buffer;
+  getFetchUrl() {
+    return `https://danbooru.donmai.us/posts/${this.getItemId()}.json`;
   }
   async extractTags() {
     try {
