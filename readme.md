@@ -111,5 +111,7 @@ npm start
 - [x] i18n.
 - [x] Make job interface for scanning and tag search.
 - [x] Add Saucenao API requests with a private token.
+- [ ] Optimize tag extraction by replacing scraping HTML to JSON API if possible.
+- [ ] Try to add tag prediction like [Autotagger](https://github.com/danbooru/autotagger).
 - [ ] Pagination.
 

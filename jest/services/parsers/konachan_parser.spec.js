@@ -6,27 +6,31 @@ const Parser =
 test('Konachan parser extracts tags', async () => {
   let parser = new Parser('');
   parser.getBuffer = () => {
-    return fs.readFileSync(path.join('jest', 'mocks', 'html', 'konachan.txt'));
+    return fs.readFileSync(path.join('jest', 'mocks', 'json', 'konachan.json'));
   };
   let tags = await parser.extractTags();
   expect(tags).toEqual([
     '2girls',
+    'style:3d',
     'blonde_hair',
-    'blue_eyes',
-    'demon',
+    'blush',
+    'book',
+    'brown_hair',
+    'series:coca_cola',
+    'computer',
     'drink',
-    'green_eyes',
-    'horns',
+    'game_console',
+    'creator:ibara_dance',
+    'character:inoue_takina',
+    'kneehighs',
     'long_hair',
-    'maid',
-    'pink_hair',
-    'pointed_ears',
+    'series:lycoris_recoil',
+    'character:nishikigi_chisato',
+    'red_eyes',
+    'school_uniform',
     'short_hair',
-    'towel',
-    'waitress',
-    'creator:goroo_(eneosu)',
-    'series:hololive',
-    'character:takane_lui',
-    'character:yuzuki_choco'
+    'skirt',
+    'style:watermark',
+    'wristwear'
   ]);
 });
