@@ -162,7 +162,8 @@
       "SERIES": "Series",
       "META": "Meta",
       "CHARACTER": "Character",
-      "STYLE": "Style"
+      "STYLE": "Style",
+      "GENRE": "Genre"
     }
   }
 }
