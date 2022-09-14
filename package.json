@@ -39,7 +39,7 @@
     "exif-parser": "^0.1.12",
     "install": "^0.13.0",
     "iqdb-client": "^2.0.0",
-    "npm": "^8.19.1",
+    "npm": "^8.19.2",
     "roboto-fontface": "*",
     "sharp": "^0.31.0",
     "sharp-phash": "^2.0.0",
@@ -68,7 +68,7 @@
     "prettier": "2.7.1",
     "vue-cli-plugin-electron-builder": "~2.1.1",
     "vue-cli-plugin-i18n": "~2.3.1",
-    "vue-cli-plugin-vuetify": "~2.5.5",
+    "vue-cli-plugin-vuetify": "~2.5.8",
     "webpack-plugin-vuetify": "^2.0.0-alpha.13",
     "xo": "^0.52.3"
   },
