@@ -10,7 +10,9 @@
       rounded="xl"
       class="tags_namespace"
     >
-      <h5 style="text-align: center">{{ group.name }}</h5>
+      <h5 style="text-align: center">
+        {{ $t(`tags.namespaces.${group.name}`) }}
+      </h5>
       <div class="ma-4">
         <v-chip-group column>
           <v-chip

@@ -154,5 +154,15 @@
     "retrieving_tags_from_sources": "Добыча тегов",
     "cancel": "Отменить это задание",
     "import_folder": "Импорт папки"
+  },
+  "tags": {
+    "namespaces": {
+      "GENERAL": "Разное",
+      "CREATOR": "Автор",
+      "SERIES": "Франшиза",
+      "META": "Мета",
+      "CHARACTER": "Персонаж",
+      "STYLE": "Стиль"
+    }
   }
 }

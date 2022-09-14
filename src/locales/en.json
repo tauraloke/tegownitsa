@@ -154,5 +154,15 @@
     "retrieving_tags_from_sources": "Retrieving tags",
     "cancel": "Cancel this job",
     "import_folder": "Importing folder"
+  },
+  "tags": {
+    "namespaces": {
+      "GENERAL": "General",
+      "CREATOR": "Creator",
+      "SERIES": "Series",
+      "META": "Meta",
+      "CHARACTER": "Character",
+      "STYLE": "Style"
+    }
   }
 }
