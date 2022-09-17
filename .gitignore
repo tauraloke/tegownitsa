@@ -26,3 +26,6 @@ dev.log
 
 #Electron-builder output
 /dist_electron
+
+#Massive models
+libs/autotagger/danbooru/*

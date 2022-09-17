@@ -8,4 +8,4 @@ I'm not sure it can garantee a result, but you can [open an issue](https://githu
 
 ## How to report a bug
 
-[Create special issue](https://github.com/tauraloke/tegownitsa/issues/new?assignees=&labels=bug&template=bug_report.md&title=).
+[Create a special issue](https://github.com/tauraloke/tegownitsa/issues/new?assignees=&labels=bug&template=bug_report.md&title=).

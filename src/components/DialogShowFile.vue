@@ -19,6 +19,8 @@
             <h3 style="text-align: center" class="mb-4">
               {{ $t('main_window.tags') }}
             </h3>
+            <a @click="predictTags()">Predict tags</a>
+            {{ predictedTags }}
             <form-add-new-tag-to-file
               v-if="currentFile"
               :file-id="currentFile?.id"
@@ -116,7 +118,8 @@ export default {
       tags: [],
       urls: [],
       currentFile: null,
-      fileCaptionTextareaIcon: 'mdi-floppy'
+      fileCaptionTextareaIcon: 'mdi-floppy',
+      predictedTags: []
     };
   },
   computed: {
@@ -172,6 +175,8 @@ export default {
     },
     hideComponent() {
       this.isDialogVisible = false;
+      this.tags = [];
+      this.predictedTags = [];
     },
     async afterAddTagHandler(event) {
       this.tags.push(event);
@@ -211,6 +216,19 @@ export default {
         t.locales = newLocales;
         return t;
       });
+    },
+    async predictTags() {
+      const items = await window.ocrApi.autotagger(this.currentFile.full_path);
+      console.table(
+        items.map((t) => {
+          return {
+            name: t.tag.name,
+            namespace: t.tag.namespace,
+            score: t.score
+          };
+        })
+      );
+      this.predictedTags = items;
     }
   }
 };

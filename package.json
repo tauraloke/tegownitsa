@@ -30,6 +30,7 @@
   "main": "background.js",
   "dependencies": {
     "@mdi/font": "7.0.96",
+    "@tensorflow/tfjs-node": "^3.20.0",
     "core-js": "^3.25.1",
     "electron-debug": "^3.2.0",
     "electron-store": "^8.1.0",

@@ -471,7 +471,7 @@ export default {
         let file = filesToScan[i];
         try {
           console.log('Scan file: ', file);
-          let recognized = await window.ocrApi.recognize(file['full_path']);
+          let recognized = await window.ocrApi.recognizeText(file['full_path']);
           console.log('Recognized: ', recognized);
           let caption = recognized.data.blocks
             .filter((b) => b.text.trim() != '' && b.confidence > 70)
