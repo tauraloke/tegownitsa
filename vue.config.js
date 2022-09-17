@@ -5,7 +5,11 @@ module.exports = defineConfig({
   configureWebpack: {
     mode: 'production',
     resolve: {
-      extensions: ['*', '.mjs', '.js', '.json']
+      extensions: ['*', '.mjs', '.js', '.json'],
+      fallback: {
+        crypto: require.resolve('crypto-browserify'),
+        stream: require.resolve('stream-browserify')
+      }
     },
     module: {
       rules: [

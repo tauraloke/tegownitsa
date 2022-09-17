@@ -7,7 +7,11 @@ export function camelize(str) {
     .join('');
 }
 export function randomDigit() {
-  return Math.floor(Math.random() * 10);
+  if (typeof window === 'undefined') {
+    return require('crypto').randomInt(10);
+  } else {
+    return window.crypto.getRandomValues(new Uint32Array(1))[0] % 10;
+  }
 }
 export function snakeize(str) {
   return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
