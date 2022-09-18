@@ -24,6 +24,6 @@ export function setItem(item, name) {
 /**
  * @param {string} name
  */
-export function removeItem(item, name) {
+export function removeItem(name) {
   delete items[name];
 }

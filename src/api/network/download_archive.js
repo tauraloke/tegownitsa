@@ -8,8 +8,10 @@ import {
   getItem
 } from '../../services/download_item_storage.js';
 import fs from 'fs';
+import { app } from 'electron';
 
-const TMP_FOLDER = 'temp';
+const isDevelopment = process.env.NODE_ENV !== 'production';
+const TMP_FOLDER = isDevelopment ? 'temp' : path.dirname(app.getPath('temp'));
 
 /**
  * @param {Electron.IpcMainInvokeEvent} _event
@@ -24,6 +26,7 @@ export async function run(_event, _db, archiveTitle, url, destination) {
     return false;
   }
   const win = BrowserWindow.getFocusedWindow();
+  console.log('downloading to', TMP_FOLDER);
   await download(win, url, {
     directory: path.join(__dirname, TMP_FOLDER),
     saveAs: false,
