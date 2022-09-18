@@ -1,17 +1,12 @@
 import AdmZip from 'adm-zip';
 import { download } from 'electron-dl';
 import { BrowserWindow } from 'electron';
-import path from 'path';
 import {
   setItem,
   removeItem,
   getItem
 } from '../../services/download_item_storage.js';
 import fs from 'fs';
-import { app } from 'electron';
-
-const isDevelopment = process.env.NODE_ENV !== 'production';
-const TMP_FOLDER = isDevelopment ? 'temp' : path.dirname(app.getPath('exe'));
 
 /**
  * @param {Electron.IpcMainInvokeEvent} _event
@@ -26,9 +21,7 @@ export async function run(_event, _db, archiveTitle, url, destination) {
     return false;
   }
   const win = BrowserWindow.getFocusedWindow();
-  console.log('downloading to', TMP_FOLDER);
   await download(win, url, {
-    directory: path.join(__dirname, TMP_FOLDER),
     saveAs: false,
     onStarted: (item) => {
       setItem(item, url);
