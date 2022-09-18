@@ -11,6 +11,7 @@ const MAX_COLOR_VALUE = 255;
 const MODEL_SAVEPOINT_FILENAME = 'saved_model.pb';
 const MODEL_ZIP_URL =
   'https://github.com/tauraloke/tegownitsa/releases/download/v0.12.0/danbooru.zip';
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const namespaceCorrections = {
   0: namespaces.GENERAL, // General
@@ -37,13 +38,9 @@ function correctNameSpaces(scoredTags) {
 export async function run(_event, _db, filepath) {
   console.log('current autotagger api folder', __dirname); // TODO: remove
   // в винде в релизе будет: current autotagger api folder D:\projects\tegownitsa\dist_electron\win-unpacked\resources\app.asar
-  const modelDirPath = path.join(
-    __dirname,
-    '..',
-    'libs',
-    'autotagger',
-    'danbooru'
-  );
+  const modelDirPath = isDevelopment
+    ? path.join(__dirname, '..', 'libs', 'autotagger', 'danbooru')
+    : path.join(__dirname, '..', '..', 'libs', 'autotagger', 'danbooru');
   if (!fs.existsSync(path.join(modelDirPath, MODEL_SAVEPOINT_FILENAME))) {
     if (getItem(MODEL_ZIP_URL)) {
       return { status: 'Fail', error: 'model_still_loading' };
