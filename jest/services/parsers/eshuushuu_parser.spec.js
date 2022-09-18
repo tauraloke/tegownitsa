@@ -16,6 +16,6 @@ test('E-Shuushuu parser extracts tags', async () => {
     'white hair',
     'series:Arknights',
     'creator:Leria_V',
-    'characters:Skadi'
+    'character:Skadi'
   ]);
 });
