@@ -4,6 +4,7 @@ import path from 'path';
 import tags from '../../config/danbooru_tags.json';
 import namespaces from '../../config/tag_namespaces.json';
 import { getItem } from '../../services/download_item_storage.js';
+import { app } from 'electron';
 
 const LIMIT = 50;
 const PREPARED_IMAGE_SIZE = 224;
@@ -35,12 +36,28 @@ function correctNameSpaces(scoredTags) {
   return result;
 }
 
+function getModelDirPath() {
+  if (isDevelopment) {
+    return path.join(__dirname, '..', 'libs', 'autotagger', 'danbooru');
+  }
+  return path.join(
+    path.dirname(app.getPath('exe')),
+    'libs',
+    'autotagger',
+    'danbooru'
+  );
+}
+
 export async function run(_event, _db, filepath) {
-  console.log('current autotagger api folder', __dirname); // TODO: remove
   // в винде в релизе будет: current autotagger api folder D:\projects\tegownitsa\dist_electron\win-unpacked\resources\app.asar
-  const modelDirPath = isDevelopment
-    ? path.join(__dirname, '..', 'libs', 'autotagger', 'danbooru')
-    : path.join(__dirname, '..', '..', 'libs', 'autotagger', 'danbooru');
+  // TODO: нужно ссылаться на папку другим образом, строя путь относительно папки с экзешником
+  const modelDirPath = getModelDirPath();
+  console.log(
+    'current autotagger api folder and calced mdp',
+    __dirname,
+    modelDirPath
+  ); // TODO: remove
+
   if (!fs.existsSync(path.join(modelDirPath, MODEL_SAVEPOINT_FILENAME))) {
     if (getItem(MODEL_ZIP_URL)) {
       return { status: 'Fail', error: 'model_still_loading' };

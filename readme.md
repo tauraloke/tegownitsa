@@ -102,6 +102,7 @@ npm start
   transformation, `Apache 2.0 license`.
   - [Tesseract](https://github.com/tesseract-ocr/tesseract) OCR engine for
   extracting textes from images for better indexing, `Apache 2.0 license`.
+  - [Autotagger](https://github.com/danbooru/autotagger) is a project to predict tags on anime images. You can see [online demo](https://autotagger.donmai.us/). `MIT license`.
 
 
 ## Next goals
