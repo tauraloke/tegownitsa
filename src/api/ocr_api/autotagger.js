@@ -36,6 +36,7 @@ function correctNameSpaces(scoredTags) {
 
 export async function run(_event, _db, filepath) {
   console.log('current autotagger api folder', __dirname); // TODO: remove
+  // в винде в релизе будет: current autotagger api folder D:\projects\tegownitsa\dist_electron\win-unpacked\resources\app.asar
   const modelDirPath = path.join(
     __dirname,
     '..',

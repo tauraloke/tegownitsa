@@ -24,7 +24,7 @@ module.exports = defineConfig({
       preload: 'src/preload.js',
       builderOptions: {
         appId: 'com.electron.Tegownitsa',
-        asarUnpack: ['**/node_modules/sharp/**'],
+        asarUnpack: ['**/node_modules/sharp/**', '**/libs/autotagger/**'],
         extraFiles: [
           ...(process.platform == 'win32' ? ['./libs/sqlite/fuzzy.dll'] : []),
           ...(process.platform == 'darwin' ? ['./libs/sqlite/fuzzy.dylib'] : [])
