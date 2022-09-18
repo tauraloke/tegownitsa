@@ -1,15 +1,20 @@
 <template>
   <section>
-    <v-btn @click="predictTags()">
-      {{ $t('button.predict_tags') }}
-    </v-btn>
-    <v-table v-if="predictedTags.length > 0">
+    <v-row class="justify-center">
+      <v-btn v-if="predictedTags.length == 0" @click="predictTags()">
+        {{ $t('button.predict_tags') }}
+      </v-btn>
+      <v-btn v-if="predictedTags.length > 0" @click="predictedTags = []">
+        {{ $t('button.hide_predicted_tags') }}
+      </v-btn>
+    </v-row>
+    <v-table v-if="predictedTags.length > 0" style="text-align: center">
       <template #default>
         <thead>
           <tr>
-            <th class="text-left">Name</th>
-            <th class="text-left">Score</th>
-            <th class="text-left">Namespace</th>
+            <th class="text-center">Name</th>
+            <th class="text-center">Score</th>
+            <th class="text-center">Namespace</th>
           </tr>
         </thead>
         <tbody>
@@ -25,7 +30,9 @@
             <td>{{ item.score_percent }}</td>
             <td>{{ item.namespace }}</td>
             <td>
+              <v-icon v-if="item.in_tag_locales" icon="mdi-check" />
               <v-btn
+                v-else
                 icon="mdi-plus"
                 :title="$t('button.add')"
                 @click="addPredictedTag(item)"
@@ -51,6 +58,10 @@ export default {
     currentFile: {
       type: Object,
       required: true
+    },
+    tags: {
+      type: Object,
+      required: true
     }
   },
   emits: ['after-add-tag', 'toast'],
@@ -61,6 +72,16 @@ export default {
     };
   },
   methods: {
+    tagLocales() {
+      return this.tags
+        .map((t) =>
+          t.locales.map(
+            (l) =>
+              tagNameSpacesById[t.namespace_id].toLowerCase() + ':' + l.title
+          )
+        )
+        .reduce((l, a) => [...a, ...l], []);
+    },
     async predictTags() {
       if (!this.currentFile) {
         return false;
@@ -89,17 +110,21 @@ export default {
         }
         return false;
       }
+      console.log(this.tagLocales());
+      const tagLocales = this.tagLocales();
       let items = autoTaggerResponse.result.map((t) => {
+        let full_name =
+          tagNameSpacesById[t.tag.namespace_id].toLowerCase() +
+          ':' +
+          t.tag.name;
         return {
           name: t.tag.name,
           namespace: this.$t(
             `tags.namespaces.${tagNameSpacesById[t.tag.namespace_id]}`
           ),
-          full_name:
-            tagNameSpacesById[t.tag.namespace_id].toLowerCase() +
-            ':' +
-            t.tag.name,
-          score_percent: Math.floor(t.score * 100) + '%'
+          full_name: full_name,
+          score_percent: Math.floor(t.score * 100) + '%',
+          in_tag_locales: !!tagLocales.find((l) => l == full_name)
         };
       });
       console.table(items);
@@ -119,6 +144,7 @@ export default {
       if (!savedTag) {
         return;
       }
+      tag.in_tag_locales = true;
       this.$emit('after-add-tag', savedTag);
     }
   }

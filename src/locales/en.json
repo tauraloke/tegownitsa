@@ -52,7 +52,8 @@
     "restore": "Restore",
     "add": "Add",
     "back": "Go back",
-    "predict_tags": "Predict tags by neuronet"
+    "predict_tags": "Predict tags by neuronet",
+    "hide_predicted_tags": "Hide predictions"
   },
   "toast": {
     "preferences_saved": "Preferences saved",

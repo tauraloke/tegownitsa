@@ -15,7 +15,12 @@
       </v-toolbar>
       <v-card-text>
         <v-row>
-          <v-col cols="12" md="4">
+          <v-col
+            cols="12"
+            md="4"
+            class="pb-10"
+            style="overflow-y: scroll; max-height: 99vh"
+          >
             <h3 style="text-align: center" class="mb-4">
               {{ $t('main_window.tags') }}
             </h3>
@@ -27,6 +32,8 @@
             />
             <predicted-tags
               :current-file="currentFile"
+              :tags="tags"
+              class="mb-6"
               @after-add-tag="afterAddTagHandler($event)"
               @toast="$emit('toast', $event)"
             />
