@@ -95,7 +95,9 @@
     "recognized_text_on_image": "recognized text on image",
     "click_to_floppy_to_save_changes": "Click to floppy to save changes",
     "sources": "Sources",
-    "caption_updated_for_file_x": "Caption updated for file #{0}"
+    "caption_updated_for_file_x": "Caption updated for file #{0}",
+    "wait_for_neuronet_files": "No data found to predictions. You can wait for loading neural network files or cancel its.",
+    "neuronet_files_still_loading": "Files for a neuronet are still loading."
   },
   "settings": {
     "application": "Application",
@@ -153,7 +155,9 @@
     "scan_selected_files": "Scan selected files",
     "retrieving_tags_from_sources": "Retrieving tags",
     "cancel": "Cancel this job",
-    "import_folder": "Importing folder"
+    "import_folder": "Importing folder",
+    "downloading-archive": "Downloading '{0}'",
+    "unpacking-archive": "Unpacking archive '{0}'"
   },
   "tags": {
     "namespaces": {

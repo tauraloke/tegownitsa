@@ -22,11 +22,16 @@ export default class Job {
    * @param {number} arg.taskTotalCount
    * @param {TaskQueue|null} arg.queue
    * @param {object} arg.vueComponent
+   * @param {string} arg.ref Unique link to job for searching
+   * @param {()=>{}} arg.onCancel
    */
-  constructor({ name, taskTotalCount, queue, vueComponent }) {
+  constructor({ name, taskTotalCount, queue, vueComponent, ref, onCancel }) {
     this.name = name;
     this.taskTotalCount = taskTotalCount;
     this.queue = queue;
+    this.ref = ref;
+    this.onCancel = onCancel;
+
     this.uid = `${Date.now()}${randomDigit()}${randomDigit()}`;
     this.solvedTaskCount = 0;
     this.vueComponent = vueComponent;
@@ -72,6 +77,9 @@ export default class Job {
     return `${hours}:${munutes}:${seconds}`;
   }
   cancel() {
+    if (this.onCancel) {
+      this.onCancel();
+    }
     this.queue?.cancelTaskByJob(this.uid);
     this.destroy();
   }

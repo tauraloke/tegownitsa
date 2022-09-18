@@ -185,7 +185,7 @@
       @tag-updated="redrawTag($event)"
     />
 
-    <v-snackbar v-model="isStatusMessageVisible">
+    <v-snackbar v-model="isStatusMessageVisible" style="z-index: 3001">
       {{ statusMessage }}
       <template #actions>
         <v-btn
@@ -196,7 +196,11 @@
       </template>
     </v-snackbar>
 
-    <v-footer v-if="jobs.length > 0" app style="display: block !important">
+    <v-footer
+      v-if="jobs.length > 0"
+      app
+      style="display: block !important; z-index: 3000"
+    >
       <v-row v-for="job in jobs" :key="job.uid">
         <v-col cols="12" sm="11">
           <v-progress-linear
@@ -296,7 +300,11 @@ export default {
         'loadTagsFromIQDB',
         'openPreferencesDialog',
         'setTheme',
-        'openTagEditor'
+        'openTagEditor',
+        'startDownloadProgress',
+        'setDownloadProgress',
+        'startArchiveUnpacking',
+        'completeArchiveUnpacking'
       ];
       console.log(`Menu method ${method} with args`, args);
       if (method in allowedMenuMethods) {
@@ -330,6 +338,41 @@ export default {
     });
   },
   methods: {
+    startDownloadProgress({ totalBytes, url, archiveTitle }) {
+      let job = new Job({
+        name: this.$t('jobs.downloading-archive', [archiveTitle]),
+        vueComponent: this,
+        taskTotalCount: totalBytes,
+        ref: `dl-${url}`,
+        onCancel: () => {
+          window.network.cancelDownload(url);
+        }
+      });
+      job.start();
+    },
+    setDownloadProgress({ url, transferredBytes }) {
+      let job = this.jobs.find((j) => j.ref == `dl-${url}`);
+      if (!job) {
+        return;
+      }
+      job.incrementProgress(transferredBytes - job.solvedTaskCount);
+    },
+    startArchiveUnpacking({ url, archiveTitle }) {
+      let job = new Job({
+        name: this.$t('jobs.unpacking-archive', [archiveTitle]),
+        vueComponent: this,
+        ref: `dl-${url}`,
+        taskTotalCount: 1
+      });
+      job.start();
+    },
+    completeArchiveUnpacking({ url }) {
+      let job = this.jobs.find((j) => j.ref == `dl-${url}`);
+      if (!job) {
+        return;
+      }
+      job.incrementProgress(1);
+    },
     openTagEditor(tag_id) {
       this.$refs.dialog_tag_editor.showComponent(tag_id);
     },

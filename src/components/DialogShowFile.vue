@@ -218,7 +218,31 @@ export default {
       });
     },
     async predictTags() {
-      const items = await window.ocrApi.autotagger(this.currentFile.full_path);
+      let autoTaggerResponse = await window.ocrApi.autotagger(
+        this.currentFile.full_path
+      );
+      if (autoTaggerResponse.status != 'OK') {
+        if (autoTaggerResponse.error == 'model_not_found') {
+          this.$emit(
+            'toast',
+            this.$t('dialog_show_file.wait_for_neuronet_files')
+          );
+          window.network.downloadArchive(
+            'Danbooru',
+            autoTaggerResponse.url,
+            autoTaggerResponse.destination
+          );
+          return false;
+        }
+        if (autoTaggerResponse.error == 'model_still_loading') {
+          this.$emit(
+            'toast',
+            this.$t('dialog_show_file.neuronet_files_still_loading')
+          );
+        }
+        return false;
+      }
+      let items = autoTaggerResponse.result;
       console.table(
         items.map((t) => {
           return {

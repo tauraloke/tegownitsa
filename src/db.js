@@ -1,8 +1,14 @@
 import sqlite3 from 'sqlite3';
 const sqlite3Instance = sqlite3.verbose();
 
+/**@type {sqlite3.Database} */
 let dbc = null;
 
+/**
+ * @param {sqlite3.Database} dbConnection
+ * @param {string} name
+ * @returns {sqlite3.Database}
+ */
 function loadSqliteExtension(dbConnection, name) {
   dbConnection.loadExtension(
     process.platform == 'win32'
@@ -61,6 +67,11 @@ async function _getTagList(query, params = []) {
   return Object.values(tags);
 }
 
+/**
+ * @param {object} args
+ * @param {string} args.dbPath
+ * @returns {Promise<sqlite3.Database>}
+ */
 async function initDatabase({ dbPath }) {
   console.log('Loading sqlite fuzzy extension...');
   let dbConnection = new sqlite3Instance.Database(dbPath);

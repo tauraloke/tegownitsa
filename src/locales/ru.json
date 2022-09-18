@@ -95,7 +95,9 @@
     "recognized_text_on_image": "распознанный текст на изображении",
     "click_to_floppy_to_save_changes": "Нажмите на дискету, чтобы сохранить изменения",
     "sources": "Источники",
-    "caption_updated_for_file_x": "Текст обновлен для файла #{0}"
+    "caption_updated_for_file_x": "Текст обновлен для файла #{0}",
+    "wait_for_neuronet_files": "Данные для прогнозов не найдены. Вы можете дождаться загрузки файлов нейронной сети или отменить ее.",
+    "neuronet_files_still_loading": "Файлы для нейросети еще загружаются."
   },
   "settings": {
     "application": "Приложение",
@@ -153,7 +155,9 @@
     "scan_selected_files": "Распознать текст",
     "retrieving_tags_from_sources": "Добыча тегов",
     "cancel": "Отменить это задание",
-    "import_folder": "Импорт папки"
+    "import_folder": "Импорт папки",
+    "downloading-archive": "Загрузка '{0}'",
+    "unpacking-archive": "Распаковка архива '{0}'"
   },
   "tags": {
     "namespaces": {

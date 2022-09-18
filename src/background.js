@@ -20,6 +20,9 @@ import menu from './menu.js';
 import path from 'path';
 import UpdateService from './services/update_service.js';
 import i18n from './i18n.backend.js';
+import electronDl from 'electron-dl';
+
+electronDl();
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
