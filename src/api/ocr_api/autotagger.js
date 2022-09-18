@@ -30,7 +30,7 @@ const namespaceCorrections = {
 function correctNameSpaces(scoredTags) {
   let result = scoredTags;
   for (let i = 0; i < scoredTags.length; i++) {
-    result[i].tag.namespace =
+    result[i].tag.namespace_id =
       namespaceCorrections[scoredTags[i].tag.category] || namespaces.GENERAL;
   }
   return result;
@@ -49,14 +49,7 @@ function getModelDirPath() {
 }
 
 export async function run(_event, _db, filepath) {
-  // в винде в релизе будет: current autotagger api folder D:\projects\tegownitsa\dist_electron\win-unpacked\resources\app.asar
-  // TODO: нужно ссылаться на папку другим образом, строя путь относительно папки с экзешником
   const modelDirPath = getModelDirPath();
-  console.log(
-    'current autotagger api folder and calced mdp',
-    __dirname,
-    modelDirPath
-  ); // TODO: remove
 
   if (!fs.existsSync(path.join(modelDirPath, MODEL_SAVEPOINT_FILENAME))) {
     if (getItem(MODEL_ZIP_URL)) {

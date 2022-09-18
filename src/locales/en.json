@@ -51,7 +51,8 @@
     "remove": "Remove",
     "restore": "Restore",
     "add": "Add",
-    "back": "Go back"
+    "back": "Go back",
+    "predict_tags": "Predict tags by neuronet"
   },
   "toast": {
     "preferences_saved": "Preferences saved",

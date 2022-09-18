@@ -5,7 +5,7 @@ export default class EshuushuuParser extends AbstractBasicParser {
     return {
       1: '',
       2: 'series:',
-      4: 'characters:',
+      4: 'character:',
       3: 'creator:'
     };
   }

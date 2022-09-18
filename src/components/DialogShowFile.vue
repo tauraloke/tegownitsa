@@ -19,13 +19,16 @@
             <h3 style="text-align: center" class="mb-4">
               {{ $t('main_window.tags') }}
             </h3>
-            <a @click="predictTags()">Predict tags</a>
-            {{ predictedTags }}
             <form-add-new-tag-to-file
               v-if="currentFile"
               :file-id="currentFile?.id"
               :tags="tags"
               @after-add-tag="afterAddTagHandler($event)"
+            />
+            <predicted-tags
+              :current-file="currentFile"
+              @after-add-tag="afterAddTagHandler($event)"
+              @toast="$emit('toast', $event)"
             />
             <list-tag-groups
               :tags="tags"
@@ -107,10 +110,11 @@
 <script>
 import FormAddNewTagToFile from '@/components/FormAddNewTagToFile.vue';
 import ListTagGroups from '@/components/ListTagGroups.vue';
+import PredictedTags from '@/components/PredictedTags.vue';
 
 export default {
   name: 'DialogShowFile',
-  components: { FormAddNewTagToFile, ListTagGroups },
+  components: { FormAddNewTagToFile, ListTagGroups, PredictedTags },
   emits: ['search-by-tag', 'toast', 'added-tag', 'tag-removed'],
   data() {
     return {
