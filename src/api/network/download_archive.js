@@ -11,7 +11,7 @@ import fs from 'fs';
 import { app } from 'electron';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const TMP_FOLDER = isDevelopment ? 'temp' : path.dirname(app.getPath('temp'));
+const TMP_FOLDER = isDevelopment ? 'temp' : app.getPath('exe');
 
 /**
  * @param {Electron.IpcMainInvokeEvent} _event
