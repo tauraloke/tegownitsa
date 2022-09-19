@@ -17,6 +17,18 @@ Now you can put your image collection in order... Or not.
 
 ---
 
+## Requirements
+
+### Comfortable
+
+- 1.4+ Gb free disc space (SSD)
+- 16 Gb RAM
+- i7
+
+### Minimal
+
+Unknown.
+
 ## Install
 
 - Binaries are available here: https://github.com/tauraloke/tegownitsa/releases/
@@ -102,8 +114,13 @@ npm start
   transformation, `Apache 2.0 license`.
   - [Tesseract](https://github.com/tesseract-ocr/tesseract) OCR engine for
   extracting textes from images for better indexing, `Apache 2.0 license`.
+  - [TensorflowJS](https://www.tensorflow.org/js/) is a ML library adapted for JavaScript, `Apache-2.0 license`.
   - [Autotagger](https://github.com/danbooru/autotagger) is a project to predict tags on anime images. You can see [online demo](https://autotagger.donmai.us/). `MIT license`.
 
+
+## How you can help
+
+- This bundle is very large. There is a big potential to compress package by cutting unusable libraries. BTW experiements with Webpack and Tesseract, Sharp, TensorflowJS are unseccuessful yet.
 
 ## Next goals
 
@@ -112,7 +129,10 @@ npm start
 - [x] i18n.
 - [x] Make job interface for scanning and tag search.
 - [x] Add Saucenao API requests with a private token.
-- [ ] (In progress) Optimize tag extraction by replacing scraping HTML to JSON API if possible.
+- [x] Optimize tag extraction by replacing scraping HTML to JSON API if possible.
 - [x] Try to add tag prediction like [Autotagger](https://github.com/danbooru/autotagger).
-- [ ] Pagination.
+- [ ] Add tag extraction when a file imported by URL.
+- [ ] Add a new strategy for tag extraction: catch tags directly from IQDB/Saucenao instead booru APIs.
+- [ ] Refine search interface for tags and other texts of images.
+- [ ] Add an architecture of plugins for Tesseract and Autotagging options. Current bundle is really too big.
 
