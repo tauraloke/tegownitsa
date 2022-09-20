@@ -66,6 +66,8 @@ export default {
         }
         if (!namespaces.includes(namespace)) {
           namespace = null;
+        } else {
+          head = head.split(':')[1];
         }
       }
 
