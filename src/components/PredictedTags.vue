@@ -57,7 +57,7 @@
 
 <script>
 import sourceTypes from '../config/source_type.json';
-import tagNamespaces from '@/config/tag_namespaces.json';
+import tagNamespaces from '@/config/tag_namespaces.js';
 import { swap } from '@/services/utils.js';
 /** @type {Object<number, string>} */
 const tagNameSpacesById = swap(tagNamespaces);

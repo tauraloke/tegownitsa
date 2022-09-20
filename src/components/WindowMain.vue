@@ -313,7 +313,7 @@ export default {
       }
       this[method](...args);
     });
-    this.searchFilesByCaption('');
+    this.searchFilesByTags('');
     this.showAllTags();
     window.configApi.getConfig('dark_theme').then((isDark) => {
       if (isDark) {

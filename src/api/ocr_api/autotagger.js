@@ -2,7 +2,7 @@ import * as tf from '@tensorflow/tfjs-node';
 import fs from 'fs';
 import path from 'path';
 import tags from '../../config/danbooru_tags.json';
-import namespaces from '../../config/tag_namespaces.json';
+import namespaces from '../../config/tag_namespaces.js';
 import { getItem } from '../../services/download_item_storage.js';
 import { app } from 'electron';
 

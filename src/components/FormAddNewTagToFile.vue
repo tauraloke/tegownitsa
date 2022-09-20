@@ -21,7 +21,7 @@
 
 <script>
 import sourceTypes from '../config/source_type.json';
-import tagNamespaces from '@/config/tag_namespaces.json';
+import tagNamespaces from '@/config/tag_namespaces.js';
 import { swap } from '@/services/utils.js';
 const tagNameSpacesById = swap(tagNamespaces);
 
