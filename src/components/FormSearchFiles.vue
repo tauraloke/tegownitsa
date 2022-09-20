@@ -17,6 +17,7 @@
         closable-chips
         multiple
         clearable
+        :menu-props="{ closeOnContentClick: true }"
       />
     </v-row>
   </v-container>

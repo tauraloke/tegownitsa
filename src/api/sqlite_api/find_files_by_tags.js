@@ -53,20 +53,23 @@ export async function run(_event, db, titles) {
     })
     .filter((c) => c)
     .map((c) => `(${c})`);
-  if (softConditions.length == 0) {
-    softConditions.push(ALWAYS_TRUE_CONTIDION);
-  }
+
   hardConditions = hardConditions.map((c) => `(${c})`);
+
+  const totalTagContidion =
+    softConditions.length == 0
+      ? ALWAYS_TRUE_CONTIDION
+      : `file_tags.tag_id IN (
+    SELECT tags.id FROM tags LEFT JOIN tag_locales ON tag_locales.tag_id = tags.id WHERE (
+      ${softConditions.join(' OR ')}
+    )
+  )`;
 
   const queryStr = `
     SELECT files.*, COUNT(*) AS tego_rating
       FROM files 
       LEFT JOIN file_tags ON file_tags.file_id = files.id
-    WHERE file_tags.tag_id IN (
-      SELECT tags.id FROM tags LEFT JOIN tag_locales ON tag_locales.tag_id = tags.id WHERE (
-        ${softConditions.join(' OR ')}
-      )
-    )
+    WHERE ${totalTagContidion}
     AND ${hardConditions.join(' AND ')}
     GROUP BY files.id
     ORDER BY tego_rating DESC
