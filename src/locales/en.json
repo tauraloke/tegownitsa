@@ -42,7 +42,8 @@
     "tags": "Tags",
     "similarity": "Similarity",
     "remove_this_file": "Remove this file?",
-    "no_files_to_scan": "No new files to scan"
+    "no_files_to_scan": "No new files to scan",
+    "found_x_files": "No files found. | Found {n} file. | Found {n} files."
   },
   "button": {
     "close": "Close",
@@ -68,14 +69,11 @@
     "clipboard_empty": "Clipboard is empty.",
     "file_path_has_imported": "File {0} has imported.",
     "folder_path_has_imported": "Folder {0} has imported.",
-    "found_x_results_by_caption": "Found {0} results by caption '{1}'",
-    "found_x_results_by_tag": "Found {0} results by tag '{1}'",
     "tag_unlinked_from_file": "Tag '{0}' has unlinked from this file.",
     "no_new_files_in_folder": "No new file in a folder"
   },
   "form_search_files": {
-    "find_by_tags_print_and_choose": "Find by tags: print and choose",
-    "find_by_caption_print_and_enter": "Find by caption: print and enter"
+    "find_by_tags_print_and_choose": "Find by tags: print and choose"
   },
   "form_add_new_tag_to_file": {
     "type_tag_title": "Type a tag title to add a new one"

@@ -1,6 +1,15 @@
 import tagNamespaces from '../../config/tag_namespaces.js';
+import hardConditionParsers from '../../services/file_condition_pair_parser.js';
 
-const ALWAYS_TRUE_CONTIDION = '1=1';
+const ALWAYS_TRUE_CONTIDION = '(1=1)';
+
+/**
+ * @param {string} value
+ * @returns {string}
+ */
+function sqliteSanitize(value) {
+  return value.replace(/'|"|%/g, '');
+}
 
 /**
  * @param {Electron.IpcMainInvokeEvent} _event
@@ -11,7 +20,7 @@ const ALWAYS_TRUE_CONTIDION = '1=1';
 export async function run(_event, db, titles) {
   if (!titles) {
     return await db.queryAll(
-      'SELECT files.* FROM files LEFT JOIN file_tags ON file_tags.file_id = files.id LEFT JOIN tag_locales ON tag_locales.tag_id = file_tags.tag_id GROUP by files.id ORDER BY files.created_at DESC'
+      'SELECT files.* FROM files ORDER BY files.created_at DESC'
     );
   }
 
@@ -22,32 +31,43 @@ export async function run(_event, db, titles) {
     .map((tag) => {
       let pair = tag.split(':');
       let [namespace, title] =
-        pair.length > 1
-          ? [pair[0].toUpperCase(), pair[1]]
-          : ['GENERAL', pair[0]];
-      if (namespacePrefixes.includes(namespace)) {
-        return `(tag_locales.title='${title}' AND tags.namespace_id=${tagNamespaces[namespace]})`;
+        pair.length > 1 ? [pair[0], pair[1]] : [null, pair[0]];
+      title = sqliteSanitize(title);
+      console.log(namespace, title);
+      if (namespace === null) {
+        return `tag_locales.title='${title}'`;
       }
-      if (namespace == 'fresh') {
-        let minutes = 15;
-        hardConditions.push(
-          `files.created_at > DATETIME('NOW', '-${minutes} minutes')`
-        );
+      if (namespacePrefixes.includes(namespace.toUpperCase())) {
+        return `tag_locales.title='${title}' AND tags.namespace_id=${
+          tagNamespaces[namespace.toUpperCase()]
+        }`;
+      }
+      if (!hardConditionParsers[namespace] || !title) {
         return null;
       }
+      let hardCondition = hardConditionParsers[namespace](title);
+      if (!hardCondition) {
+        return null;
+      }
+      hardConditions.push(hardCondition);
     })
-    .filter((t) => t);
+    .filter((c) => c)
+    .map((c) => `(${c})`);
   if (softConditions.length == 0) {
     softConditions.push(ALWAYS_TRUE_CONTIDION);
   }
+  hardConditions = hardConditions.map((c) => `(${c})`);
 
   const queryStr = `
     SELECT files.*, COUNT(*) AS tego_rating
       FROM files 
       LEFT JOIN file_tags ON file_tags.file_id = files.id
-      LEFT JOIN tags ON tags.id=file_tags.tag_id
-      LEFT JOIN tag_locales ON tag_locales.tag_id = file_tags.tag_id
-    WHERE (${softConditions.join(' OR ')}) AND (${hardConditions.join(' AND ')})
+    WHERE file_tags.tag_id IN (
+      SELECT tags.id FROM tags LEFT JOIN tag_locales ON tag_locales.tag_id = tags.id WHERE (
+        ${softConditions.join(' OR ')}
+      )
+    )
+    AND ${hardConditions.join(' AND ')}
     GROUP BY files.id
     ORDER BY tego_rating DESC
     `;

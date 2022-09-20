@@ -83,6 +83,9 @@ async function initDatabase({ dbPath }) {
   dbConnection.query = _query;
   dbConnection.getTagList = _getTagList;
 
+  console.log('before pragma');
+  dbConnection.run('PRAGMA encoding = "UTF-16";');
+  console.log('after pragma');
   // make tables if not exists...
   dbConnection.run(
     `CREATE TABLE IF NOT EXISTS files (
@@ -109,6 +112,7 @@ async function initDatabase({ dbPath }) {
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
       file_id INTEGER,
       url TEXT,
+      title TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP
     )`

@@ -16,7 +16,6 @@
       <form-search-files
         ref="form_search_files"
         @by-tags="searchFilesByTags($event)"
-        @by-caption="searchFilesByCaption($event)"
       />
     </header>
 
@@ -34,28 +33,33 @@
           </div>
         </v-col>
 
-        <!-- files -->
         <v-col cols="12" sm="8">
-          <h3 v-if="files?.length > 0">{{ $t('main_window.files') }}</h3>
-          <v-row v-if="files?.length > 0" id="files" class="mt-4">
-            <v-col
-              v-for="file in files"
-              :key="file.id"
-              class="d-flex child-flex"
-              cols="2"
-            >
-              <v-img
-                :data="{ id: file?.id }"
-                :src="'file://' + file?.preview_path"
-                :title="file?.source_filename"
-                aspect-ratio="1"
-                width="140"
-                contain
-                class="bg-grey-lighten-2 pointer-clickable pretty-corners elevation-4"
-                @click="showFile(file)"
-              />
-            </v-col>
-          </v-row>
+          <!-- files -->
+          <div v-if="!duplicatedFiles?.length">
+            <h3>{{ $t('main_window.files') }}</h3>
+            <div class="justify-center">
+              {{ $t('main_window.found_x_files', files.length) }}
+            </div>
+            <v-row id="files" class="mt-4">
+              <v-col
+                v-for="file in files"
+                :key="file.id"
+                class="d-flex child-flex"
+                cols="2"
+              >
+                <v-img
+                  :data="{ id: file?.id }"
+                  :src="'file://' + file?.preview_path"
+                  :title="file?.source_filename"
+                  aspect-ratio="1"
+                  width="140"
+                  contain
+                  class="bg-grey-lighten-2 pointer-clickable pretty-corners elevation-4"
+                  @click="showFile(file)"
+                />
+              </v-col>
+            </v-row>
+          </div>
 
           <!-- duplicated files -->
           <div v-if="files === null" id="duplicated_files">
@@ -383,26 +387,6 @@ export default {
     async searchFilesByTags(tags_titles) {
       this.hideFile();
       this.files = await window.sqliteApi.findFilesByTags(tags_titles);
-      this.toast(
-        this.$t('toast.found_x_results_by_tag', [
-          this.files.length,
-          tags_titles
-        ])
-      );
-    },
-    async searchFilesByCaption(caption = '') {
-      this.hideFile();
-      let files = await window.sqliteApi.queryAll(
-        'SELECT * FROM files WHERE caption LIKE "%" || ? || "%" OR source_filename LIKE "%" || ? || "%"',
-        [caption, caption]
-      );
-      this.files = files;
-      this.toast(
-        this.$t('toast.found_x_results_by_caption', [
-          this.files.length,
-          caption
-        ])
-      );
     },
     async showFile(file) {
       if (typeof file === 'number') {
@@ -437,6 +421,7 @@ export default {
         await window.fileApi.addFile(fileList[i]);
         job.incrementProgress(1);
       }
+      this.searchFilesByTag('fresh:5');
     },
     async openFile() {
       let file = await window.fileApi.openFile();
@@ -447,6 +432,7 @@ export default {
       console.log(`Chosen file ${path}`);
       await window.fileApi.addFile(path);
       this.toast(this.$t('toast.file_path_has_imported', [path]));
+      this.searchFilesByTag('fresh:5');
     },
     async importFromClipboard() {
       const tmpFilePath = await window.fileApi.saveTempFileFromClipboard();
@@ -457,6 +443,7 @@ export default {
       await window.fileApi.addFile(tmpFilePath);
       await window.fileApi.removeFile(tmpFilePath);
       this.toast(this.$t('toast.file_has_imported_from_clipboard'));
+      this.searchFilesByTag('fresh:5');
     },
     async importFileFromUrl() {
       if (!this.showDialogUrlForImport) {
@@ -488,6 +475,7 @@ export default {
       }
       await window.sqliteApi.addUrlToFile(this.urlForImport, file_id);
       this.toast(this.$t('toast.file_has_imported', [this.urlForImport]));
+      this.searchFilesByTag('fresh:5');
     },
     async showAllTags() {
       this.tags = await window.sqliteApi.getAllTags();

@@ -42,7 +42,8 @@
     "tags": "Теги",
     "similarity": "Сходство",
     "remove_this_file": "Удалить этот файл?",
-    "no_files_to_scan": "Нет новых файлов для сканирования"
+    "no_files_to_scan": "Нет новых файлов для сканирования",
+    "found_x_files": "Файлы не найдены. | Найден {n} файл. | Найдено {n} файла. | Найдено {n} файлов."
   },
   "button": {
     "cancel": "Отмена",
@@ -68,14 +69,11 @@
     "clipboard_empty": "Буфер обмена не содержит картинку.",
     "file_path_has_imported": "Файл {0} импортирован.",
     "folder_path_has_imported": "Папка {0} импортирована.",
-    "found_x_results_by_caption": "Найдено {0} результатов по тексту '{1}'",
-    "found_x_results_by_tag": "Найдено {0} результатов по тегу '{1}'",
-    "tag_unlinked_from_file": "Тег \"{0}\" отсоединен от этого файла.",
+    "tag_unlinked_from_file": "Тег '{0}' отсоединен от этого файла.",
     "no_new_files_in_folder": "Нет новых файлов в папке"
   },
   "form_search_files": {
-    "find_by_tags_print_and_choose": "Поиск по тегам: печатайте и выбирайте",
-    "find_by_caption_print_and_enter": "Найти по тексту при картинке"
+    "find_by_tags_print_and_choose": "Поиск по тегам: печатайте и выбирайте"
   },
   "form_add_new_tag_to_file": {
     "type_tag_title": "Введите название нового тега для добавления"

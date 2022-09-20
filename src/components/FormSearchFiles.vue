@@ -9,7 +9,7 @@
         hide-no-data
         hide-selected
         item-title="title"
-        item-value="title"
+        item-value="value"
         :label="$t('form_search_files.find_by_tags_print_and_choose')"
         prepend-icon="mdi-database-search"
         return-object
@@ -19,25 +19,21 @@
         clearable
       />
     </v-row>
-    <v-row>
-      <v-text-field
-        v-model="searchCaption"
-        :label="$t('form_search_files.find_by_caption_print_and_enter')"
-        clearable
-        append-icon="mdi-magnify"
-        @click:append="$emit('by-caption', searchCaption || '')"
-      ></v-text-field>
-    </v-row>
   </v-container>
 </template>
 
 <script>
+import tagNamespaces from '../config/tag_namespaces.js';
+import hardConditionParsers from '../services/file_condition_pair_parser.js';
+
+const namespaces = Object.keys(tagNamespaces).map((n) => n.toLowerCase());
+const pseudoNameSpaces = Object.keys(hardConditionParsers);
+
 export default {
   name: 'FormSearchFiles',
-  emits: { 'by-tags': null, 'by-caption': null },
+  emits: ['by-tags'],
   data() {
     return {
-      searchCaption: null,
       searchTags: null,
       entries: [],
       isLoading: false,
@@ -45,14 +41,36 @@ export default {
     };
   },
   watch: {
+    /**
+     * @param {string} head
+     */
     search(head) {
+      if (!head) {
+        return;
+      }
+
       // Items have already been requested
       if (this.isLoading) return;
 
       this.isLoading = true;
 
+      let namespace = null;
+
+      if (head.includes(':')) {
+        namespace = head.split(':')[0];
+        if (pseudoNameSpaces.includes(namespace)) {
+          this.entries = [{ title: head, value: head }];
+          this.count = 1;
+          this.isLoading = false;
+          return;
+        }
+        if (!namespaces.includes(namespace)) {
+          namespace = null;
+        }
+      }
+
       window.sqliteApi
-        .findTagsByHead(head)
+        .findTagsByHead(head, namespace)
         .then((tags) => {
           this.entries = tags;
           this.count = tags.length;

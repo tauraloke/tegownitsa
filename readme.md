@@ -10,7 +10,7 @@ Now you can put your image collection in order... Or not.
 - Find and remove low-dimensional duplicates.
 - Scan images and find them by a recognized text if you remember it.
 - Lurk tags or mark tags by your own hands.
-- Find images by tag net.
+- Find images by tag net. You can use pseudonamespaces like `in_url:...` (find images with linked urls), `in_title:...` (find images with titles of linked urls), `in_filename:...` (find by original filename), `in_reco:...` (find by recognized text), `fresh:15` (find images created latest 15 minutes).
 - You can edit tags after right click.
 - Export images via a right click on an image and copying to clipboard.
 - Great! Now you have remembered the image you want... Perhaps.
@@ -133,6 +133,6 @@ npm start
 - [x] Try to add tag prediction like [Autotagger](https://github.com/danbooru/autotagger).
 - [ ] Add tag extraction when a file imported by URL.
 - [ ] Add a new strategy for tag extraction: catch tags directly from IQDB/Saucenao instead booru APIs.
-- [ ] Refine search interface for tags and other texts of images.
+- [x] Refine search interface for tags and other texts of images.
 - [ ] Add an architecture of plugins for Tesseract and Autotagging options. Current bundle is really too big.
 
