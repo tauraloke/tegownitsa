@@ -11,6 +11,7 @@
     v-if="newTagLocale && newTagTitle"
     :disabled="!newTagTitle"
     color="success"
+    class="mb-10"
     width="100%"
     @click="addTagToCurrentFile()"
   >

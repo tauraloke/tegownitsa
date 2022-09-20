@@ -1,6 +1,6 @@
 <template>
   <section>
-    <v-row class="justify-center">
+    <v-row class="justify-center mb-6">
       <v-btn v-if="predictedTags.length == 0" @click="predictTags()">
         {{ $t('button.predict_tags') }}
       </v-btn>
@@ -8,27 +8,37 @@
         {{ $t('button.hide_predicted_tags') }}
       </v-btn>
     </v-row>
-    <v-table v-if="predictedTags.length > 0" style="text-align: center">
+    <v-progress-linear
+      v-if="isLoadingTags"
+      indeterminate
+      color="white darken-2"
+    />
+    <v-table
+      v-if="predictedTags.length > 0"
+      class="predicted-table"
+      @loadstart.prevent="1"
+    >
       <template #default>
         <thead>
           <tr>
-            <th class="text-center">Name</th>
-            <th class="text-center">Score</th>
-            <th class="text-center">Namespace</th>
+            <th class="text-center">
+              {{ $t('tags.namespace') }}
+            </th>
+            <th class="text-center">
+              {{ $t('tags.name') }}
+            </th>
+            <th class="text-center">
+              {{ $t('tags.score') }}
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in predictedTags" :key="item.name">
+            <td>{{ item.namespace }}</td>
             <td>
-              <span v-if="item.name.length < nameLimit">
-                {{ item.name }}
-              </span>
-              <span v-else :title="item.name">
-                {{ item.name.slice(0, nameLimit) }}...
-              </span>
+              {{ item.name }}
             </td>
             <td>{{ item.score_percent }}</td>
-            <td>{{ item.namespace }}</td>
             <td>
               <v-icon v-if="item.in_tag_locales" icon="mdi-check" />
               <v-btn
@@ -68,7 +78,8 @@ export default {
   data() {
     return {
       predictedTags: [],
-      nameLimit: 10
+      nameLimit: 10,
+      isLoadingTags: false
     };
   },
   methods: {
@@ -86,11 +97,13 @@ export default {
       if (!this.currentFile) {
         return false;
       }
+      this.isLoadingTags = true;
       let autoTaggerResponse = await window.ocrApi.autotagger(
         this.currentFile.full_path
       );
       if (autoTaggerResponse.status != 'OK') {
         if (autoTaggerResponse.error == 'model_not_found') {
+          this.isLoadingTags = false;
           this.$emit(
             'toast',
             this.$t('dialog_show_file.wait_for_neuronet_files')
@@ -103,6 +116,7 @@ export default {
           return false;
         }
         if (autoTaggerResponse.error == 'model_still_loading') {
+          this.isLoadingTags = false;
           this.$emit(
             'toast',
             this.$t('dialog_show_file.neuronet_files_still_loading')
@@ -110,7 +124,6 @@ export default {
         }
         return false;
       }
-      console.log(this.tagLocales());
       const tagLocales = this.tagLocales();
       let items = autoTaggerResponse.result.map((t) => {
         let full_name =
@@ -128,6 +141,7 @@ export default {
         };
       });
       console.table(items);
+      this.isLoadingTags = false;
       this.predictedTags = items;
     },
     async addPredictedTag(tag) {
@@ -152,7 +166,16 @@ export default {
 </script>
 
 <style>
-.clickable-i i {
-  cursor: pointer !important;
+.predicted-table {
+  text-align: center;
+}
+
+.predicted-table table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.predicted-table td {
+  overflow-wrap: break-word;
 }
 </style>
