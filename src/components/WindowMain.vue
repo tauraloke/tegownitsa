@@ -165,6 +165,7 @@
             v-model="urlForImport"
             label="URL"
             prepend-inner-icon="mdi-earth"
+            autofocus
           />
         </v-card-text>
         <v-card-actions class="justify-center">
