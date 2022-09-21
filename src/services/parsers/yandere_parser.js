@@ -2,6 +2,12 @@ import BasicJsonMoebooruParser from './basic_json_moebooru_parser.js';
 
 export default class YandereParser extends BasicJsonMoebooruParser {
   /**
+   * @returns {Promise<string?>}
+   */
+  async extractTitle() {
+    return null;
+  }
+  /**
    * @returns {string}
    */
   getFetchUrl() {

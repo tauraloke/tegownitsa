@@ -13,4 +13,43 @@ export default class GelbooruParser extends BasicHTMLMoebooruParser {
       metadata: 'meta:'
     };
   }
+  /**
+   * @returns {Promise<string?>}
+   */
+  async extractFullSizeImageUrl() {
+    try {
+      let $ = await this.getHtmlParser();
+      let url = null;
+      $('#tag-list > li > a').each(function (i, el) {
+        if (el && $(el).text() == 'Original image') {
+          url = $(el).attr('href');
+        }
+      });
+      return url;
+    } catch {
+      return null;
+    }
+  }
+  /**
+   * @returns {Promize<string[]?>}
+   */
+  async extractSourceUrls() {
+    try {
+      let $ = await this.getHtmlParser();
+      let url = null;
+      $('#tag-list > li').each(function (i, el) {
+        if (
+          el &&
+          $(el)
+            .text()
+            .match(/^Source:/)
+        ) {
+          url = $($(el).find('a').get()[0]).attr('href');
+        }
+      });
+      return url ? [url] : null;
+    } catch {
+      return null;
+    }
+  }
 }

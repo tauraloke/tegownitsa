@@ -4,7 +4,7 @@ import BasicMoebooruParser from './basic_moebooru_parser.js';
 export default class BasicMetaMoebooruParser extends BasicMoebooruParser {
   // @Abstract
   getTagAttr() {
-    throw { error: 'Direct call of an abstract method' };
+    throw { error: 'Direct call of an abstract method getTagAttr()' };
   }
   tagGroupsExtractor(groupName, prefix, $) {
     let _tags = [];

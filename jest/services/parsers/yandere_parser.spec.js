@@ -3,23 +3,37 @@ const path = require('path');
 const Parser =
   require('../../../src/services/parsers/yandere_parser.js').default;
 
-test('Yandere parser extracts tags', async () => {
+describe('Yandere parser', () => {
   let parser = new Parser('');
   parser.getBuffer = () => {
     return fs.readFileSync(path.join('jest', 'mocks', 'json', 'yandere.json'));
   };
-  let tags = await parser.extractTags();
-  expect(tags).toEqual([
-    'series:ao_no_exorcist',
-    'character:kamiki_izumo',
-    'megane',
-    'character:moriyama_shiemi',
-    'character:okumura_rin',
-    'character:okumura_yukio',
-    'seifuku',
-    'character:shima_renzou',
-    'skirt_lift',
-    'tagme',
-    'thighhighs'
-  ]);
+
+  test('response object without exceptions', async () => {
+    await expect(parser.parse()).resolves.not.toThrowError();
+  });
+
+  test('extract full url', async () => {
+    expect(await parser.extractFullSizeImageUrl()).toEqual(
+      'https://files.yande.re/image/ca7837f81e4a44baacb650c7f3d02210/yande.re%20741373%20blue_archive%20horns%20kanzarin%20sorasaki_hina%20thighhighs%20uniform.jpg'
+    );
+  });
+
+  test('extract source', async () => {
+    expect(await parser.extractSourceUrls()).toEqual([
+      'https://www.pixiv.net/artworks/87632074'
+    ]);
+  });
+
+  test('extracts tags', async () => {
+    let tags = await parser.extractTags();
+    expect(tags).toEqual([
+      'series:blue_archive',
+      'horns',
+      'creator:kanzarin',
+      'character:sorasaki_hina',
+      'thighhighs',
+      'uniform'
+    ]);
+  });
 });

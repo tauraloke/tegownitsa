@@ -2,6 +2,44 @@ import AbstractBasicParser from './abstract_basic_parser.js';
 import fetchUrl from 'node-fetch';
 
 export default class PixivParser extends AbstractBasicParser {
+  /**
+   * @returns {Promise<string?>}
+   */
+  async extractFullSizeImageUrl() {
+    try {
+      return (await this.getJson()).body.urls.original;
+    } catch {
+      return null;
+    }
+  }
+  /**
+   * @returns {Promize<string[]?>}
+   */
+  async extractSourceUrls() {
+    return null;
+  }
+  /**
+   * @returns {Promise<string?>}
+   */
+  async extractTitle() {
+    let json = await this.getJson();
+    try {
+      return json.body.title || json.body.illustTitle;
+    } catch {
+      return null;
+    }
+  }
+  /**
+   * @returns {Promise<string[]?>}
+   */
+  async extractAuthorUrls() {
+    try {
+      let userId = (await this.getJson()).body.userId;
+      return userId ? [`https://www.pixiv.net/en/users/${userId}`] : null;
+    } catch {
+      return null;
+    }
+  }
   getItemId() {
     if (this.itemId) {
       return this.itemId;

@@ -13,6 +13,40 @@ export default class BasicJsonMoebooruParser extends AbstractBasicParser {
     throw `Cannot parse url ${this.url}`;
   }
   /**
+   * @returns {Promise<string[]?>}
+   */
+  async extractAuthorUrls() {
+    return null;
+  }
+  /**
+   * @returns {Promise<string?>}
+   */
+  async extractTitle() {
+    return null;
+  }
+  /**
+   * @returns {Promize<string[]?>}
+   */
+  async extractSourceUrls() {
+    try {
+      let source = (await this.getJson()).posts[0].source;
+      return source ? [source] : null;
+    } catch {
+      return null;
+    }
+  }
+  /**
+   * @returns {Promise<string?>}
+   */
+  async extractFullSizeImageUrl() {
+    let json = await this.getJson();
+    try {
+      return json.posts[0].file_url || json.posts[0].jpeg_url;
+    } catch {
+      return null;
+    }
+  }
+  /**
    * @abstract
    * @returns {string}
    */
@@ -21,7 +55,7 @@ export default class BasicJsonMoebooruParser extends AbstractBasicParser {
   }
   async extractTags() {
     try {
-      let json = JSON.parse(await this.getBuffer());
+      let json = await this.getJson();
       let tags = [];
       const prefix = {
         general: '',

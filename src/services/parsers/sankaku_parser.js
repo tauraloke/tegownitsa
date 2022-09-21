@@ -2,6 +2,27 @@ import BasicJsonMoebooruParser from './basic_json_moebooru_parser.js';
 
 export default class SankakuParser extends BasicJsonMoebooruParser {
   /**
+   * @returns {Promise<string?>}
+   */
+  async extractFullSizeImageUrl() {
+    try {
+      return (await this.getJson()).file_url;
+    } catch {
+      return null;
+    }
+  }
+  /**
+   * @returns {Promize<string[]?>}
+   */
+  async extractSourceUrls() {
+    try {
+      let source = (await this.getJson()).source;
+      return source ? [source] : null;
+    } catch {
+      return null;
+    }
+  }
+  /**
    * @returns {string}
    */
   getFetchUrl() {

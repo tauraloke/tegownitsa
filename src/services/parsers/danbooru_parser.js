@@ -1,6 +1,6 @@
-import AbstractBasicParser from './abstract_basic_parser.js';
+import BasicJsonMoebooruParser from './basic_json_moebooru_parser.js';
 
-export default class DanbooruParser extends AbstractBasicParser {
+export default class DanbooruParser extends BasicJsonMoebooruParser {
   getItemId() {
     if (this.itemId) {
       return this.itemId;
@@ -43,6 +43,28 @@ export default class DanbooruParser extends AbstractBasicParser {
     } catch (error) {
       console.log('Cannot parse url', this.url, error);
       return [];
+    }
+  }
+  /**
+   * @returns {Promize<string[]?>}
+   */
+  async extractSourceUrls() {
+    try {
+      let source = (await this.getJson()).source;
+      return source ? [source] : null;
+    } catch {
+      return null;
+    }
+  }
+  /**
+   * @returns {Promise<string?>}
+   */
+  async extractFullSizeImageUrl() {
+    let json = await this.getJson();
+    try {
+      return json.large_file_url || json.file_url;
+    } catch {
+      return null;
     }
   }
 }

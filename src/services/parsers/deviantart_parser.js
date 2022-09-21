@@ -35,4 +35,39 @@ export default class DeviantartParser extends AbstractBasicParser {
       return [];
     }
   }
+  /**
+   * @returns {Promise<string?>}
+   */
+  async extractFullSizeImageUrl() {
+    return null;
+  }
+  /**
+   * @returns {Promize<string[]?>}
+   */
+  async extractSourceUrls() {
+    return null;
+  }
+  /**
+   * @returns {Promise<string?>}
+   */
+  async extractTitle() {
+    try {
+      let json = await this.getJson();
+      return json.deviation.title;
+    } catch {
+      return null;
+    }
+  }
+  /**
+   * @returns {Promise<string[]?>}
+   */
+  async extractAuthorUrls() {
+    try {
+      let json = await this.getJson();
+      let username = json.deviation.author.username;
+      return username ? [`https://www.deviantart.com/${username}`] : null;
+    } catch {
+      return null;
+    }
+  }
 }
