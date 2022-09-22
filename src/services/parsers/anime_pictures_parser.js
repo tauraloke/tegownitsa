@@ -1,4 +1,6 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
+// eslint-disable-next-line no-unused-vars
+import { ResponseImage } from './parser_response.js';
 
 export default class AnimePicturesParser extends AbstractBasicParser {
   getTagGroups() {
@@ -24,13 +26,24 @@ export default class AnimePicturesParser extends AbstractBasicParser {
     return _tags;
   }
   /**
-   * @returns {Promise<string?>}
+   * @returns {Promise<ResponseImage?>}
    */
-  async extractFullSizeImageUrl() {
+  async extractFullSizeImage() {
     try {
       let $ = await this.getHtmlParser();
-      let relUrl = $($('#get_image_link').get()[0]).attr('href');
-      return relUrl ? `https://anime-pictures.net${relUrl}` : null;
+      let anchor = $($('#get_image_link').get()[0]);
+      let relUrl = anchor.attr('href');
+      if (!relUrl) {
+        return null;
+      }
+      let [, width, height] = anchor
+        .attr('title')
+        .match(/Download anime picture ([0-9]+)x([0-9]+) /);
+      return {
+        url: `https://anime-pictures.net${relUrl}`,
+        width: parseInt(width),
+        height: parseInt(height)
+      };
     } catch {
       return null;
     }

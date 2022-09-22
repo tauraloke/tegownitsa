@@ -1,4 +1,6 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
+// eslint-disable-next-line no-unused-vars
+import { ResponseImage } from './parser_response.js';
 
 export default class EshuushuuParser extends AbstractBasicParser {
   getTagGroups() {
@@ -20,15 +22,25 @@ export default class EshuushuuParser extends AbstractBasicParser {
     return _tags;
   }
   /**
-   * @returns {Promise<string?>}
+   * @returns {Promise<ResponseImage?>}
    */
-  async extractFullSizeImageUrl() {
+  async extractFullSizeImage() {
     try {
       let $ = await this.getHtmlParser();
       let relUrl = $($('div.image_block > div.thumb > a').get()[0]).attr(
         'href'
       );
-      return relUrl ? `https://e-shuushuu.net${relUrl}` : null;
+      if (!relUrl) {
+        return null;
+      }
+      let [, width, height] = $('.meta > dl')
+        .text()
+        .match(/Dimensions:\n.*?([0-9]+)x([0-9]+)/);
+      return {
+        url: `https://e-shuushuu.net${relUrl}`,
+        width: parseInt(width),
+        height: parseInt(height)
+      };
     } catch {
       return null;
     }

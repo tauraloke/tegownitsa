@@ -1,4 +1,6 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
+// eslint-disable-next-line no-unused-vars
+import { ResponseImage } from './parser_response.js';
 
 export default class FuraffinityParser extends AbstractBasicParser {
   getTagGroups() {
@@ -18,9 +20,9 @@ export default class FuraffinityParser extends AbstractBasicParser {
     return _tags;
   }
   /**
-   * @returns {Promise<string?>}
+   * @returns {Promise<ResponseImage?>}
    */
-  async extractFullSizeImageUrl() {
+  async extractFullSizeImage() {
     try {
       let $ = await this.getHtmlParser();
       let url = $($('#submissionImg').get()[0]).attr('src');
@@ -30,7 +32,16 @@ export default class FuraffinityParser extends AbstractBasicParser {
       if (url[0] == '/') {
         url = `https:${url}`;
       }
-      return url;
+      let [, width, height] = $(
+        '#columnpage > div.submission-sidebar > section.info.text'
+      )
+        .text()
+        .match(/Size ([0-9]+) x ([0-9]+)/);
+      return {
+        url: url,
+        width: parseInt(width),
+        height: parseInt(height)
+      };
     } catch {
       return null;
     }

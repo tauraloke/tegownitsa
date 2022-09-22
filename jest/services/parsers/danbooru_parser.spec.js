@@ -14,9 +14,11 @@ describe('Danbooru parser', () => {
   });
 
   test('extract full url', async () => {
-    expect(await parser.extractFullSizeImageUrl()).toEqual(
-      'https://cdn.donmai.us/original/e2/33/e233ff890e0664f1a0051b86d10038f0.png'
-    );
+    expect(await parser.extractFullSizeImage()).toEqual({
+      url: 'https://cdn.donmai.us/original/e2/33/e233ff890e0664f1a0051b86d10038f0.png',
+      width: 619,
+      height: 1200
+    });
   });
 
   test('extract source', async () => {

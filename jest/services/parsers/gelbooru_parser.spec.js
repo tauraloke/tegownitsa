@@ -14,9 +14,11 @@ describe('Gelbooru parser', () => {
   });
 
   test('extract full url', async () => {
-    expect(await parser.extractFullSizeImageUrl()).toEqual(
-      'https://img3.gelbooru.com/images/eb/f6/ebf68cdee25717cab3b6ab568439bb29.png'
-    );
+    expect(await parser.extractFullSizeImage()).toEqual({
+      url: 'https://img3.gelbooru.com/images/eb/f6/ebf68cdee25717cab3b6ab568439bb29.png',
+      width: 720,
+      height: 560
+    });
   });
 
   test('extract source', async () => {

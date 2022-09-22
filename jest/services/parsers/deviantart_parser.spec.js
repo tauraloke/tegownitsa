@@ -16,7 +16,7 @@ describe('Deviantart parser', () => {
   });
 
   test('extract full url', async () => {
-    expect(await parser.extractFullSizeImageUrl()).toEqual(null);
+    expect(await parser.extractFullSizeImage()).toEqual(null);
   });
 
   test('extract source', async () => {

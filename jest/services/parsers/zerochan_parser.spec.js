@@ -14,9 +14,11 @@ describe('Zerochan parser', () => {
   });
 
   test('extract full url', async () => {
-    expect(await parser.extractFullSizeImageUrl()).toEqual(
-      'https://static.zerochan.net/Shu.Yamino.full.3734266.jpg'
-    );
+    expect(await parser.extractFullSizeImage()).toEqual({
+      url: 'https://static.zerochan.net/Shu.Yamino.full.3734266.jpg',
+      width: 1378,
+      height: 2039
+    });
   });
 
   test('extract author url', async () => {

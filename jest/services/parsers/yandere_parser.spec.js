@@ -14,9 +14,11 @@ describe('Yandere parser', () => {
   });
 
   test('extract full url', async () => {
-    expect(await parser.extractFullSizeImageUrl()).toEqual(
-      'https://files.yande.re/image/ca7837f81e4a44baacb650c7f3d02210/yande.re%20741373%20blue_archive%20horns%20kanzarin%20sorasaki_hina%20thighhighs%20uniform.jpg'
-    );
+    expect(await parser.extractFullSizeImage()).toEqual({
+      url: 'https://files.yande.re/image/ca7837f81e4a44baacb650c7f3d02210/yande.re%20741373%20blue_archive%20horns%20kanzarin%20sorasaki_hina%20thighhighs%20uniform.jpg',
+      width: 1447,
+      height: 2046
+    });
   });
 
   test('extract source', async () => {

@@ -13,9 +13,11 @@ describe('Pixiv parser', () => {
   });
 
   test('extract full url', async () => {
-    expect(await parser.extractFullSizeImageUrl()).toEqual(
-      'https://i.pximg.net/img-original/img/2015/01/21/00/05/34/48285353_p0.png'
-    );
+    expect(await parser.extractFullSizeImage()).toEqual({
+      url: 'https://i.pximg.net/img-original/img/2015/01/21/00/05/34/48285353_p0.png',
+      width: 2000,
+      height: 1365
+    });
   });
 
   test('extract source', async () => {

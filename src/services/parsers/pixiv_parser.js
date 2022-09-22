@@ -1,13 +1,19 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
-import fetchUrl from 'node-fetch';
+// eslint-disable-next-line no-unused-vars
+import { ResponseImage } from './parser_response.js';
 
 export default class PixivParser extends AbstractBasicParser {
   /**
-   * @returns {Promise<string?>}
+   * @returns {Promise<ResponseImage?>}
    */
-  async extractFullSizeImageUrl() {
+  async extractFullSizeImage() {
+    let json = await this.getJson();
     try {
-      return (await this.getJson()).body.urls.original;
+      return {
+        url: json.body.urls.original,
+        width: json.body.width,
+        height: json.body.height
+      };
     } catch {
       return null;
     }
@@ -56,16 +62,8 @@ export default class PixivParser extends AbstractBasicParser {
     }
     throw `Cannot parse url ${this.url}`;
   }
-  async getBuffer() {
-    if (this.buffer) {
-      return this.buffer;
-    }
-    this.buffer = await (
-      await fetchUrl(
-        `https://www.pixiv.net/ajax/illust/${this.getItemId()}?lang=en`
-      )
-    ).text();
-    return this.buffer;
+  getFetchUrl() {
+    return `https://www.pixiv.net/ajax/illust/${this.getItemId()}?lang=en`;
   }
   async extractTags() {
     try {

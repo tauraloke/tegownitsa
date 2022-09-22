@@ -1,6 +1,7 @@
 import fetchUrl from 'node-fetch';
 import { load } from 'cheerio';
-import ParserResponse from './parser_response.js';
+// eslint-disable-next-line no-unused-vars
+import ParserResponse, { ResponseImage } from './parser_response.js';
 
 export default class AbstractBasicParser {
   /**
@@ -19,7 +20,7 @@ export default class AbstractBasicParser {
     return new ParserResponse({
       requestedUrl: this.url,
       tags: await this.extractTags(),
-      fullSizeImageUrl: await this.extractFullSizeImageUrl(),
+      fullSizeImage: await this.extractFullSizeImage(),
       title: await this.extractTitle(),
       sourceURLs: await this.extractSourceUrls(),
       authorUrls: await this.extractAuthorUrls()
@@ -27,11 +28,11 @@ export default class AbstractBasicParser {
   }
   /**
    * @abstract
-   * @returns {Promise<string?>}
+   * @returns {Promise<ResponseImage?>}
    */
-  async extractFullSizeImageUrl() {
+  async extractFullSizeImage() {
     throw {
-      error: 'Direct call of an abstract method extractFullSizeImageUrl()'
+      error: 'Direct call of an abstract method extractFullSizeImage()'
     };
   }
   /**

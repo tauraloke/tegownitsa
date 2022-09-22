@@ -1,15 +1,24 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
+// eslint-disable-next-line no-unused-vars
+import { ResponseImage } from './parser_response.js';
 
 export default class ZerochanParser extends AbstractBasicParser {
   /**
-   * @returns {Promise<string?>}
+   * @returns {Promise<ResponseImage?>}
    */
-  async extractFullSizeImageUrl() {
+  async extractFullSizeImage() {
     let $ = await this.getHtmlParser();
     try {
-      return $($('#large > a.preview').get()[0]).attr('href');
-    } catch (e) {
-      console.log(e);
+      let url = $($('#large > a.preview').get()[0]).attr('href');
+      let [, width, height] = $($('#large > a.preview > img').get()[0])
+        .attr('title')
+        .match(/([0-9]+)x([0-9]+)/);
+      return {
+        url: url,
+        width: parseInt(width),
+        height: parseInt(height)
+      };
+    } catch {
       return null;
     }
   }

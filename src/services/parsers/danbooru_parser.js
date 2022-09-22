@@ -1,4 +1,6 @@
 import BasicJsonMoebooruParser from './basic_json_moebooru_parser.js';
+// eslint-disable-next-line no-unused-vars
+import { ResponseImage } from './parser_response.js';
 
 export default class DanbooruParser extends BasicJsonMoebooruParser {
   getItemId() {
@@ -57,12 +59,16 @@ export default class DanbooruParser extends BasicJsonMoebooruParser {
     }
   }
   /**
-   * @returns {Promise<string?>}
+   * @returns {Promise<ResponseImage?>}
    */
-  async extractFullSizeImageUrl() {
+  async extractFullSizeImage() {
     let json = await this.getJson();
     try {
-      return json.large_file_url || json.file_url;
+      return {
+        url: json.large_file_url || json.file_url,
+        width: json.image_width,
+        height: json.image_height
+      };
     } catch {
       return null;
     }

@@ -16,9 +16,11 @@ describe('Furaffinity parser', () => {
   });
 
   test('extract full url', async () => {
-    expect(await parser.extractFullSizeImageUrl()).toEqual(
-      'https://d.furaffinity.net/art/inkfang/1594246554/1594246554.inkfang_king_cheetah_print_copy.jpg'
-    );
+    expect(await parser.extractFullSizeImage()).toEqual({
+      url: 'https://d.furaffinity.net/art/inkfang/1594246554/1594246554.inkfang_king_cheetah_print_copy.jpg',
+      width: 1280,
+      height: 1280
+    });
   });
 
   test('extract source', async () => {

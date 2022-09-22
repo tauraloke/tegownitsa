@@ -14,9 +14,11 @@ describe('E-Shuushuu parser', () => {
   });
 
   test('extract full url', async () => {
-    expect(await parser.extractFullSizeImageUrl()).toEqual(
-      'https://e-shuushuu.net/images/2020-04-28-1024657.jpeg'
-    );
+    expect(await parser.extractFullSizeImage()).toEqual({
+      url: 'https://e-shuushuu.net/images/2020-04-28-1024657.jpeg',
+      width: 1650,
+      height: 1000
+    });
   });
 
   test('extract source', async () => {

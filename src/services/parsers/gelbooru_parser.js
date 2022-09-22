@@ -1,4 +1,6 @@
 import BasicHTMLMoebooruParser from './basic_html_moebooru_parser.js';
+// eslint-disable-next-line no-unused-vars
+import { ResponseImage } from './parser_response.js';
 
 export default class GelbooruParser extends BasicHTMLMoebooruParser {
   getClassTemplate() {
@@ -14,9 +16,9 @@ export default class GelbooruParser extends BasicHTMLMoebooruParser {
     };
   }
   /**
-   * @returns {Promise<string?>}
+   * @returns {Promise<ResponseImage?>}
    */
-  async extractFullSizeImageUrl() {
+  async extractFullSizeImage() {
     try {
       let $ = await this.getHtmlParser();
       let url = null;
@@ -25,7 +27,17 @@ export default class GelbooruParser extends BasicHTMLMoebooruParser {
           url = $(el).attr('href');
         }
       });
-      return url;
+      if (!url) {
+        return null;
+      }
+      let [, width, height] = $('#tag-list')
+        .text()
+        .match(/\tSize: ([0-9]+)x([0-9]+)/);
+      return {
+        url: url,
+        width: parseInt(width),
+        height: parseInt(height)
+      };
     } catch {
       return null;
     }

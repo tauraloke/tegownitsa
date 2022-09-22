@@ -1,4 +1,6 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
+// eslint-disable-next-line no-unused-vars
+import { ResponseImage } from './parser_response.js';
 
 export default class DeviantartParser extends AbstractBasicParser {
   getItemId() {
@@ -36,9 +38,9 @@ export default class DeviantartParser extends AbstractBasicParser {
     }
   }
   /**
-   * @returns {Promise<string?>}
+   * @returns {Promise<ResponseImage?>}
    */
-  async extractFullSizeImageUrl() {
+  async extractFullSizeImage() {
     return null;
   }
   /**

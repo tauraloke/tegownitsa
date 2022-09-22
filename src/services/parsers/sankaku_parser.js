@@ -1,15 +1,13 @@
 import BasicJsonMoebooruParser from './basic_json_moebooru_parser.js';
+// eslint-disable-next-line no-unused-vars
+import { ResponseImage } from './parser_response.js';
 
 export default class SankakuParser extends BasicJsonMoebooruParser {
   /**
-   * @returns {Promise<string?>}
+   * @returns {Promise<ResponseImage?>}
    */
-  async extractFullSizeImageUrl() {
-    try {
-      return (await this.getJson()).file_url;
-    } catch {
-      return null;
-    }
+  async extractFullSizeImage() {
+    return null;
   }
   /**
    * @returns {Promize<string[]?>}

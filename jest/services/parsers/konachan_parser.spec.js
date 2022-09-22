@@ -14,9 +14,11 @@ describe('Konachan parser', () => {
   });
 
   test('extract full url', async () => {
-    expect(await parser.extractFullSizeImageUrl()).toEqual(
-      'https://konachan.com/image/cf6bc19a7784715bc3a79841a5e26a9e/Konachan.com%20-%20347126%202girls%203d%20blonde_hair%20blush%20book%20brown_hair%20coca_cola%20computer%20drink%20ibara_dance%20kneehighs%20long_hair%20red_eyes%20short_hair%20skirt%20watermark%20wristwear.jpg'
-    );
+    expect(await parser.extractFullSizeImage()).toEqual({
+      url: 'https://konachan.com/image/cf6bc19a7784715bc3a79841a5e26a9e/Konachan.com%20-%20347126%202girls%203d%20blonde_hair%20blush%20book%20brown_hair%20coca_cola%20computer%20drink%20ibara_dance%20kneehighs%20long_hair%20red_eyes%20short_hair%20skirt%20watermark%20wristwear.jpg',
+      width: 7000,
+      height: 2118
+    });
   });
 
   test('extract source', async () => {

@@ -16,9 +16,11 @@ describe('Anime-Pictures parser', () => {
   });
 
   test('extract full url', async () => {
-    expect(await parser.extractFullSizeImageUrl()).toEqual(
-      'https://anime-pictures.net/pictures/get_image/767528-1981x2892-arknights-surtr+%28arknights%29-tolu+ya-single-long+hair-tall+image.jpeg'
-    );
+    expect(await parser.extractFullSizeImage()).toEqual({
+      url: 'https://anime-pictures.net/pictures/get_image/767528-1981x2892-arknights-surtr+%28arknights%29-tolu+ya-single-long+hair-tall+image.jpeg',
+      width: 1981,
+      height: 2892
+    });
   });
 
   test('extract source', async () => {
