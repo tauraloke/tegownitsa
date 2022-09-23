@@ -18,10 +18,9 @@ export async function run(_event, db, tag, url) {
   }
   tag.locale = tag.locale || 'en';
   console.log('Add author url', tag.title, url);
-  let checkDup = await db.query(
-    'SELECT id, title FROM author_urls WHERE url=?',
-    [url]
-  );
+  let checkDup = await db.query('SELECT id FROM author_urls WHERE url=?', [
+    url
+  ]);
   if (checkDup) {
     return false;
   }
@@ -29,11 +28,14 @@ export async function run(_event, db, tag, url) {
     `SELECT tags.id
       FROM tags
       LEFT JOIN tag_locales ON tags.id=tag_locales.tag_id
-     WHERE tags.namespace=? AND tag_locales.title=? AND tag_locales.locale=?`,
+     WHERE tags.namespace_id=? AND tag_locales.title=? AND tag_locales.locale=?`,
     [tagNamespaces.CREATOR, tag.title, tag.locale]
   );
   if (!tagWithId) {
     return false;
   }
-  await db.run('INSERT INTO author_urls VALUES (tag_id, url)', [tagWithId.id]);
+  await db.run('INSERT INTO author_urls (tag_id, url) VALUES (?, ?)', [
+    tagWithId.id,
+    url
+  ]);
 }

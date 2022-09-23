@@ -31,9 +31,16 @@ export default class ParseTagResourceTask extends BaseTask {
       this.url,
       this.resource_name
     );
+    console.log('extracted data', data);
     await this._processTags(data);
     await this._processAuthorUrls(data);
     await this._processSources(data, this.file['id']);
+    if (data.fullSizeImage) {
+      await window.sqliteApi.addFileFullsize(
+        this.file['id'],
+        data.fullSizeImage
+      );
+    }
 
     this.incrementJobProgress(1);
   }
@@ -78,7 +85,7 @@ export default class ParseTagResourceTask extends BaseTask {
       for (let i in data.authorUrls) {
         let authorUrl = data.authorUrls[i];
         await window.sqliteApi.addAuthorUrl(
-          { title: authorTags[0], locale: this.locale },
+          { title: authorTags[0].split(':')[1], locale: this.locale },
           authorUrl
         );
       }

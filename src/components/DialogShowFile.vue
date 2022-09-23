@@ -216,7 +216,7 @@ export default {
       this.currentFile = file;
       this.tags = await window.sqliteApi.findTagsByFile(file.id);
       let authors = this.tags.filter(
-        (t) => (t.namespace_id = tagNamespaces.CREATOR)
+        (t) => t.namespace_id == tagNamespaces.CREATOR
       );
       for (let i in authors) {
         let urls = await window.sqliteApi.getAuthorUrls(authors[i].id);

@@ -13,8 +13,8 @@
           <!-- author -->
           <v-card v-if="authorUrls?.length > 0" elevation="4" class="ma-2 pa-8">
             <h3>{{ $t('main_window.author_urls') }}</h3>
-            <div v-for="url in authorUrls" :key="url">
-              <a href="url"> {{ url }} </a>
+            <div v-for="url in authorUrls" :key="url.url">
+              <a :href="url.url" target="_blank"> {{ url.url }} </a>
             </div>
           </v-card>
 
