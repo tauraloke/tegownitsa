@@ -29,7 +29,8 @@
     "file": "File",
     "edit": "Edit",
     "view": "View",
-    "help": "Help"
+    "help": "Help",
+    "load_tags_from_saucenao": "Load tags from Saucenao for current files"
   },
   "about": {
     "copyright": "Created by Tauraloke Esteru and Github contributors.",
@@ -43,7 +44,8 @@
     "similarity": "Similarity",
     "remove_this_file": "Remove this file?",
     "no_files_to_scan": "No new files to scan",
-    "found_x_files": "No files found. | Found {n} file. | Found {n} files."
+    "found_x_files": "No files found. | Found {n} file. | Found {n} files.",
+    "author_urls": "Author links"
   },
   "button": {
     "close": "Close",
@@ -97,7 +99,9 @@
     "sources": "Sources",
     "caption_updated_for_file_x": "Caption updated for file #{0}",
     "wait_for_neuronet_files": "No data found to predictions. You can wait for loading neural network files or cancel its.",
-    "neuronet_files_still_loading": "Files for a neuronet are still loading."
+    "neuronet_files_still_loading": "Files for a neuronet are still loading.",
+    "fullsizes": "Found copies in the Internet",
+    "size_parameters": "Image sizes"
   },
   "settings": {
     "application": "Application",
@@ -172,5 +176,9 @@
     "name": "Name",
     "score": "Score",
     "namespace": "Namespace"
+  },
+  "image": {
+    "width": "Width",
+    "height": "Height"
   }
 }

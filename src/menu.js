@@ -229,6 +229,14 @@ ${debugInfo()}`;
           click(_menuItem, browserWindow, _event) {
             browserWindow.webContents.send('execute', 'loadTagsFromIQDB');
           }
+        },
+        {
+          label: i18n.t('main_menu.load_tags_from_saucenao'),
+          accelerator: 'CmdOrCtrl+Y',
+          icon: path.join(__static, 'menu', 'saucenao.png'),
+          click(_menuItem, browserWindow, _event) {
+            browserWindow.webContents.send('execute', 'loadTagsFromSaucenao');
+          }
         }
       ]
     },

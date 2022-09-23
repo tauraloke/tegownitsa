@@ -1,28 +1,24 @@
 <template>
   <v-app>
     <header>
-      <v-btn @click="openFolder()">Import folder</v-btn>
-      <v-btn @click="openFile()">Import file</v-btn>
-      <v-btn @click="importFileFromUrl()">Import file from url</v-btn>
-      <v-btn @click="importFromClipboard()">Import file from clipboard</v-btn>
-      <v-btn @click="scanSelectedFiles()">Scan these files</v-btn>
-      <v-btn @click="showAllTags()">Show all tags</v-btn>
-      <v-btn @click="lookUpDups()">Find duplicates</v-btn>
-      <v-btn @click="loadTagsFromIQDB()">Load tags from IQDB</v-btn>
-      <v-btn title="(limited: 100 per day)" @click="loadTagsFromSaucenao()">
-        Load tags from Saucenao
-      </v-btn>
-
       <form-search-files
         ref="form_search_files"
-        @by-tags="searchFilesByTags($event)"
+        @by-tags="searchFilesByTagTitles($event)"
       />
     </header>
 
     <main style="padding-bottom: 4em">
       <v-row>
-        <!-- tags -->
         <v-col cols="12" sm="4">
+          <!-- author -->
+          <v-card v-if="authorUrls?.length > 0" elevation="4" class="ma-2 pa-8">
+            <h3>{{ $t('main_window.author_urls') }}</h3>
+            <div v-for="url in authorUrls" :key="url">
+              <a href="url"> {{ url }} </a>
+            </div>
+          </v-card>
+
+          <!-- tags -->
           <div id="tags">
             <h3>{{ $t('main_window.tags') }}</h3>
             <list-tag-groups
@@ -249,6 +245,7 @@ import SaucenaoTask from '@/services/tasks/saucenao_task.js';
 import constants from '@/config/constants.json';
 import getStrategy from '@/services/tag_sources_strategies/get_strategy.js';
 import { imageSimilarity } from '@/services/image_distance.js';
+import tagNamespace from '@/config/tag_namespaces.js';
 
 export default {
   name: 'WindowMain',
@@ -278,7 +275,8 @@ export default {
       /** @type Job[] */
       jobs: [],
       /** @type Object<string, number> */
-      jobProgresses: {}
+      jobProgresses: {},
+      authorUrls: []
     };
   },
   watch: {
@@ -303,6 +301,7 @@ export default {
         'scanSelectedFiles',
         'lookUpDups',
         'loadTagsFromIQDB',
+        'loadTagsFromSaucenao',
         'openPreferencesDialog',
         'setTheme',
         'openTagEditor',
@@ -317,7 +316,7 @@ export default {
       }
       this[method](...args);
     });
-    this.searchFilesByTags('');
+    this.searchFilesByTagTitles('');
     this.showAllTags();
     window.configApi.getConfig('dark_theme').then((isDark) => {
       if (isDark) {
@@ -381,11 +380,21 @@ export default {
     openTagEditor(tag_id) {
       this.$refs.dialog_tag_editor.showComponent(tag_id);
     },
-    async searchFilesByTag(tag_title) {
-      this.$refs.form_search_files.reset(tag_title);
+    async searchFilesByTag(tag) {
+      this.$refs.form_search_files.reset(tag?.locales?.[0]?.title);
+      if (tag.namespace_id == tagNamespace.CREATOR) {
+        this.showAuthorBlock(tag.id);
+      }
     },
-    async searchFilesByTags(tags_titles) {
+    async showAuthorBlock(tag_id) {
+      this.authorUrls = await window.sqliteApi.getAuthorUrls(tag_id);
+    },
+    hideAuthorBlock() {
+      this.authorUrls = [];
+    },
+    async searchFilesByTagTitles(tags_titles) {
       this.hideFile();
+      this.hideAuthorBlock();
       this.files = await window.sqliteApi.findFilesByTags(tags_titles);
     },
     async showFile(file) {
@@ -473,7 +482,7 @@ export default {
         );
         return false;
       }
-      await window.sqliteApi.addUrlToFile(this.urlForImport, file_id);
+      await window.sqliteApi.addUrlToFile({ url: this.urlForImport }, file_id);
       this.toast(this.$t('toast.file_has_imported', [this.urlForImport]));
       this.searchFilesByTag('fresh:5');
     },

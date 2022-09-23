@@ -58,6 +58,26 @@
                 :src="'file://' + currentFile.full_path"
               />
             </div>
+
+            <v-card elevation="4" class="ma-2 pa-8">
+              <h5>{{ $t('dialog_show_file.size_parameters') }}</h5>
+              <div>
+                <b>{{ $t('image.width') }}:</b> {{ currentFile.width }}
+                <b>{{ $t('image.height') }}:</b> {{ currentFile.height }}
+              </div>
+              <div v-if="fullsizes && fullsizes.length > 0">
+                <h5>{{ $t('dialog_show_file.fullsizes') }}</h5>
+                <ul>
+                  <li v-for="row in fullsizes" :key="row.url">
+                    <a :href="row.url" target="_blank">
+                      &lt; {{ row.url }} &gt;
+                    </a>
+                    [{{ row.width }}x{{ row.height }}]
+                  </li>
+                </ul>
+              </div>
+            </v-card>
+
             <v-card
               v-if="exifExists"
               id="file_info_exif"
@@ -97,12 +117,27 @@
                 "
               ></v-textarea>
             </v-card>
-            <div v-if="urls && urls.length > 0" id="file_info_sources">
+            <div v-if="urls && urls.length > 0">
               <v-card elevation="4" class="ma-2 pa-8">
                 <h5>{{ $t('dialog_show_file.sources') }}</h5>
                 <ul>
-                  <li v-for="url in urls" :key="url">
-                    <a :href="url" target="_blank">{{ url }}</a>
+                  <li v-for="row in urls" :key="row.url">
+                    <a :href="row.url" target="_blank">
+                      &lt; {{ row.title || row.url }} &gt;
+                    </a>
+                  </li>
+                </ul>
+              </v-card>
+            </div>
+
+            <div v-if="authorUrls && authorUrls.length > 0">
+              <v-card elevation="4" class="ma-2 pa-8">
+                <h5>{{ $t('main_window.author_urls') }}</h5>
+                <ul>
+                  <li v-for="row in authorUrls" :key="row.url">
+                    <a :href="row.url" target="_blank">
+                      &lt; {{ row.url }} &gt;
+                    </a>
                   </li>
                 </ul>
               </v-card>
@@ -118,6 +153,7 @@
 import FormAddNewTagToFile from '@/components/FormAddNewTagToFile.vue';
 import ListTagGroups from '@/components/ListTagGroups.vue';
 import PredictedTags from '@/components/PredictedTags.vue';
+import tagNamespaces from '@/config/tag_namespaces.js';
 
 export default {
   name: 'DialogShowFile',
@@ -130,7 +166,9 @@ export default {
       urls: [],
       currentFile: null,
       fileCaptionTextareaIcon: 'mdi-floppy',
-      predictedTags: []
+      predictedTags: [],
+      authorUrls: [],
+      fullsizes: []
     };
   },
   computed: {
@@ -177,12 +215,27 @@ export default {
       this.isDialogVisible = true;
       this.currentFile = file;
       this.tags = await window.sqliteApi.findTagsByFile(file.id);
+      let authors = this.tags.filter(
+        (t) => (t.namespace_id = tagNamespaces.CREATOR)
+      );
+      for (let i in authors) {
+        let urls = await window.sqliteApi.getAuthorUrls(authors[i].id);
+        this.authorUrls.push(...urls);
+      }
+      this.fullsizes = await window.sqliteApi.getFileFullsizes(
+        this.currentFile.id
+      );
       this.urls = (
         await window.sqliteApi.queryAll(
-          'SELECT url FROM file_urls WHERE file_id=?',
+          'SELECT url, title FROM file_urls WHERE file_id=?',
           [file.id]
         )
-      ).map((t) => t.url);
+      ).map((t) => {
+        return {
+          url: t.url,
+          title: t.title
+        };
+      });
     },
     hideComponent() {
       this.isDialogVisible = false;

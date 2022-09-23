@@ -146,6 +146,26 @@ async function initDatabase({ dbPath }) {
       updated_at TIMESTAMP
     )`
   );
+  dbConnection.run(
+    `CREATE TABLE IF NOT EXISTS author_urls (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      tag_id INTEGER NOT NULL,
+      url TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP
+    )`
+  );
+  dbConnection.run(
+    `CREATE TABLE IF NOT EXISTS file_fullsizes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      file_id INTEGER NOT NULL,
+      url TEXT,
+      width INTEGER,
+      height INTEGER,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP
+    )`
+  );
 
   console.log('Done.');
   return dbConnection;

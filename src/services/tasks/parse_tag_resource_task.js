@@ -2,6 +2,8 @@
 
 import BaseTask from './base_task.js';
 import sourceTypes from '../../config/source_type.json';
+// eslint-disable-next-line no-unused-vars
+import ParserResponse from '../../services/parsers/parser_response.js';
 
 export default class ParseTagResourceTask extends BaseTask {
   /**
@@ -24,10 +26,33 @@ export default class ParseTagResourceTask extends BaseTask {
     console.log(
       `Start search tags on ${this.resource_name} for file #${this.file['id']}`
     );
-    let tags = await window.network.extractTagsFromSource(
+    /** @type {ParserResponse} */
+    let data = await window.network.extractDataFromSource(
       this.url,
       this.resource_name
     );
+    await this._processTags(data);
+    await this._processAuthorUrls(data);
+    await this._processSources(data, this.file['id']);
+
+    this.incrementJobProgress(1);
+  }
+  async _processSources(data, file_id) {
+    if (data.sourceUrls) {
+      for (let i in data.sourceUrls) {
+        await window.sqliteApi.addUrlToFile(
+          { url: data.sourceUrls[i] },
+          file_id
+        );
+      }
+    }
+    await window.sqliteApi.addUrlToFile(
+      { url: data.requestedUrl, title: data.title },
+      file_id
+    );
+  }
+  async _processTags(data) {
+    let tags = data.tags;
     let source_type = sourceTypes[this.resource_name.toUpperCase()];
     for (let i in tags) {
       let title = tags[i];
@@ -39,11 +64,24 @@ export default class ParseTagResourceTask extends BaseTask {
         source_type
       );
     }
-    await window.sqliteApi.addUrlToFile(this.url, this.file['id']);
     console.log(
       `Added tags to file #${this.file['id']} from ${this.resource_name}`,
-      tags
+      data.tags
     );
-    this.incrementJobProgress(1);
+  }
+  /**
+   * @param {ParserResponse} data
+   */
+  async _processAuthorUrls(data) {
+    let authorTags = data.tags.filter((t) => t.match(/^creator:/));
+    if (data?.authorUrls?.length > 0 && authorTags.length == 1) {
+      for (let i in data.authorUrls) {
+        let authorUrl = data.authorUrls[i];
+        await window.sqlite.addAuthorUrl(
+          { title: authorTags[0], locale: this.locale },
+          authorUrl
+        );
+      }
+    }
   }
 }

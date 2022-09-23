@@ -20,6 +20,7 @@ export async function run(_event, db, tag_id, locales) {
         [title]
       );
       if (tagDup && tagDup.id) {
+        // Glue tags
         console.log('Remove dup tag', tagDup.id, title, locale);
         let fileIds = await db.queryAll(
           'SELECT files.id FROM files LEFT JOIN file_tags ON files.id=file_tags.file_id WHERE file_tags.tag_id=?',
@@ -36,6 +37,11 @@ export async function run(_event, db, tag_id, locales) {
         }
         await db.run('DELETE FROM tags WHERE id=?', [tagDup.id]);
         await db.run('DELETE FROM tag_locales WHERE tag_id=?', [tagDup.id]);
+        await db.run('UPDATE author_urls SET tag_id=? WHERE tag_id=?', [
+          tag_id,
+          tagDup.id
+        ]);
+        // end of gluing tags
       }
       await db.run(
         'INSERT INTO tag_locales (title, locale, tag_id) VALUES (?,?,?)',

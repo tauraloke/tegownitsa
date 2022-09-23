@@ -33,7 +33,6 @@ export async function run(_event, db, titles) {
       let [namespace, title] =
         pair.length > 1 ? [pair[0], pair[1]] : [null, pair[0]];
       title = sqliteSanitize(title);
-      console.log(namespace, title);
       if (namespace === null) {
         return `tag_locales.title='${title}'`;
       }

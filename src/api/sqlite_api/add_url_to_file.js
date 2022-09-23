@@ -1,4 +1,4 @@
-export async function run(_event, db, url, file_id) {
+export async function run(_event, db, { url, title = null }, file_id) {
   if (!url) {
     return false;
   }
@@ -10,15 +10,22 @@ export async function run(_event, db, url, file_id) {
     return false;
   }
   let dupCheck = await db.query(
-    'SELECT id FROM file_urls WHERE file_id=? AND url=?',
+    'SELECT id, title FROM file_urls WHERE file_id=? AND url=?',
     [file_id, url]
   );
   if (dupCheck) {
-    return false;
+    if (dupCheck.title == title) {
+      return false;
+    }
+    await db.run('UPDATE file_urls SET title=? WHERE id=?', [
+      title,
+      dupCheck.id
+    ]);
   }
-  await db.run('INSERT INTO file_urls (file_id, url) VALUES (?, ?)', [
+  await db.run('INSERT INTO file_urls (file_id, url, title) VALUES (?, ?, ?)', [
     file_id,
-    url
+    url,
+    title
   ]);
   return true;
 }

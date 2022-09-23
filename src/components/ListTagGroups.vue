@@ -14,7 +14,7 @@
         {{ $t(`tags.namespaces.${group.name}`) }}
       </h5>
       <div class="ma-4">
-        <v-chip-group column>
+        <v-chip-group column class="justify-center">
           <v-chip
             v-for="tag in group.tags"
             :key="tag?.id"
@@ -23,7 +23,7 @@
             :data-tag-id="tag?.id"
             class="editable-tag-container"
             @click:close.stop="removeTagFromFile(tag)"
-            @click="searchFilesByTag(tag?.locales?.[0]?.title)"
+            @click="searchFilesByTag(tag)"
           >
             <span class="text-truncate">
               {{ tag?.locales?.[0]?.title }}
@@ -78,8 +78,8 @@ export default {
     isClosable(tag) {
       return this.closableTags && !!tag.file_tag_id;
     },
-    searchFilesByTag(title) {
-      this.$emit('search-by-title', title);
+    searchFilesByTag(tag) {
+      this.$emit('search-by-title', tag);
     },
     removeTagFromFile(tag) {
       window.sqliteApi.unlinkTag(tag.file_tag_id);
