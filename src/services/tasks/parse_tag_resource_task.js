@@ -77,7 +77,7 @@ export default class ParseTagResourceTask extends BaseTask {
     if (data?.authorUrls?.length > 0 && authorTags.length == 1) {
       for (let i in data.authorUrls) {
         let authorUrl = data.authorUrls[i];
-        await window.sqlite.addAuthorUrl(
+        await window.sqliteApi.addAuthorUrl(
           { title: authorTags[0], locale: this.locale },
           authorUrl
         );
