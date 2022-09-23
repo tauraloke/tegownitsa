@@ -386,6 +386,9 @@ export default {
         this.showAuthorBlock(tag.id);
       }
     },
+    async searchFilesByTagTitle(tag_title) {
+      this.$refs.form_search_files.reset(tag_title);
+    },
     async showAuthorBlock(tag_id) {
       this.authorUrls = await window.sqliteApi.getAuthorUrls(tag_id);
     },
@@ -430,7 +433,7 @@ export default {
         await window.fileApi.addFile(fileList[i]);
         job.incrementProgress(1);
       }
-      this.searchFilesByTag('fresh:5');
+      this.searchFilesByTagTitle('fresh:5');
     },
     async openFile() {
       let file = await window.fileApi.openFile();
@@ -441,7 +444,7 @@ export default {
       console.log(`Chosen file ${path}`);
       await window.fileApi.addFile(path);
       this.toast(this.$t('toast.file_path_has_imported', [path]));
-      this.searchFilesByTag('fresh:5');
+      this.searchFilesByTagTitle('fresh:5');
     },
     async importFromClipboard() {
       const tmpFilePath = await window.fileApi.saveTempFileFromClipboard();
@@ -452,7 +455,7 @@ export default {
       await window.fileApi.addFile(tmpFilePath);
       await window.fileApi.removeFile(tmpFilePath);
       this.toast(this.$t('toast.file_has_imported_from_clipboard'));
-      this.searchFilesByTag('fresh:5');
+      this.searchFilesByTagTitle('fresh:5');
     },
     async importFileFromUrl() {
       if (!this.showDialogUrlForImport) {
@@ -484,7 +487,7 @@ export default {
       }
       await window.sqliteApi.addUrlToFile({ url: this.urlForImport }, file_id);
       this.toast(this.$t('toast.file_has_imported', [this.urlForImport]));
-      this.searchFilesByTag('fresh:5');
+      this.searchFilesByTagTitle('fresh:5');
     },
     async showAllTags() {
       this.tags = await window.sqliteApi.getAllTags();
