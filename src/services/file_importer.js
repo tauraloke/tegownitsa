@@ -154,7 +154,7 @@ class FileImporter {
     }
 
     let { newFilePathInStorage, newPreviewPathInStorage, metadata } =
-      this.moveFileToMainStorage(fileImage, absolutePath);
+      await this.moveFileToMainStorage(fileImage, absolutePath);
 
     let exif = this.getExif(absolutePath);
     let file_id = await this.insertFile(

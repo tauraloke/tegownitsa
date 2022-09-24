@@ -16,8 +16,8 @@ export async function run(_event, db, tag_id, locales) {
         continue;
       }
       let tagDup = await db.query(
-        'SELECT tags.id FROM tags LEFT JOIN tag_locales ON tag_locales.tag_id=tags.id WHERE tag_locales.title=?',
-        [title]
+        'SELECT tags.id FROM tags LEFT JOIN tag_locales ON tag_locales.tag_id=tags.id WHERE tag_locales.title=? AND tags.id!=?',
+        [title, tag_id]
       );
       if (tagDup && tagDup.id) {
         // Glue tags
