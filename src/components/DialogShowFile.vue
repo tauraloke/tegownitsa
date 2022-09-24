@@ -69,10 +69,12 @@
                 <h5>{{ $t('dialog_show_file.fullsizes') }}</h5>
                 <ul>
                   <li v-for="row in fullsizes" :key="row.url">
-                    <a :href="row.url" target="_blank">
-                      &lt; {{ row.url }} &gt;
+                    <a :href="row.url" :title="row.url" target="_blank">
+                      &lt; [{{ row.width }}x{{ row.height }}] &gt;
                     </a>
-                    [{{ row.width }}x{{ row.height }}]
+                    <a href="#" @click="improveFile(row.url)">
+                      [{{ $t('dialog_show_file.improve_file') }}]
+                    </a>
                   </li>
                 </ul>
               </div>
@@ -241,6 +243,9 @@ export default {
       this.isDialogVisible = false;
       this.tags = [];
       this.predictedTags = [];
+      this.urls = [];
+      this.authorUrls = [];
+      this.fullsizes = [];
     },
     async afterAddTagHandler(event) {
       this.tags.push(event);
@@ -317,6 +322,18 @@ export default {
         })
       );
       this.predictedTags = items;
+    },
+    async improveFile(url) {
+      let updatedFile = await window.fileApi.improveFile(
+        this.currentFile.id,
+        url
+      );
+      if (updatedFile) {
+        this.currentFile = updatedFile;
+        this.$emit('toast', this.$t('toast.file_improved'));
+      } else {
+        this.$emit('toast', this.$t('toast.file_not_improved'));
+      }
     }
   }
 };

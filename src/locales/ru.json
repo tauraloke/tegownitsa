@@ -72,7 +72,9 @@
     "file_path_has_imported": "Файл {0} импортирован.",
     "folder_path_has_imported": "Папка {0} импортирована.",
     "tag_unlinked_from_file": "Тег '{0}' отсоединен от этого файла.",
-    "no_new_files_in_folder": "Нет новых файлов в папке"
+    "no_new_files_in_folder": "Нет новых файлов в папке",
+    "file_improved": "Загружена другая версия этого файла.",
+    "file_not_improved": "Что-то не так с загрузкой по этому URL"
   },
   "form_search_files": {
     "find_by_tags_print_and_choose": "Поиск по тегам: печатайте и выбирайте"
@@ -101,7 +103,8 @@
     "wait_for_neuronet_files": "Данные для прогнозов не найдены. Вы можете дождаться загрузки файлов нейронной сети или отменить ее.",
     "neuronet_files_still_loading": "Файлы для нейросети еще загружаются.",
     "fullsizes": "Найденные копии в Интернете",
-    "size_parameters": "Размеры изображения"
+    "size_parameters": "Размеры изображения",
+    "improve_file": "Скачать и заменить"
   },
   "settings": {
     "application": "Приложение",

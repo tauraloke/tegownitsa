@@ -117,21 +117,11 @@ class FileImporter {
     );
     return file_id;
   }
-  async importFileToStorage(absolutePath) {
-    if (!statSync(absolutePath).isFile()) {
-      return;
-    }
-    console.log('Loading file: ', absolutePath);
+  async moveFileToMainStorage(fileImage, absolutePath) {
     const storageRootDir = this.getStorageDirectoryPath();
     console.log('Storage root', storageRootDir);
     const storageDirPathForFile = this.generateStorageDirPathForFile();
     const filename = this.generateFilename(absolutePath);
-    const fileImage = readFileSync(absolutePath);
-    let imagehash = await this.getPHash(absolutePath, fileImage);
-    if (!imagehash) {
-      return false;
-    }
-
     mkdirSync(storageDirPathForFile, { recursive: true });
     const newFilePathInStorage = join(storageDirPathForFile, filename);
 
@@ -145,6 +135,26 @@ class FileImporter {
       PREVIEW_PREFIX + filename
     );
     image.resize(PREVIEW_WIDTH).toFile(newPreviewPathInStorage);
+
+    return {
+      metadata: metadata,
+      newPreviewPathInStorage: newPreviewPathInStorage,
+      newFilePathInStorage: newFilePathInStorage
+    };
+  }
+  async importFileToStorage(absolutePath) {
+    if (!statSync(absolutePath).isFile()) {
+      return;
+    }
+    console.log('Loading file: ', absolutePath);
+    const fileImage = readFileSync(absolutePath);
+    let imagehash = await this.getPHash(absolutePath, fileImage);
+    if (!imagehash) {
+      return false;
+    }
+
+    let { newFilePathInStorage, newPreviewPathInStorage, metadata } =
+      this.moveFileToMainStorage(fileImage, absolutePath);
 
     let exif = this.getExif(absolutePath);
     let file_id = await this.insertFile(
