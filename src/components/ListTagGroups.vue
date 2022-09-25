@@ -29,7 +29,6 @@
             @click="searchFilesByTag(tag)"
             @dragstart="chipDragStart($event, tag)"
             @dragenter="chipDragEnter($event)"
-            @dragleave="chipDragLeave($event)"
             @dragover.prevent="true"
             @drop="chipDrop"
           >
@@ -91,13 +90,16 @@ export default {
       $event.dataTransfer.setDragImage(img, 0, 0);
     },
     chipDragEnter($event) {
-      if ($event.target.classList.contains('v-chip')) {
-        $event.target.classList.add('dragover');
-      }
-    },
-    chipDragLeave($event) {
-      if ($event.target.classList.contains('v-chip')) {
-        $event.target.classList.remove('dragover');
+      let element = $event.target;
+      while (element.parentNode) {
+        if (element.classList.contains('v-chip')) {
+          element.classList.add('dragover');
+          setTimeout(() => {
+            element.classList.remove('dragover');
+          }, 2000);
+          break;
+        }
+        element = element.parentNode;
       }
     },
     async chipDrop($event) {
@@ -156,8 +158,11 @@ export default {
 </script>
 
 <style scoped>
+.v-chip {
+  transition: all 1s ease-out;
+}
 .v-chip-group .dragover {
-  scale: 125%;
-  font-weight: bold;
+  background-color: gray;
+  scale: 120%;
 }
 </style>
