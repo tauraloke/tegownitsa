@@ -84,7 +84,6 @@ export default {
   methods: {
     chipDragStart($event, tag) {
       $event.dataTransfer.setData('text/plain', JSON.stringify(tag));
-
       let img = new Image();
       img.src = './dragging_tag.png';
       $event.dataTransfer.setDragImage(img, 0, 0);
@@ -104,10 +103,29 @@ export default {
     },
     async chipDrop($event) {
       let sourceTag = JSON.parse($event.dataTransfer.getData('text/plain'));
-      let targetTagId = $event.toElement.parentNode.getAttribute('data-tag-id');
-      if (await window.sqliteApi.glueTags(sourceTag.id, targetTagId)) {
-        this.$emit('tag-removed', sourceTag);
+      let element = $event.toElement;
+      let isClassFound = false;
+      while (element.parentNode) {
+        if (element.classList.contains('v-chip')) {
+          isClassFound = true;
+          break;
+        }
+        element = element.parentNode;
       }
+      if (!isClassFound) {
+        return false;
+      }
+      let targetTagId = $event.toElement.parentNode.getAttribute('data-tag-id');
+      let classResult = (await window.sqliteApi.glueTags(
+        sourceTag.id,
+        targetTagId
+      ))
+        ? 'success_glued'
+        : 'fail_to_glue';
+      element.classList.add(classResult);
+      setTimeout(() => {
+        element.classList.remove(classResult);
+      }, 2000);
     },
     isClosable(tag) {
       return this.closableTags && !!tag.file_tag_id;
@@ -163,6 +181,14 @@ export default {
 }
 .v-chip-group .dragover {
   background-color: gray;
+  scale: 120%;
+}
+.v-chip-group .success_glued {
+  background-color: green;
+  scale: 120%;
+}
+.v-chip-group .fail_to_glue {
+  background-color: green;
   scale: 120%;
 }
 </style>
