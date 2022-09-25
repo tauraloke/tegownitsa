@@ -25,6 +25,7 @@
               :tags="tags"
               @search-by-title="searchFilesByTag($event)"
               @tag-added="tags.push($event)"
+              @tag-removed="tags = tags.filter((t) => t.id != $event?.id)"
             />
           </div>
         </v-col>

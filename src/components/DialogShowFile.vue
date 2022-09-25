@@ -45,7 +45,10 @@
                 hideComponent();
               "
               @tag-added="tags.push($event)"
-              @tag-removed="$emit('tag-removed', $event)"
+              @tag-removed="
+                $emit('tag-removed', $event);
+                tags = tags.filter((t) => t.id != $event?.id);
+              "
             />
           </v-col>
           <v-col cols="12" md="8">

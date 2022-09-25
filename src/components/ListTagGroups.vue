@@ -18,12 +18,17 @@
           <v-chip
             v-for="tag in group.tags"
             :key="tag?.id"
+            draggable
+            dropzone="move"
             :title="tag?.locales.map((l) => l.title)"
             :closable="isClosable(tag)"
             :data-tag-id="tag?.id"
             class="editable-tag-container"
             @click:close.stop="removeTagFromFile(tag)"
             @click="searchFilesByTag(tag)"
+            @dragstart="chipDragStart($event, tag)"
+            @dragover.prevent="true"
+            @drop="chipDrop"
           >
             <span class="text-truncate">
               {{ tag?.locales?.[0]?.title }}
@@ -75,6 +80,20 @@ export default {
     };
   },
   methods: {
+    chipDragStart($event, tag) {
+      $event.dataTransfer.setData('text/plain', JSON.stringify(tag));
+
+      let img = new Image();
+      img.src = './dragging_tag.png';
+      $event.dataTransfer.setDragImage(img, 0, 0);
+    },
+    async chipDrop($event) {
+      let sourceTag = JSON.parse($event.dataTransfer.getData('text/plain'));
+      let targetTagId = $event.toElement.parentNode.getAttribute('data-tag-id');
+      if (await window.sqliteApi.glueTags(sourceTag.id, targetTagId)) {
+        this.$emit('tag-removed', sourceTag);
+      }
+    },
     isClosable(tag) {
       return this.closableTags && !!tag.file_tag_id;
     },

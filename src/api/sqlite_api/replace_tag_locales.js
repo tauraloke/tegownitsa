@@ -1,4 +1,5 @@
 import sourceType from '../../config/source_type.json';
+import glueTag from '../../services/repository/tag/glue.js';
 
 export async function run(_event, db, tag_id, locales) {
   let tag = await db.query('SELECT id FROM tags WHERE id=?', [tag_id]);
@@ -22,25 +23,8 @@ export async function run(_event, db, tag_id, locales) {
       if (tagDup && tagDup.id) {
         // Glue tags
         console.log('Remove dup tag', tagDup.id, title, locale);
-        let fileIds = await db.queryAll(
-          'SELECT files.id FROM files LEFT JOIN file_tags ON files.id=file_tags.file_id WHERE file_tags.tag_id=?',
-          [tagDup.id]
-        );
-        if (fileIds && fileIds.length > 0) {
-          fileIds = fileIds.map((r) => r.id);
-          additionalFileIds.push(...fileIds);
-          fileIds = fileIds.join(',');
-          await db.run(
-            `DELETE FROM file_tags WHERE tag_id=? AND file_id in (${fileIds})`,
-            [tagDup.id]
-          );
-        }
-        await db.run('DELETE FROM tags WHERE id=?', [tagDup.id]);
-        await db.run('DELETE FROM tag_locales WHERE tag_id=?', [tagDup.id]);
-        await db.run('UPDATE author_urls SET tag_id=? WHERE tag_id=?', [
-          tag_id,
-          tagDup.id
-        ]);
+        let { orphanFileIds } = await glueTag(db, tagDup.id, tag_id);
+        additionalFileIds.push(...orphanFileIds);
         // end of gluing tags
       }
       await db.run(
