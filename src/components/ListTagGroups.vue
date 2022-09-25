@@ -18,6 +18,7 @@
           <v-chip
             v-for="tag in group.tags"
             :key="tag?.id"
+            :ref="`tag_chip_${tag.id}`"
             draggable
             dropzone="move"
             :title="tag?.locales.map((l) => l.title)"
@@ -27,6 +28,8 @@
             @click:close.stop="removeTagFromFile(tag)"
             @click="searchFilesByTag(tag)"
             @dragstart="chipDragStart($event, tag)"
+            @dragenter="chipDragEnter($event)"
+            @dragleave="chipDragLeave($event)"
             @dragover.prevent="true"
             @drop="chipDrop"
           >
@@ -87,6 +90,16 @@ export default {
       img.src = './dragging_tag.png';
       $event.dataTransfer.setDragImage(img, 0, 0);
     },
+    chipDragEnter($event) {
+      if ($event.target.classList.contains('v-chip')) {
+        $event.target.classList.add('dragover');
+      }
+    },
+    chipDragLeave($event) {
+      if ($event.target.classList.contains('v-chip')) {
+        $event.target.classList.remove('dragover');
+      }
+    },
     async chipDrop($event) {
       let sourceTag = JSON.parse($event.dataTransfer.getData('text/plain'));
       let targetTagId = $event.toElement.parentNode.getAttribute('data-tag-id');
@@ -142,4 +155,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.v-chip-group .dragover {
+  scale: 125%;
+  font-weight: bold;
+}
+</style>

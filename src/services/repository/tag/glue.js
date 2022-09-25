@@ -21,7 +21,10 @@ export default async function (db, sourceTagId, targetTagId) {
     );
   }
   await db.run('DELETE FROM tags WHERE id=?', [sourceTagId]);
-  await db.run('DELETE FROM tag_locales WHERE tag_id=?', [sourceTagId]);
+  await db.run('UPDATE tag_locales SET tag_id=? WHERE tag_id=?', [
+    targetTagId,
+    sourceTagId
+  ]);
   await db.run('UPDATE author_urls SET tag_id=? WHERE tag_id=?', [
     targetTagId,
     sourceTagId

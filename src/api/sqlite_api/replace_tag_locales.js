@@ -26,11 +26,12 @@ export async function run(_event, db, tag_id, locales) {
         let { orphanFileIds } = await glueTag(db, tagDup.id, tag_id);
         additionalFileIds.push(...orphanFileIds);
         // end of gluing tags
+      } else {
+        await db.run(
+          'INSERT INTO tag_locales (title, locale, tag_id) VALUES (?,?,?)',
+          [title, locale, tag_id]
+        );
       }
-      await db.run(
-        'INSERT INTO tag_locales (title, locale, tag_id) VALUES (?,?,?)',
-        [title, locale, tag_id]
-      );
     }
     // update tags-to-files links
     if (additionalFileIds.length > 0) {
