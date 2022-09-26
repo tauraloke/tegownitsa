@@ -62,7 +62,7 @@
     "electron": "^20.2.0",
     "electron-builder": "^23.3.3",
     "electron-devtools-installer": "^3.1.0",
-    "eslint": "^8.23.1",
+    "eslint": "^8.24.0",
     "eslint-plugin-unicorn": "^43.0.2",
     "eslint-plugin-vue": "=8.7.1",
     "jest": "^29.0.3",
