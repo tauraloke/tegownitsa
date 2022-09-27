@@ -4,7 +4,7 @@
       <v-btn v-if="predictedTags.length == 0" @click="predictTags()">
         {{ $t('button.predict_tags') }}
       </v-btn>
-      <v-btn v-if="predictedTags.length > 0" @click="predictedTags = []">
+      <v-btn v-if="predictedTags.length > 0" @click="reset()">
         {{ $t('button.hide_predicted_tags') }}
       </v-btn>
     </v-row>
@@ -160,6 +160,9 @@ export default {
       }
       tag.in_tag_locales = true;
       this.$emit('after-add-tag', savedTag);
+    },
+    reset() {
+      this.predictedTags = [];
     }
   }
 };

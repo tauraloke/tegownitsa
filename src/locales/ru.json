@@ -56,7 +56,9 @@
     "add": "Добавить",
     "back": "Вернуться",
     "predict_tags": "Угадать теги нейросетью",
-    "hide_predicted_tags": "Скрыть прогноз"
+    "hide_predicted_tags": "Скрыть прогноз",
+    "previous": "К предыдущему",
+    "next": "К следующему"
   },
   "toast": {
     "preferences_saved": "Настройки сохранены",

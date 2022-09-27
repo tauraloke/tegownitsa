@@ -7,6 +7,18 @@
         </v-toolbar-title>
         <v-toolbar-items>
           <v-btn
+            v-if="currentFile.prev"
+            icon="mdi-arrow-expand-left"
+            :title="$t('button.previous')"
+            @click="goPrev()"
+          />
+          <v-btn
+            v-if="currentFile.next"
+            icon="mdi-arrow-expand-right"
+            :title="$t('button.next')"
+            @click="goNext()"
+          />
+          <v-btn
             icon="mdi-close"
             :title="$t('button.back')"
             @click="hideComponent()"
@@ -31,6 +43,7 @@
               @after-add-tag="afterAddTagHandler($event)"
             />
             <predicted-tags
+              ref="predicted_tags"
               :current-file="currentFile"
               :tags="tags"
               class="mb-6"
@@ -171,7 +184,6 @@ export default {
       urls: [],
       currentFile: null,
       fileCaptionTextareaIcon: 'mdi-floppy',
-      predictedTags: [],
       authorUrls: [],
       fullsizes: []
     };
@@ -218,6 +230,9 @@ export default {
         return false;
       }
       this.isDialogVisible = true;
+      if (this.$refs.predicted_tags) {
+        this.$refs.predicted_tags.reset();
+      }
       this.currentFile = file;
       this.tags = await window.sqliteApi.findTagsByFile(file.id);
       let authors = this.tags.filter(
@@ -243,9 +258,11 @@ export default {
       });
     },
     hideComponent() {
+      if (this.$refs.predicted_tags) {
+        this.$refs.predicted_tags.reset();
+      }
       this.isDialogVisible = false;
       this.tags = [];
-      this.predictedTags = [];
       this.urls = [];
       this.authorUrls = [];
       this.fullsizes = [];
@@ -289,43 +306,6 @@ export default {
         return t;
       });
     },
-    async predictTags() {
-      let autoTaggerResponse = await window.ocrApi.autotagger(
-        this.currentFile.full_path
-      );
-      if (autoTaggerResponse.status != 'OK') {
-        if (autoTaggerResponse.error == 'model_not_found') {
-          this.$emit(
-            'toast',
-            this.$t('dialog_show_file.wait_for_neuronet_files')
-          );
-          window.network.downloadArchive(
-            'Danbooru',
-            autoTaggerResponse.url,
-            autoTaggerResponse.destination
-          );
-          return false;
-        }
-        if (autoTaggerResponse.error == 'model_still_loading') {
-          this.$emit(
-            'toast',
-            this.$t('dialog_show_file.neuronet_files_still_loading')
-          );
-        }
-        return false;
-      }
-      let items = autoTaggerResponse.result;
-      console.table(
-        items.map((t) => {
-          return {
-            name: t.tag.name,
-            namespace: t.tag.namespace,
-            score: t.score
-          };
-        })
-      );
-      this.predictedTags = items;
-    },
     async improveFile(url) {
       let updatedFile = await window.fileApi.improveFile(
         this.currentFile.id,
@@ -337,6 +317,12 @@ export default {
       } else {
         this.$emit('toast', this.$t('toast.file_not_improved'));
       }
+    },
+    goPrev() {
+      this.showComponent(this.currentFile.prev);
+    },
+    goNext() {
+      this.showComponent(this.currentFile.next);
     }
   }
 };

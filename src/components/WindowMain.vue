@@ -399,7 +399,16 @@ export default {
     async searchFilesByTagTitles(tags_titles) {
       this.hideFile();
       this.hideAuthorBlock();
-      this.files = await window.sqliteApi.findFilesByTags(tags_titles);
+      let files = await window.sqliteApi.findFilesByTags(tags_titles);
+      for (let i = 0; i < files.length; i++) {
+        if (i >= 1) {
+          files[i]['prev'] = files[i - 1];
+        }
+        if (i <= files.length - 1) {
+          files[i]['next'] = files[i + 1];
+        }
+      }
+      this.files = files;
     },
     async showFile(file) {
       if (typeof file === 'number') {
