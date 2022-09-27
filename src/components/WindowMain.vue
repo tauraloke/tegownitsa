@@ -20,13 +20,20 @@
 
           <!-- tags -->
           <div id="tags">
-            <h3>{{ $t('main_window.tags') }}</h3>
-            <list-tag-groups
-              :tags="tags"
-              @search-by-title="searchFilesByTag($event)"
-              @tag-added="tags.push($event)"
-              @tag-removed="tags = tags.filter((t) => t.id != $event?.id)"
-            />
+            <div v-if="!duplicatedFiles?.length">
+              <h3>{{ $t('main_window.tags') }}</h3>
+              <list-tag-groups
+                :tags="tags"
+                @search-by-title="searchFilesByTag($event)"
+                @tag-added="tags.push($event)"
+                @tag-removed="tags = tags.filter((t) => t.id != $event?.id)"
+              />
+            </div>
+            <div v-else>
+              <v-btn @click="searchFilesByTagTitles('')">
+                {{ $t('button.return_to_files') }}
+              </v-btn>
+            </div>
           </div>
         </v-col>
 
@@ -35,7 +42,7 @@
           <div v-if="!duplicatedFiles?.length">
             <h3>{{ $t('main_window.files') }}</h3>
             <div class="justify-center">
-              {{ $t('main_window.found_x_files', files.length) }}
+              {{ $t('main_window.found_x_files', files?.length) }}
             </div>
             <v-row id="files" class="mt-4">
               <v-col
@@ -399,6 +406,7 @@ export default {
     async searchFilesByTagTitles(tags_titles) {
       this.hideFile();
       this.hideAuthorBlock();
+      this.duplicatedFiles = null;
       let files = await window.sqliteApi.findFilesByTags(tags_titles);
       for (let i = 0; i < files.length; i++) {
         if (i >= 1) {

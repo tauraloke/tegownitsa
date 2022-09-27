@@ -58,7 +58,8 @@
     "predict_tags": "Predict tags by neuronet",
     "hide_predicted_tags": "Hide predictions",
     "previous": "To previous one",
-    "next": "To next one"
+    "next": "To next one",
+    "return_to_files": "Return to files"
   },
   "toast": {
     "preferences_saved": "Preferences saved",

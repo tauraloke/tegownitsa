@@ -58,7 +58,8 @@
     "predict_tags": "Угадать теги нейросетью",
     "hide_predicted_tags": "Скрыть прогноз",
     "previous": "К предыдущему",
-    "next": "К следующему"
+    "next": "К следующему",
+    "return_to_files": "Вернуться к файлам"
   },
   "toast": {
     "preferences_saved": "Настройки сохранены",
