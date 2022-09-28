@@ -24,7 +24,7 @@ export default class DanbooruParser extends BasicJsonMoebooruParser {
   }
   async extractTags() {
     try {
-      let json = JSON.parse(await this.getBuffer());
+      let json = await this.getJson();
       let tags = [];
       const groups = {
         tag_string_general: '',

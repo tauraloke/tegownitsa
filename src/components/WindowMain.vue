@@ -345,6 +345,7 @@ export default {
         this.task_queues.pixiv = new TaskQueue(bc, tc);
         this.task_queues.deviantart = new TaskQueue(bc, tc);
         this.task_queues.furaffinity = new TaskQueue(bc, tc);
+        this.task_queues.artstation = new TaskQueue(bc, tc);
         this.task_queues.saucenao = new TaskQueue(31, 40);
       });
     });

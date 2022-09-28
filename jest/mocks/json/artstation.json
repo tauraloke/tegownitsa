@@ -1,0 +1,137 @@
+{
+  "liked": false,
+  "tags": ["dragon", "concept art", "monster", "creature", "design", "work"],
+  "hide_as_adult": false,
+  "visible_on_artstation": true,
+  "assets": [
+    {
+      "has_image": true,
+      "has_embedded_player": false,
+      "player_embedded": null,
+      "oembed": null,
+      "id": 12877109,
+      "title": "Final",
+      "title_formatted": "<div class=\"asset-caption\"><p>Final</p></div>",
+      "image_url": "https://cdnb.artstation.com/p/assets/images/images/012/877/109/large/victor-quaresma-pocketgems-wardragons-twilighthunter-final01.jpg?1547039100",
+      "width": 4321,
+      "height": 3000,
+      "position": 0,
+      "asset_type": "image",
+      "viewport_constraint_type": "constrained"
+    },
+    {
+      "has_image": true,
+      "has_embedded_player": false,
+      "player_embedded": null,
+      "oembed": null,
+      "id": 13818968,
+      "title": "Color Variations",
+      "title_formatted": "<div class=\"asset-caption\"><p>Color Variations</p></div>",
+      "image_url": "https://cdna.artstation.com/p/assets/images/images/013/818/968/large/victor-quaresma-pocketgems-wardragons-twilighthunter-color-01.jpg?1541214797",
+      "width": 3813,
+      "height": 1500,
+      "position": 1,
+      "asset_type": "image",
+      "viewport_constraint_type": "constrained"
+    },
+    {
+      "has_image": true,
+      "has_embedded_player": false,
+      "player_embedded": null,
+      "oembed": null,
+      "id": 15092043,
+      "title": "refined BW sketch",
+      "title_formatted": "<div class=\"asset-caption\"><p>refined BW sketch</p></div>",
+      "image_url": "https://cdnb.artstation.com/p/assets/images/images/015/092/043/large/victor-quaresma-pocketgems-wardragons-twilighthunter-refined-sketch-02.jpg?1547029011",
+      "width": 3733,
+      "height": 2592,
+      "position": 2,
+      "asset_type": "image",
+      "viewport_constraint_type": "constrained"
+    },
+    {
+      "has_image": true,
+      "has_embedded_player": false,
+      "player_embedded": null,
+      "oembed": null,
+      "id": 15092044,
+      "title": "Sketches explorations",
+      "title_formatted": "<div class=\"asset-caption\"><p>Sketches explorations</p></div>",
+      "image_url": "https://cdna.artstation.com/p/assets/images/images/015/092/044/large/victor-quaresma-war-dragons-sketches-1-2-2.jpg?1547029023",
+      "width": 3339,
+      "height": 2000,
+      "position": 3,
+      "asset_type": "image",
+      "viewport_constraint_type": "constrained"
+    }
+  ],
+  "collections": [],
+  "user": {
+    "followed": false,
+    "following_back": false,
+    "blocked": false,
+    "is_staff": false,
+    "is_plus_member": false,
+    "is_studio_account": false,
+    "is_school_account": false,
+    "id": 13143,
+    "username": "quaresma",
+    "headline": "Freelance Concept Artist",
+    "full_name": ". Quaresma",
+    "permalink": "https://www.artstation.com/quaresma",
+    "medium_avatar_url": "https://cdnb.artstation.com/p/users/avatars/000/013/143/medium/0b19810df7b935e9b88ce2c4230a0244.jpg?1479495671",
+    "large_avatar_url": "https://cdnb.artstation.com/p/users/avatars/000/013/143/large/0b19810df7b935e9b88ce2c4230a0244.jpg?1479495671",
+    "small_cover_url": "https://cdnb.artstation.com/p/users/covers/000/013/143/small/bb716c109cf96360fca12c3cfb734e45.jpg?1544975995",
+    "pro_member": true
+  },
+  "medium": {
+    "name": "Digital 2D",
+    "id": 1
+  },
+  "mediums": [
+    {
+      "name": "Digital 2D",
+      "id": 1
+    }
+  ],
+  "categories": [
+    {
+      "name": "Concept Art",
+      "id": 3
+    },
+    {
+      "name": "Game Art",
+      "id": 7
+    },
+    {
+      "name": "Creatures",
+      "id": 19
+    }
+  ],
+  "software_items": [
+    {
+      "icon_url": "https://cdna.artstation.com/p/softwares/icons/000/000/032/default/Photoshop.png?1608144074",
+      "name": "Photoshop"
+    }
+  ],
+  "id": 3682904,
+  "user_id": 13143,
+  "title": "War Dragons / Concept Art",
+  "description": "<p>Dragon done for the game War Dragons, for Pocketgems. Done in 2017 while I was at VOLTA.</p>",
+  "description_html": "<p>Dragon done for the game War Dragons, for Pocketgems. Done in 2017 while I was at VOLTA.</p>",
+  "created_at": "2018-09-14T14:24:17.673-05:00",
+  "updated_at": "2022-09-26T21:11:32.182-05:00",
+  "views_count": 37377,
+  "likes_count": 3382,
+  "comments_count": 58,
+  "permalink": "https://www.artstation.com/artwork/q8ZEP",
+  "cover_url": "https://cdnb.artstation.com/p/assets/images/images/012/877/109/medium/victor-quaresma-pocketgems-wardragons-twilighthunter-final01.jpg?1547039100",
+  "published_at": "2019-01-09T07:05:45.513-06:00",
+  "editor_pick": false,
+  "adult_content": false,
+  "admin_adult_content": false,
+  "slug": "war-dragons-concept-art",
+  "suppressed": false,
+  "hash_id": "q8ZEP",
+  "visible": true
+}

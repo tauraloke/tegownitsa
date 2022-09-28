@@ -2,17 +2,12 @@ import AbstractBasicParser from './abstract_basic_parser.js';
 // eslint-disable-next-line no-unused-vars
 import { ResponseImage } from './parser_response.js';
 
-export default class DeviantartParser extends AbstractBasicParser {
+export default class ArtstationParser extends AbstractBasicParser {
   getItemId() {
     if (this.itemId) {
       return this.itemId;
     }
-    let parseUrl = this.url.match(/-([0-9]+)$/);
-    if (parseUrl && parseUrl[1]) {
-      this.itemId = parseUrl[1];
-      return this.itemId;
-    }
-    parseUrl = this.url.match(/\/([0-9]+)$/);
+    let parseUrl = this.url.match(/([0-9A-Za-z]+)$/);
     if (parseUrl && parseUrl[1]) {
       this.itemId = parseUrl[1];
       return this.itemId;
@@ -20,16 +15,14 @@ export default class DeviantartParser extends AbstractBasicParser {
     throw `Cannot parse url ${this.url}`;
   }
   getFetchUrl() {
-    return `https://www.deviantart.com/_napi/da-deviation/shared_api/deviation/extended_fetch?deviationid=${this.getItemId()}&type=art&include_session=false`;
+    return `https://www.artstation.com/projects/${this.getItemId()}.json`;
   }
   async extractTags() {
     try {
       let json = await this.getJson();
-      let tags = json.deviation.extended.tags
-        .map((t) => t.name)
-        .filter((t) => t);
-      if (json.deviation.author.username) {
-        tags.push(`creator:${json.deviation.author.username}`);
+      let tags = [...json.tags];
+      if (json.user && json.user.username) {
+        tags.push(`creator:${json.user.username}`);
       }
       return tags;
     } catch (error) {
@@ -41,7 +34,17 @@ export default class DeviantartParser extends AbstractBasicParser {
    * @returns {Promise<ResponseImage?>}
    */
   async extractFullSizeImage() {
-    return null;
+    try {
+      let json = await this.getJson();
+      let image = json.assets[0];
+      return {
+        url: image.image_url,
+        width: image.width,
+        height: image.height
+      };
+    } catch (error) {
+      return null;
+    }
   }
   /**
    * @returns {Promize<string[]?>}
@@ -55,7 +58,7 @@ export default class DeviantartParser extends AbstractBasicParser {
   async extractTitle() {
     try {
       let json = await this.getJson();
-      return json.deviation.title;
+      return json.title;
     } catch {
       return null;
     }
@@ -66,8 +69,7 @@ export default class DeviantartParser extends AbstractBasicParser {
   async extractAuthorUrls() {
     try {
       let json = await this.getJson();
-      let username = json.deviation.author.username;
-      return username ? [`https://www.deviantart.com/${username}`] : null;
+      return [json.user.permalink];
     } catch {
       return null;
     }

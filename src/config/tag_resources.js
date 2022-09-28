@@ -9,5 +9,6 @@ module.exports = [
   { mask: /anime-pictures\.net/, locale: 'en', name: 'anime_pictures' },
   { mask: /pixiv\.net/, locale: 'en', name: 'pixiv' },
   { mask: /deviantart\.com/, locale: 'en', name: 'deviantart' },
-  { mask: /furaffinity\.net/, locale: 'en', name: 'furaffinity' }
+  { mask: /furaffinity\.net/, locale: 'en', name: 'furaffinity' },
+  { mask: /artstation\.com/, locale: 'en', name: 'artstation' }
 ];

@@ -1,13 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 const Parser =
-  require('../../../src/services/parsers/deviantart_parser.js').default;
+  require('../../../src/services/parsers/artstation_parser.js').default;
 
-describe('Deviantart parser', () => {
+describe('Artstation parser', () => {
   let parser = new Parser('');
   parser.getBuffer = () => {
     return fs.readFileSync(
-      path.join('jest', 'mocks', 'json', 'deviantart.json')
+      path.join('jest', 'mocks', 'json', 'artstation.json')
     );
   };
 
@@ -16,7 +16,11 @@ describe('Deviantart parser', () => {
   });
 
   test('extract full url', async () => {
-    expect(await parser.extractFullSizeImage()).toEqual(null);
+    expect(await parser.extractFullSizeImage()).toEqual({
+      url: 'https://cdnb.artstation.com/p/assets/images/images/012/877/109/large/victor-quaresma-pocketgems-wardragons-twilighthunter-final01.jpg?1547039100',
+      width: 4321,
+      height: 3000
+    });
   });
 
   test('extract source', async () => {
@@ -25,35 +29,24 @@ describe('Deviantart parser', () => {
 
   test('extract author url', async () => {
     expect(await parser.extractAuthorUrls()).toEqual([
-      'https://www.deviantart.com/robertartp'
+      'https://www.artstation.com/quaresma'
     ]);
   });
 
   test('extract title', async () => {
-    expect(await parser.extractTitle()).toEqual('Friends ');
+    expect(await parser.extractTitle()).toEqual('War Dragons / Concept Art');
   });
 
   test('extract tags', async () => {
     let tags = await parser.extractTags();
     expect(tags).toEqual([
-      'colors',
-      'fox',
-      'friends',
-      'illustration',
-      'painting',
-      'squirrel',
-      'watercolorart',
-      'watercolorpainting',
-      'winter',
-      'italianartist',
-      'animalillustration',
-      'foxillustration',
-      'friendshipis',
-      'artistsondeviantart',
-      'artistsoninstagram',
-      'art',
-      'illustrationartists',
-      'creator:robertartp'
+      'dragon',
+      'concept art',
+      'monster',
+      'creature',
+      'design',
+      'work',
+      'creator:quaresma'
     ]);
   });
 });
