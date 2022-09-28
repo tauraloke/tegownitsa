@@ -98,9 +98,20 @@ export default {
         return false;
       }
       this.isLoadingTags = true;
-      let autoTaggerResponse = await window.ocrApi.autotagger(
-        this.currentFile.full_path
-      );
+      let autoTaggerResponse = null;
+      try {
+        autoTaggerResponse = await window.ocrApi.autotagger(
+          this.currentFile.full_path
+        );
+      } catch (e) {
+        this.isLoadingTags = false;
+        console.log('Autotagger error', e);
+        this.$emit(
+          'toast',
+          this.$t('dialog_show_file.cannot_process_by_neuronet')
+        );
+        return;
+      }
       if (autoTaggerResponse.status != 'OK') {
         if (autoTaggerResponse.error == 'model_not_found') {
           this.isLoadingTags = false;

@@ -107,7 +107,8 @@
     "neuronet_files_still_loading": "Файлы для нейросети еще загружаются.",
     "fullsizes": "Найденные копии в Интернете",
     "size_parameters": "Размеры изображения",
-    "improve_file": "Скачать и заменить"
+    "improve_file": "Скачать и заменить",
+    "cannot_process_by_neuronet": "Что-то не так - не удаётся распознать теги"
   },
   "settings": {
     "application": "Приложение",

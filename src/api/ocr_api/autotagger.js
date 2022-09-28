@@ -72,7 +72,7 @@ export async function run(_event, _db, filepath) {
     status: 'OK',
     result: tf.tidy(() => {
       let tensor = tf.node
-        .decodeImage(fs.readFileSync(filepath))
+        .decodeImage(fs.readFileSync(filepath), 3)
         .resizeBilinear([PREPARED_IMAGE_SIZE, PREPARED_IMAGE_SIZE]);
       tensor = tensor.div(MAX_COLOR_VALUE);
       tensor = tensor.expandDims().transpose([0, 3, 1, 2]); // move color channel to 2nd place

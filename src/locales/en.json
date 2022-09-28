@@ -107,7 +107,8 @@
     "neuronet_files_still_loading": "Files for a neuronet are still loading.",
     "fullsizes": "Found copies in the Internet",
     "size_parameters": "Image sizes",
-    "improve_file": "Download and change"
+    "improve_file": "Download and change",
+    "cannot_process_by_neuronet": "Something wrong - cannot recognize tags"
   },
   "settings": {
     "application": "Application",
