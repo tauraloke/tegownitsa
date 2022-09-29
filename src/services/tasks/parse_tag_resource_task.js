@@ -22,27 +22,48 @@ export default class ParseTagResourceTask extends BaseTask {
     this.locale = locale;
     this.url = url;
   }
+  /**
+   * @returns {Promise<{skip_timeout: boolean?;status: string}}
+   */
   async run() {
-    console.log(
-      `Start search tags on ${this.resource_name} for file #${this.file['id']}`
-    );
-    /** @type {ParserResponse} */
-    let data = await window.network.extractDataFromSource(
-      this.url,
-      this.resource_name
-    );
-    console.log('extracted data', data);
-    await this._processTags(data);
-    await this._processAuthorUrls(data);
-    await this._processSources(data, this.file['id']);
-    if (data.fullSizeImage) {
-      await window.sqliteApi.addFileFullsize(
-        this.file['id'],
-        data.fullSizeImage
+    try {
+      if (
+        await window.sqliteApi.isFileAlreadyPolled(
+          this.file.id,
+          sourceTypes[this.resource_name.toUpperCase()]
+        )
+      ) {
+        console.log(
+          `Resource ${this.resource_name} is already polled for the file #${this.file['id']}`
+        );
+        this.incrementJobProgress(1);
+        return { skip_timeout: true, status: 'OK' };
+      }
+      console.log(
+        `Start searching data on ${this.resource_name} for the file #${this.file['id']}`
       );
-    }
+      /** @type {ParserResponse} */
+      let data = await window.network.extractDataFromSource(
+        this.url,
+        this.resource_name,
+        { preview_path: this.file.preview_path, id: this.file.id }
+      );
+      console.log('extracted data', data);
+      await this._processTags(data);
+      await this._processAuthorUrls(data);
+      await this._processSources(data, this.file['id']);
+      if (data.fullSizeImage) {
+        await window.sqliteApi.addFileFullsize(
+          this.file['id'],
+          data.fullSizeImage
+        );
+      }
 
-    this.incrementJobProgress(1);
+      this.incrementJobProgress(1);
+      return { status: 'OK' };
+    } catch (e) {
+      return { status: 'FAIL' };
+    }
   }
   async _processSources(data, file_id) {
     if (data.sourceUrls) {

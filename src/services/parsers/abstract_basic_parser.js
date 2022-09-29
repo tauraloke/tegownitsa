@@ -71,7 +71,6 @@ export default class AbstractBasicParser {
           headers: { 'User-Agent': this.getUserAgent() }
         })
       ).text());
-    console.log(this._buffer);
     return this._buffer;
   }
   getUserAgent() {

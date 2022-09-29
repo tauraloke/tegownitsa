@@ -166,6 +166,16 @@ async function initDatabase({ dbPath }) {
       updated_at TIMESTAMP
     )`
   );
+  dbConnection.run(
+    `CREATE TABLE IF NOT EXISTS pollee_file_sources (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      file_id INTEGER NOT NULL,
+      source INTEGER,
+      tags_count INTEGER,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP
+    )`
+  );
 
   console.log('Done.');
   return dbConnection;

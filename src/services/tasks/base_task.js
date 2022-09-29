@@ -20,7 +20,10 @@ export default class BaseTask {
     }
     this.job.incrementProgress(step);
   }
-  //@Abstract
+  /**
+   * @Abstract
+   * @returns {Promise<{skip_timeout: boolean?;status: string}}
+   */
   run() {
     throw 'Abstract method should be implemented';
   }

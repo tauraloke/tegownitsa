@@ -160,6 +160,25 @@
                 </ul>
               </v-card>
             </div>
+
+            <div v-if="polleeFileSources && polleeFileSources.length > 0">
+              <v-card elevation="4" class="ma-2 pa-8">
+                <h5>{{ $t('main_window.pollee_file_sources') }}</h5>
+                <ul>
+                  <li v-for="row in polleeFileSources" :key="row.id">
+                    {{ sourceTypesById[row.source] }}
+                    [{{ row.created_at }}]
+                    <a
+                      href="#"
+                      :title="$t('button.remove')"
+                      @click="removePolleeFileSource(row.id)"
+                    >
+                      [x]
+                    </a>
+                  </li>
+                </ul>
+              </v-card>
+            </div>
           </v-col>
         </v-row>
       </v-card-text>
@@ -172,6 +191,8 @@ import FormAddNewTagToFile from '@/components/FormAddNewTagToFile.vue';
 import ListTagGroups from '@/components/ListTagGroups.vue';
 import PredictedTags from '@/components/PredictedTags.vue';
 import tagNamespaces from '@/config/tag_namespaces.js';
+import sourceTypes from '@/config/source_type.json';
+import { swap } from '@/services/utils.js';
 
 export default {
   name: 'DialogShowFile',
@@ -185,7 +206,9 @@ export default {
       currentFile: null,
       fileCaptionTextareaIcon: 'mdi-floppy',
       authorUrls: [],
-      fullsizes: []
+      fullsizes: [],
+      polleeFileSources: [],
+      sourceTypesById: swap(sourceTypes)
     };
   },
   computed: {
@@ -242,8 +265,10 @@ export default {
         let urls = await window.sqliteApi.getAuthorUrls(authors[i].id);
         this.authorUrls.push(...urls);
       }
-      this.fullsizes = await window.sqliteApi.getFileFullsizes(
-        this.currentFile.id
+      this.fullsizes = await window.sqliteApi.getFileFullsizes(file.id);
+      this.polleeFileSources = await window.sqliteApi.queryAll(
+        'SELECT * FROM pollee_file_sources WHERE file_id=?',
+        [file.id]
       );
       this.urls = (
         await window.sqliteApi.queryAll(
@@ -323,6 +348,13 @@ export default {
     },
     goNext() {
       this.showComponent(this.currentFile.next);
+    },
+    async removePolleeFileSource(row_id) {
+      if (await window.sqliteApi.removePolleeFileSource(row_id)) {
+        this.polleeFileSources = this.polleeFileSources.filter(
+          (r) => r.id != row_id
+        );
+      }
     }
   }
 };

@@ -7,7 +7,6 @@ export async function run(_event, db, sourceTagId, targetTagId) {
     'SELECT COUNT(*) AS count FROM tags WHERE id=? OR id=?',
     [targetTagId, sourceTagId]
   );
-  console.log(check, check.count);
   if (check.count != 2) {
     return false;
   }

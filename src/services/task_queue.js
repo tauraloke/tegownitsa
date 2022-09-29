@@ -13,14 +13,18 @@ export default class TaskQueue {
     this.tasks = [];
   }
   nextCooldown() {
+    if (this.skip_timeout) {
+      this.skip_timeout = false;
+      return 0;
+    }
     return Math.floor(
       this.cooldown_bottom +
         Math.random() * (this.cooldown_top - this.cooldown_bottom)
     );
   }
-  start() {
+  async start() {
     this.active = true;
-    this.runNextTask();
+    await this.runNextTask();
     this.planNextStep();
     return true;
   }
@@ -30,24 +34,29 @@ export default class TaskQueue {
     this.timer = null;
     return true;
   }
-  runNextTask() {
+  async runNextTask() {
     if (this.tasks.length < 1) {
       this.stop();
       return;
     }
     let _nextTask = this.tasks.shift();
-    _nextTask?.run();
+    if (_nextTask.run) {
+      let result = await _nextTask.run();
+      if (result.skip_timeout) {
+        this.skip_timeout = true;
+      }
+    }
   }
   planNextStep() {
     this.timer = setTimeout(() => {
       this.step();
     }, this.nextCooldown());
   }
-  step() {
+  async step() {
     if (!this.active) {
       return false;
     }
-    this.runNextTask();
+    await this.runNextTask();
     this.planNextStep();
     return true;
   }

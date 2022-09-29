@@ -45,7 +45,8 @@
     "remove_this_file": "Remove this file?",
     "no_files_to_scan": "No new files to scan",
     "found_x_files": "No files found. | Found {n} file. | Found {n} files.",
-    "author_urls": "Author links"
+    "author_urls": "Author links",
+    "pollee_file_sources": "Pollee tag sources"
   },
   "button": {
     "close": "Close",
