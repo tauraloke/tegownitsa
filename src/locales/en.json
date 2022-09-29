@@ -186,7 +186,8 @@
       "META": "Meta",
       "CHARACTER": "Character",
       "STYLE": "Style",
-      "GENRE": "Genre"
+      "GENRE": "Genre",
+      "SPECIE": "Specie"
     },
     "name": "Name",
     "score": "Score",
