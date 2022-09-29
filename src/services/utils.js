@@ -19,3 +19,7 @@ export function swap(hash) {
   }
   return result;
 }
+export function applicationUserAgent() {
+  const version = process.env.npm_package_version || '?';
+  return `Tegownitsa: ${version} / Source: https://github.com/tauraloke/tegownitsa`;
+}

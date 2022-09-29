@@ -155,7 +155,15 @@
     },
     "saucenao_similarity_threshold": "Saucenao similarity threshold",
     "saucenao_limit_message": "You can check your Saucenao current daily limits",
-    "here": "here"
+    "here": "here",
+    "e621_username": "E621 username",
+    "e621_username_hint": "This API is not used without registration",
+    "tagSourcesTab": {
+      "common": "Common",
+      "iqdb": "IQDB",
+      "saucenao": "Saucenao",
+      "e621": "e621"
+    }
   },
   "list": {
     "empty": "No tags in list"

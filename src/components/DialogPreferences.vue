@@ -116,65 +116,102 @@
         <v-window-item value="tag_sources">
           <v-card flat>
             <v-card-text>
-              <v-select
-                v-model="options.tag_source_strategies"
-                :hint="$t('settings.enrich_tags_strategies')"
-                :items="tagSourceStrategiesList"
-                item-title="title"
-                item-value="value"
-                :label="$t('settings.strategy')"
-                variant="outlined"
-                persistent-hint
-                single-line
-                class="mb-12"
-              />
-              <v-slider
-                v-model="options.tag_source_threshold_iqdb"
-                thumb-label="always"
-                :min="0"
-                :max="1"
-              ></v-slider>
-              <div class="text-caption mb-12">
-                {{ $t('settings.iqdb_similarity_threshold') }}
-              </div>
+              <v-tabs
+                v-model="tagSourcesTab"
+                direction="horizontal"
+                color="primary"
+              >
+                <v-tab value="common">
+                  {{ $t('settings.tagSourcesTab.common') }}
+                </v-tab>
+                <v-tab value="IQDB">
+                  {{ $t('settings.tagSourcesTab.iqdb') }}
+                </v-tab>
+                <v-tab value="Saucenao">
+                  {{ $t('settings.tagSourcesTab.saucenao') }}
+                </v-tab>
+                <v-tab value="e621">
+                  {{ $t('settings.tagSourcesTab.e621') }}
+                </v-tab>
+              </v-tabs>
+              <v-window v-model="tagSourcesTab" direction="vertical">
+                <v-window-item value="common">
+                  <v-select
+                    v-model="options.tag_source_strategies"
+                    :hint="$t('settings.enrich_tags_strategies')"
+                    :items="tagSourceStrategiesList"
+                    item-title="title"
+                    item-value="value"
+                    :label="$t('settings.strategy')"
+                    variant="outlined"
+                    persistent-hint
+                    single-line
+                    class="mb-12 mt-12"
+                  />
+                </v-window-item>
+                <v-window-item value="IQDB">
+                  <v-slider
+                    v-model="options.tag_source_threshold_iqdb"
+                    thumb-label="always"
+                    :min="0"
+                    :max="1"
+                    class="mt-12"
+                  ></v-slider>
+                  <div class="text-caption mb-12">
+                    {{ $t('settings.iqdb_similarity_threshold') }}
+                  </div>
 
-              <v-range-slider
-                v-model="iqdbCooldownRange"
-                step="1"
-                min="10"
-                max="120"
-                thumb-label="always"
-              ></v-range-slider>
-              <div class="text-caption mb-12">
-                {{ $t('settings.iqdb_cooldown') }}
-              </div>
+                  <v-range-slider
+                    v-model="iqdbCooldownRange"
+                    step="1"
+                    min="10"
+                    max="120"
+                    thumb-label="always"
+                  ></v-range-slider>
+                  <div class="text-caption mb-12">
+                    {{ $t('settings.iqdb_cooldown') }}
+                  </div>
+                </v-window-item>
 
-              <v-slider
-                v-model="options.tag_source_threshold_saucenao"
-                thumb-label="always"
-                :min="0"
-                :max="100"
-              ></v-slider>
-              <div class="text-caption mb-12">
-                {{ $t('settings.saucenao_similarity_threshold') }}
-              </div>
+                <v-window-item value="Saucenao">
+                  <v-slider
+                    v-model="options.tag_source_threshold_saucenao"
+                    thumb-label="always"
+                    :min="0"
+                    :max="100"
+                    class="mt-12"
+                  ></v-slider>
+                  <div class="text-caption mb-12">
+                    {{ $t('settings.saucenao_similarity_threshold') }}
+                  </div>
 
-              <v-text-field
-                v-model="options.tag_source_saucenao_api_key"
-                :label="$t('settings.saucenao_key')"
-                :hint="$t('settings.api_key_saucenao_hint')"
-                class="mb-12"
-              />
+                  <v-text-field
+                    v-model="options.tag_source_saucenao_api_key"
+                    :label="$t('settings.saucenao_key')"
+                    :hint="$t('settings.api_key_saucenao_hint')"
+                    class="mb-12"
+                  />
 
-              <div>
-                {{ $t('settings.saucenao_limit_message') }}
-                <a
-                  href="https://saucenao.com/user.php?page=search-usage"
-                  target="_blank"
-                >
-                  {{ $t('settings.here') }}
-                </a>
-              </div>
+                  <div class="mb-12">
+                    {{ $t('settings.saucenao_limit_message') }}
+                    <a
+                      href="https://saucenao.com/user.php?page=search-usage"
+                      target="_blank"
+                    >
+                      {{ $t('settings.here') }}
+                    </a>
+                  </div>
+                </v-window-item>
+
+                <v-window-item value="e621">
+                  <v-text-field
+                    v-model="options.e621_username"
+                    :label="$t('settings.e621_username')"
+                    :hint="$t('settings.e621_username_hint')"
+                    class="mb-12 mt-12"
+                  />
+                </v-window-item>
+              </v-window>
             </v-card-text>
           </v-card>
         </v-window-item>
@@ -216,6 +253,7 @@ export default {
       dialogTitle: this.$t('settings.dialog.title'),
       dialogTitleTimeout: null,
       tab: 'application',
+      tagSourcesTab: 'common',
       options: {},
       isWatchersActive: false,
       tagSourceStrategiesList: [

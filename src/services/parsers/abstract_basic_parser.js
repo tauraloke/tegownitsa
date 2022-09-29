@@ -2,6 +2,7 @@ import fetchUrl from 'node-fetch';
 import { load } from 'cheerio';
 // eslint-disable-next-line no-unused-vars
 import ParserResponse, { ResponseImage } from './parser_response.js';
+import { applicationUserAgent } from '../utils.js';
 
 export default class AbstractBasicParser {
   /**
@@ -64,8 +65,17 @@ export default class AbstractBasicParser {
   }
   async getBuffer() {
     this._buffer =
-      this._buffer || (await (await fetchUrl(this.getFetchUrl())).text());
+      this._buffer ||
+      (await (
+        await fetchUrl(this.getFetchUrl(), {
+          headers: { 'User-Agent': this.getUserAgent() }
+        })
+      ).text());
+    console.log(this._buffer);
     return this._buffer;
+  }
+  getUserAgent() {
+    return applicationUserAgent();
   }
   /**
    * @abstract

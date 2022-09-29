@@ -10,5 +10,6 @@ module.exports = [
   { mask: /pixiv\.net/, locale: 'en', name: 'pixiv' },
   { mask: /deviantart\.com/, locale: 'en', name: 'deviantart' },
   { mask: /furaffinity\.net/, locale: 'en', name: 'furaffinity' },
-  { mask: /artstation\.com/, locale: 'en', name: 'artstation' }
+  { mask: /artstation\.com/, locale: 'en', name: 'artstation' },
+  { mask: /e621\.net/, locale: 'en', name: 'e621' }
 ];

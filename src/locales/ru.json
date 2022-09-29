@@ -155,7 +155,15 @@
     },
     "saucenao_similarity_threshold": "Порог сходства поиска через Saucenao",
     "saucenao_limit_message": "Вы можете проверить свой текущий дневной лимит на Saucenao",
-    "here": "здесь"
+    "here": "здесь",
+    "e621_username": "Имя пользователя E621",
+    "e621_username_hint": "Это API не используется без регистрации",
+    "tagSourcesTab": {
+      "common": "Общее",
+      "iqdb": "IQDB",
+      "saucenao": "Saucenao",
+      "e621": "е621"
+    }
   },
   "list": {
     "empty": "Нет тегов в списке"

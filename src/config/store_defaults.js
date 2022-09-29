@@ -23,5 +23,6 @@ module.exports = {
   ),
   lang: 'en',
   import_exif_tags_as_tags: true,
-  tag_source_threshold_saucenao: 80
+  tag_source_threshold_saucenao: 80,
+  e621_username: ''
 };
