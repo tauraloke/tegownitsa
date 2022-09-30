@@ -59,13 +59,11 @@
     "predict_tags": "Predict tags by neuronet",
     "hide_predicted_tags": "Hide predictions",
     "previous": "To previous one",
-    "next": "To next one",
-    "return_to_files": "Return to files"
+    "next": "To next one"
   },
   "toast": {
     "preferences_saved": "Preferences saved",
     "file_has_removed": "File has removed",
-    "dups_length_pairs_found": "{0} pairs found",
     "unknown_scan_error": "Something wrong with scanning...",
     "file_has_imported": "File has imported from url '{0}'.",
     "cannot_copy_file_from_url": "Can't copy file from {0}.",
@@ -78,7 +76,8 @@
     "tag_unlinked_from_file": "Tag '{0}' has unlinked from this file.",
     "no_new_files_in_folder": "No new file in a folder",
     "file_improved": "The file has been improved.",
-    "file_not_improved": "Something wrong with downloading by that url"
+    "file_not_improved": "Something wrong with downloading by that url",
+    "unknown_duplicate_error": "Unknown duplicate searching error"
   },
   "form_search_files": {
     "find_by_tags_print_and_choose": "Find by tags: print and choose"
@@ -177,7 +176,8 @@
     "cancel": "Cancel this job",
     "import_folder": "Importing folder",
     "downloading-archive": "Downloading '{0}'",
-    "unpacking-archive": "Unpacking archive '{0}'"
+    "unpacking-archive": "Unpacking archive '{0}'",
+    "searching_dublicates": "Searching duplicates"
   },
   "tags": {
     "namespaces": {

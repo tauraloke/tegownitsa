@@ -20,140 +20,41 @@
 
           <!-- tags -->
           <div id="tags">
-            <div v-if="!duplicatedFiles?.length">
-              <h3>{{ $t('main_window.tags') }}</h3>
-              <list-tag-groups
-                :tags="tags"
-                @search-by-title="searchFilesByTag($event)"
-                @tag-added="tags.push($event)"
-                @tag-removed="tags = tags.filter((t) => t.id != $event?.id)"
-              />
-            </div>
-            <div v-else>
-              <v-btn @click="searchFilesByTagTitles('')">
-                {{ $t('button.return_to_files') }}
-              </v-btn>
-            </div>
+            <h3>{{ $t('main_window.tags') }}</h3>
+            <list-tag-groups
+              :tags="tags"
+              @search-by-title="searchFilesByTag($event)"
+              @tag-added="tags.push($event)"
+              @tag-removed="tags = tags.filter((t) => t.id != $event?.id)"
+            />
           </div>
         </v-col>
 
         <v-col cols="12" sm="8">
           <!-- files -->
-          <div v-if="!duplicatedFiles?.length">
-            <h3>{{ $t('main_window.files') }}</h3>
-            <div class="justify-center">
-              {{ $t('main_window.found_x_files', files?.length) }}
-            </div>
-            <v-row id="files" class="mt-4">
-              <v-col
-                v-for="file in files"
-                :key="file.id"
-                class="d-flex child-flex"
-                cols="2"
-              >
-                <v-img
-                  :data="{ id: file?.id }"
-                  :src="'file://' + file?.preview_path"
-                  :title="file?.source_filename"
-                  aspect-ratio="1"
-                  width="140"
-                  contain
-                  class="bg-grey-lighten-2 pointer-clickable pretty-corners elevation-4"
-                  @click="showFile(file)"
-                />
-              </v-col>
-            </v-row>
+          <h3>{{ $t('main_window.files') }}</h3>
+          <div class="justify-center">
+            {{ $t('main_window.found_x_files', files?.length) }}
           </div>
-
-          <!-- duplicated files -->
-          <div v-if="files === null" id="duplicated_files">
-            <h3 style="text-align: left; margin-left: 3em; margin-bottom: 2em">
-              {{ $t('main_window.duplicate_files') }}
-            </h3>
-            <div v-if="duplicatedFiles?.length == 0" style="text-align: left">
-              {{ $t('main_window.no_duplicates_found') }}
-            </div>
-            <v-row v-for="file in duplicatedFiles" :key="file.id">
-              <v-col class="d-flex child-flex" cols="8">
-                <v-card elevation="4" class="ma-4">
-                  <v-img
-                    :data="{ id: file?.id }"
-                    :src="'file://' + file?.preview_path"
-                    aspect-ratio="1"
-                    :title="file.source_filename"
-                    width="140"
-                    contain
-                    class="bg-grey-lighten-2 pointer-clickable"
-                    @click="showFile(file)"
-                  />
-                  <v-card-text>
-                    {{ file.width }} x {{ file.height }}
-                  </v-card-text>
-                  <v-card-actions class="pt-0">
-                    <v-btn
-                      variant="text"
-                      color="red"
-                      @click="deleteFile(file.id)"
-                    >
-                      {{ $t('button.remove') }}
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-                <div class="pt-10">
-                  {{ $t('main_window.similarity') }}
-                  <br />
-                  {{ imageSimilarity(file.distance) }}%
-                </div>
-                <v-card elevation="4" class="ma-4">
-                  <v-img
-                    :data="{ id: file?.f2_id }"
-                    :src="'file://' + file?.f2_preview_path"
-                    :title="file.f2_source_filename"
-                    aspect-ratio="1"
-                    width="140"
-                    contain
-                    class="bg-grey-lighten-2 pointer-clickable"
-                    @click="showFile(file.f2_id)"
-                  />
-                  <v-card-text>
-                    {{ file.f2_width }} x {{ file.f2_height }}
-                  </v-card-text>
-                  <v-card-actions class="pt-0">
-                    <v-btn
-                      variant="text"
-                      color="red"
-                      @click="deleteFile(file.f2_id)"
-                    >
-                      {{ $t('button.remove') }}
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-            </v-row>
-            <v-dialog v-model="isShowConfirmDeleteFile">
-              <v-card>
-                <v-card-text>
-                  {{ $t('main_window.remove_this_file') }}
-                </v-card-text>
-                <v-card-actions>
-                  <v-btn
-                    variant="text"
-                    color="red"
-                    @click="deleteFile(fileIdForDeletion)"
-                  >
-                    {{ $t('button.remove') }}
-                  </v-btn>
-                  <v-btn
-                    variant="text"
-                    color="grey"
-                    @click="isShowConfirmDeleteFile = false"
-                  >
-                    {{ $t('button.cancel') }}
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </div>
+          <v-row id="files" class="mt-4">
+            <v-col
+              v-for="file in files"
+              :key="file.id"
+              class="d-flex child-flex"
+              cols="2"
+            >
+              <v-img
+                :data="{ id: file?.id }"
+                :src="'file://' + file?.preview_path"
+                :title="file?.source_filename"
+                aspect-ratio="1"
+                width="140"
+                contain
+                class="bg-grey-lighten-2 pointer-clickable pretty-corners elevation-4"
+                @click="showFile(file)"
+              />
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
     </main>
@@ -188,6 +89,12 @@
     </v-dialog>
 
     <dialog-preferences ref="dialog_preferences" />
+
+    <dialog-dublicates
+      ref="dialog_dublicates"
+      @show-file="showFile($event)"
+      @toast="toast($event)"
+    />
 
     <dialog-tag-editor
       ref="dialog_tag_editor"
@@ -245,6 +152,7 @@ import ListTagGroups from '@/components/ListTagGroups.vue';
 import DialogPreferences from '@/components/DialogPreferences.vue';
 import DialogShowFile from '@/components/DialogShowFile.vue';
 import DialogTagEditor from '@/components/DialogTagEditor.vue';
+import DialogDublicates from '@/components/DialogDublicates.vue';
 
 import Job from '@/services/job.js';
 import TaskQueue from '@/services/task_queue.js';
@@ -252,7 +160,6 @@ import IqdbTask from '@/services/tasks/iqdb_task.js';
 import SaucenaoTask from '@/services/tasks/saucenao_task.js';
 import constants from '@/config/constants.json';
 import getStrategy from '@/services/tag_sources_strategies/get_strategy.js';
-import { imageSimilarity } from '@/services/image_distance.js';
 import tagNamespace from '@/config/tag_namespaces.js';
 
 export default {
@@ -262,7 +169,8 @@ export default {
     ListTagGroups,
     DialogPreferences,
     DialogShowFile,
-    DialogTagEditor
+    DialogTagEditor,
+    DialogDublicates
   },
   data() {
     return {
@@ -273,16 +181,13 @@ export default {
       currentFileUrls: null,
       currentFileTags: [],
       files: [],
-      /** @type Object<string, TaskQueue> */
+      /** @type {Object<string, TaskQueue>} */
       task_queues: {},
       showDialogUrlForImport: false,
       urlForImport: null,
-      duplicatedFiles: null,
-      isShowConfirmDeleteFile: false,
-      fileIdForDeletion: null,
-      /** @type Job[] */
+      /** @type {Job[]} */
       jobs: [],
-      /** @type Object<string, number> */
+      /** @type {Object<string, number>} */
       jobProgresses: {},
       authorUrls: []
     };
@@ -559,32 +464,33 @@ export default {
       }
     },
     async lookUpDups() {
-      let dups = await window.sqliteApi.findDuplicateFiles();
       this.hideFile();
-      this.hideFiles();
-      this.duplicatedFiles = dups;
-      this.toast(this.$t('toast.dups_length_pairs_found', [dups.length]));
-    },
-    hideFiles() {
-      this.files = null;
-    },
-    deleteFile(file_id) {
-      if (!this.isShowConfirmDeleteFile) {
-        this.isShowConfirmDeleteFile = true;
-        this.fileIdForDeletion = file_id;
-        return;
-      } else {
-        window.fileApi.removeFileById(file_id).then(() => {
-          this.duplicatedFiles = this.duplicatedFiles.filter(
-            (r) => r.id != file_id && r.f2_id != file_id
+      let files = this.files;
+      let job = new Job({
+        name: this.$t('jobs.searching_dublicates'),
+        taskTotalCount: files.length,
+        vueComponent: this
+      });
+      job.start();
+      let dups = [];
+
+      for (let i = 0; i < files.length; i++) {
+        if (!job?.isActive()) {
+          break;
+        }
+        try {
+          dups.push(
+            ...(await window.sqliteApi.findDuplicateFiles(files[i].id))
           );
-          this.isShowConfirmDeleteFile = false;
-          this.toast(this.$t('toast.file_has_removed'));
-        });
+          job.incrementProgress(1);
+        } catch (e) {
+          console.error(e);
+          this.toast(this.$t('toast.unknown_duplicate_error'));
+          job.destroy();
+        }
       }
-    },
-    imageSimilarity(threshold) {
-      return imageSimilarity(threshold);
+      this.$refs.dialog_dublicates.showComponent(dups);
+      this.duplicatedFiles = dups;
     },
     toast(message) {
       this.statusMessage = message;

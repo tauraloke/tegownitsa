@@ -59,13 +59,11 @@
     "predict_tags": "Угадать теги нейросетью",
     "hide_predicted_tags": "Скрыть прогноз",
     "previous": "К предыдущему",
-    "next": "К следующему",
-    "return_to_files": "Вернуться к файлам"
+    "next": "К следующему"
   },
   "toast": {
     "preferences_saved": "Настройки сохранены",
     "file_has_removed": "Файл удален",
-    "dups_length_pairs_found": "Найдено {0} пар",
     "unknown_scan_error": "Что-то не так со сканированием...",
     "file_has_imported": "Файл был скачан с '{0}'.",
     "cannot_copy_file_from_url": "Невозможно скопировать файл из {0}.",
@@ -78,7 +76,8 @@
     "tag_unlinked_from_file": "Тег '{0}' отсоединен от этого файла.",
     "no_new_files_in_folder": "Нет новых файлов в папке",
     "file_improved": "Загружена другая версия этого файла.",
-    "file_not_improved": "Что-то не так с загрузкой по этому URL"
+    "file_not_improved": "Что-то не так с загрузкой по этому URL",
+    "unknown_duplicate_error": "Неизвестная ошибка поиска дубликатов"
   },
   "form_search_files": {
     "find_by_tags_print_and_choose": "Поиск по тегам: печатайте и выбирайте"
@@ -177,7 +176,8 @@
     "cancel": "Отменить это задание",
     "import_folder": "Импорт папки",
     "downloading-archive": "Загрузка '{0}'",
-    "unpacking-archive": "Распаковка архива '{0}'"
+    "unpacking-archive": "Распаковка архива '{0}'",
+    "searching_dublicates": "Поиск дубликатов"
   },
   "tags": {
     "namespaces": {
