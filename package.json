@@ -43,7 +43,7 @@
     "iqdb-client": "^2.0.0",
     "npm": "^8.19.2",
     "roboto-fontface": "*",
-    "sharp": "^0.31.0",
+    "sharp": "^0.31.1",
     "sharp-phash": "^2.0.0",
     "sqlite3": "^5.1.1",
     "tesseract.js": "^3.0.3",
