@@ -4,6 +4,7 @@
       <form-search-files
         ref="form_search_files"
         @by-tags="searchFilesByTagTitles($event)"
+        @by-tag="searchFilesByTagTitle($event)"
       />
     </header>
 
@@ -229,7 +230,7 @@ export default {
       }
       this[method](...args);
     });
-    this.searchFilesByTagTitles('');
+    this.searchFilesByTagTitle('limit:100');
     this.showAllTags();
     window.configApi.getConfig('dark_theme').then((isDark) => {
       if (isDark) {

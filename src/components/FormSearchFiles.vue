@@ -20,6 +20,19 @@
         :menu-props="{ closeOnContentClick: true }"
       />
     </v-row>
+    <v-chip-group class="justify-center">
+      <v-chip
+        v-for="tag in tagExamples"
+        :key="tag"
+        :ref="`tag_chip_${tag}`"
+        :title="tag"
+        @click="$emit('by-tag', tag)"
+      >
+        <span class="text-truncate">
+          {{ tag }}
+        </span>
+      </v-chip>
+    </v-chip-group>
   </v-container>
 </template>
 
@@ -28,17 +41,24 @@ import tagNamespaces from '../config/tag_namespaces.js';
 import hardConditionParsers from '../services/file_condition_pair_parser.js';
 
 const namespaces = Object.keys(tagNamespaces).map((n) => n.toLowerCase());
-const pseudoNameSpaces = Object.keys(hardConditionParsers);
+const pseudoNameSpaces = [...Object.keys(hardConditionParsers), ...['limit']];
 
 export default {
   name: 'FormSearchFiles',
-  emits: ['by-tags'],
+  emits: ['by-tags', 'by-tag'],
   data() {
     return {
       searchTags: null,
       entries: [],
       isLoading: false,
-      search: null
+      search: null,
+      tagExamples: [
+        'dragon',
+        'series:genshin_impact',
+        'fresh:5',
+        'system:without_tags',
+        'limit:no'
+      ]
     };
   },
   watch: {

@@ -6,13 +6,14 @@ Now you can put your image collection in order... Or not.
 
 # How to use
 
-- Import images via menu "File" and several.
+- Import images via actions in the menu `File`.
 - Find and remove low-dimensional duplicates.
 - Scan images and find them by a recognized text if you remember it.
 - Lurk tags, mark tags by your own hands or choose smooth tips of a neural net.
-- Find images by tag net. You can use pseudonamespaces like `in_url:...` (find images with linked urls), `in_title:...` (find images with titles of linked urls), `in_filename:...` (find by original filename), `in_reco:...` (find by recognized text), `fresh:15` (find images created latest 15 minutes).
-- You can edit tags after right click.
-- Export images via a right click on an image and copying to clipboard.
+- Find images by tag net. You can use pseudonamespaces like `in_url:...` (find images with linked urls), `in_title:...` (find images with titles of linked urls), `in_filename:...` (find by original filename), `in_reco:...` (find by recognized text), `fresh:15` (find images created latest 15 minutes), `limit:100` (get  a limited image set), `limit:no` (get images without a limit).
+- Find remote sources of an image by this application.
+- You can edit tags after a right click.
+- Export images by a right click on an image and copying to a clipboard.
 - Great! Now you have remembered the image you want... Perhaps.
 
 ---

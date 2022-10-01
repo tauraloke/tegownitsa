@@ -2,6 +2,7 @@ import tagNamespaces from '../../config/tag_namespaces.js';
 import hardConditionParsers from '../../services/file_condition_pair_parser.js';
 
 const ALWAYS_TRUE_CONTIDION = '(1=1)';
+const DEFAULT_PER_PAGE_LIMIT = 100;
 
 /**
  * @param {string} value
@@ -24,6 +25,8 @@ export async function run(_event, db, titles) {
     );
   }
 
+  let limit = DEFAULT_PER_PAGE_LIMIT;
+
   let namespacePrefixes = Object.keys(tagNamespaces);
   let hardConditions = [ALWAYS_TRUE_CONTIDION];
   let softConditions = titles
@@ -41,6 +44,10 @@ export async function run(_event, db, titles) {
           tagNamespaces[namespace.toUpperCase()]
         }`;
       }
+      if (namespace == 'limit') {
+        limit = title;
+        return null;
+      }
       if (!hardConditionParsers[namespace] || !title) {
         return null;
       }
@@ -54,6 +61,7 @@ export async function run(_event, db, titles) {
     .map((c) => `(${c})`);
 
   hardConditions = hardConditions.map((c) => `(${c})`);
+  let limitSubQuery = limit == 'no' ? '' : `LIMIT ${limit}`;
 
   const totalTagContidion =
     softConditions.length == 0
@@ -72,6 +80,7 @@ export async function run(_event, db, titles) {
     AND ${hardConditions.join(' AND ')}
     GROUP BY files.id
     ORDER BY tego_rating DESC
+    ${limitSubQuery}
     `;
 
   console.log(queryStr);
