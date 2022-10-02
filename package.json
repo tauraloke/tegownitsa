@@ -23,7 +23,7 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "release": "np",
-    "dev:clean": "rm -rf ./node_modules/electron/dist/storage/ && rm ./db.sqlite3",
+    "dev:clean": "rm -rf ./node_modules/electron/dist/storage/ && rm ./node_modules/electron/dist/db.sqlite3",
     "start": "npm run electron:serve",
     "test": "npm run lint && npm run jest"
   },

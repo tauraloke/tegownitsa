@@ -5,7 +5,6 @@ const tss = require('./tag_source_strategies.json');
 const { imageSimilarity } = require('../services/image_distance.js');
 
 module.exports = {
-  sql_filename_path: 'db.sqlite3',
   dark_theme: false,
   has_auto_updates: true,
   tesseract_psm: PSM.AUTO,

@@ -125,8 +125,12 @@ if (isDevelopment) {
 
 // Connect IPC handlers and load DB
 let db = null;
+const sql_filename_path = path.join(
+  path.dirname(app.getPath('exe')),
+  'db.sqlite3'
+);
 (async () => {
-  db = await getDb({ dbPath: config.get('sql_filename_path') });
+  db = await getDb({ dbPath: sql_filename_path });
   new ApiConnector().connectIpcMainHandlers(db);
 })();
 
