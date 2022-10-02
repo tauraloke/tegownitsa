@@ -163,7 +163,10 @@
       "iqdb": "IQDB",
       "saucenao": "Saucenao",
       "e621": "е621"
-    }
+    },
+    "recursive_directory_import": "При импорте из папки рекурсивно включать подпапки",
+    "search_tips": "Подсказки тегов",
+    "search_tips_hint": "Закладки тегов под строкой поиска"
   },
   "list": {
     "empty": "Нет тегов в списке"

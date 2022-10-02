@@ -24,5 +24,8 @@ module.exports = {
   lang: 'en',
   import_exif_tags_as_tags: true,
   tag_source_threshold_saucenao: 80,
-  e621_username: ''
+  e621_username: '',
+  recursive_directory_import: false,
+  search_tips:
+    'dragon,series:genshin_impact,fresh:5,system:without_tags,limit:no'
 };

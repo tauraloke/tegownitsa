@@ -163,7 +163,10 @@
       "iqdb": "IQDB",
       "saucenao": "Saucenao",
       "e621": "e621"
-    }
+    },
+    "recursive_directory_import": "Recursive directory import",
+    "search_tips": "Search tips",
+    "search_tips_hint": "Tag shortcuts under search string"
   },
   "list": {
     "empty": "No tags in list"

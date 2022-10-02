@@ -68,6 +68,18 @@
                 v-model="options.import_exif_tags_as_tags"
                 :label="$t('settings.import_exif_tags_as_tags')"
               />
+
+              <v-checkbox
+                v-model="options.recursive_directory_import"
+                :label="$t('settings.recursive_directory_import')"
+              />
+
+              <v-text-field
+                v-model="options.search_tips"
+                :label="$t('settings.search_tips')"
+                :hint="$t('settings.search_tips_hint')"
+                class="mb-8 mt-8"
+              />
             </v-card-text>
           </v-card>
         </v-window-item>

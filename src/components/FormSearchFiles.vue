@@ -52,13 +52,7 @@ export default {
       entries: [],
       isLoading: false,
       search: null,
-      tagExamples: [
-        'dragon',
-        'series:genshin_impact',
-        'fresh:5',
-        'system:without_tags',
-        'limit:no'
-      ]
+      tagExamples: []
     };
   },
   watch: {
@@ -109,6 +103,14 @@ export default {
     searchTags(tags) {
       this.$emit('by-tags', tags.map((t) => t?.title).join(','));
     }
+  },
+  mounted() {
+    window.configApi.getConfig('search_tips').then((tips) => {
+      if (!tips) {
+        return false;
+      }
+      this.tagExamples = tips.split(',').map((t) => t.trim());
+    });
   },
   methods: {
     reset(newValue) {
