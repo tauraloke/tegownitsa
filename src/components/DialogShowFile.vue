@@ -140,7 +140,7 @@
                 <h5>{{ $t('dialog_show_file.sources') }}</h5>
                 <ul>
                   <li v-for="row in urls" :key="row.url">
-                    <a :href="row.url" target="_blank">
+                    <a :href="row.url" target="_blank" :title="row.url">
                       &lt; {{ row.title || row.url }} &gt;
                     </a>
                   </li>

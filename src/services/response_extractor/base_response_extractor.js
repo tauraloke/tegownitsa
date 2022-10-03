@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-unused-vars
+import ParserResponse from '../parsers/parser_response.js';
+
 export default class BaseResponseExtractor {
   /**
    *
@@ -13,21 +16,21 @@ export default class BaseResponseExtractor {
    * @returns {boolean}
    */
   isValid() {
-    throw 'Realize abstract method!';
+    throw 'Realize abstract method isValid()!';
   }
   /**
    * @Abstract
    * @returns {object[]?}
    */
   getCandidates() {
-    throw 'Realize abstract method!';
+    throw 'Realize abstract method getCandidates()!';
   }
   /**
    * @Abstract
    * @returns {object?}
    */
   getBestCandidate() {
-    throw 'Realize abstract method!';
+    throw 'Realize abstract method getBestCandidate()!';
   }
   /**
    * @Abstract
@@ -35,6 +38,16 @@ export default class BaseResponseExtractor {
    * @returns {string?}
    */
   extractUrl() {
-    throw 'Realize abstract method!';
+    throw 'Realize abstract method extractUrl()!';
+  }
+  /**
+   * Null or item for extraction data from items instead source url.
+   * @Abstract
+   * @param {object} _candidate
+   * @param {string} _resource_name
+   * @returns {ParserResponse?}
+   */
+  extractParserResponse(_candidate, _resource_name) {
+    return null;
   }
 }

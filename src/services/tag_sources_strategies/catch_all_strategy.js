@@ -26,7 +26,8 @@ export default class CatchAllStrategy extends BaseStrategy {
           url,
           resource_name: resource.name,
           locale: resource.locale,
-          file
+          file,
+          noRemoteItem: apiResponse.extractParserResponse(item, resource.name)
         });
         queueList[resource.name].addTask(resourceTask);
       }

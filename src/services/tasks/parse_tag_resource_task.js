@@ -13,14 +13,16 @@ export default class ParseTagResourceTask extends BaseTask {
    * @param {string} options.locale
    * @param {string} options.url
    * @param {Job} options.job
+   * @param {ParserResponse?} options.noRemoteItem replace source request if not null
    */
   // eslint-disable-next-line no-unused-vars
-  constructor({ resource_name, file, locale, url, job }) {
+  constructor({ resource_name, file, locale, url, job, noRemoteItem }) {
     super();
     this.resource_name = resource_name;
     this.file = file;
     this.locale = locale;
     this.url = url;
+    this.noRemoteItem = noRemoteItem;
   }
   /**
    * @returns {Promise<{skip_timeout: boolean?;status: string}}
@@ -42,12 +44,7 @@ export default class ParseTagResourceTask extends BaseTask {
       console.log(
         `Start searching data on ${this.resource_name} for the file #${this.file['id']}`
       );
-      /** @type {ParserResponse} */
-      let data = await window.network.extractDataFromSource(
-        this.url,
-        this.resource_name,
-        { preview_path: this.file.preview_path, id: this.file.id }
-      );
+      let data = await this.extractData();
       console.log('extracted data', data);
       await this._processTags(data);
       await this._processAuthorUrls(data);
@@ -64,6 +61,20 @@ export default class ParseTagResourceTask extends BaseTask {
     } catch (e) {
       return { status: 'FAIL' };
     }
+  }
+  /**
+   * @returns {ParserResponse}
+   */
+  async extractData() {
+    if (this.noRemoteItem) {
+      return this.noRemoteItem;
+    }
+    let data = await window.network.extractDataFromSource(
+      this.url,
+      this.resource_name,
+      { preview_path: this.file.preview_path, id: this.file.id }
+    );
+    return data;
   }
   async _processSources(data, file_id) {
     if (data.sourceUrls) {
