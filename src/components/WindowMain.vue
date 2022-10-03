@@ -252,6 +252,7 @@ export default {
         this.task_queues.deviantart = new TaskQueue(bc, tc);
         this.task_queues.furaffinity = new TaskQueue(bc, tc);
         this.task_queues.artstation = new TaskQueue(bc, tc);
+        this.task_queues.furrynetwork = new TaskQueue(bc, tc);
         this.task_queues.e621 = new TaskQueue(1, 5);
         this.task_queues.saucenao = new TaskQueue(31, 40);
         this.task_queues.twitter = new TaskQueue(0, 0);

@@ -12,5 +12,6 @@ module.exports = [
   { mask: /furaffinity\.net/, locale: 'en', name: 'furaffinity' },
   { mask: /artstation\.com/, locale: 'en', name: 'artstation' },
   { mask: /e621\.net/, locale: 'en', name: 'e621' },
-  { mask: /twitter\.com/, locale: 'en', name: 'twitter' }
+  { mask: /twitter\.com/, locale: 'en', name: 'twitter' },
+  { mask: /furrynetwork\.com/, locale: 'en', name: 'furrynetwork' }
 ];
