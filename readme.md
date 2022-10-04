@@ -122,6 +122,7 @@ npm start
 ## How you can help
 
 - This bundle is very large. There is a big potential to compress package by cutting unusable libraries. BTW experiements with Webpack and Tesseract, Sharp, TensorflowJS are unseccuessful yet.
+- Suggest a translation to other languages. You can find localization files in the folder `<root>/src/locales/`.
 
 ## Next goals
 
