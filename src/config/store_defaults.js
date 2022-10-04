@@ -26,5 +26,8 @@ module.exports = {
   e621_username: '',
   recursive_directory_import: false,
   search_tips:
-    'dragon,series:genshin_impact,fresh:5,system:without_tags,limit:no'
+    'dragon,series:genshin_impact,fresh:5,system:without_tags,limit:no',
+  tag_source_saucenao_last_date: null,
+  tag_source_saucenao_limit: null,
+  tag_source_saucenao_remaining: null
 };

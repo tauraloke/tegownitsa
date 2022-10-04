@@ -24,6 +24,12 @@ export async function run(_event, db, file) {
       'INSERT INTO pollee_file_sources (file_id, source) VALUES (?, ?)',
       [file.id, sourceTypes.SAUCENAO]
     );
+    config.set(
+      'tag_source_saucenao_last_date',
+      new Date().toLocaleDateString()
+    );
+    config.set('tag_source_saucenao_limit', jsonData.header.long_limit);
+    config.set('tag_source_saucenao_remaining', jsonData.header.long_remaining);
     return jsonData;
   } catch (error) {
     console.log(

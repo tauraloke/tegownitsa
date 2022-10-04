@@ -205,6 +205,16 @@
                   />
 
                   <div class="mb-12">
+                    {{
+                      $t('settings.saucenao_limits', [
+                        (options.tag_source_saucenao_last_date ==
+                        new Date().toLocaleDateString()
+                          ? options.tag_source_saucenao_remaining
+                          : options.tag_source_saucenao_limit) || '?',
+                        options.tag_source_saucenao_limit || '?'
+                      ])
+                    }}
+                    <br />
                     {{ $t('settings.saucenao_limit_message') }}
                     <a
                       href="https://saucenao.com/user.php?page=search-usage"

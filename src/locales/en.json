@@ -166,7 +166,8 @@
     },
     "recursive_directory_import": "Recursive directory import",
     "search_tips": "Search tips",
-    "search_tips_hint": "Tag shortcuts under search string"
+    "search_tips_hint": "Tag shortcuts under search string",
+    "saucenao_limits": "You have {0}/{1} requests today."
   },
   "list": {
     "empty": "No tags in list"
