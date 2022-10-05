@@ -283,6 +283,7 @@ export default {
           ref: 'updates-dl',
           taskTotalCount: total
         });
+        job.start();
       }
       job.incrementProgress(transferred - job.solvedTaskCount);
     },
