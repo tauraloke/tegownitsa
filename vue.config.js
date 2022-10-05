@@ -36,6 +36,10 @@ module.exports = defineConfig({
         win: {
           icon: './build/icon.png'
         },
+        nsis: {
+          allowToChangeInstallationDirectory: true,
+          oneClick: false
+        },
         mac: {
           category: 'public.app-category.social-networking',
           darkModeSupport: true
