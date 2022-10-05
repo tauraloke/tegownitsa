@@ -222,7 +222,9 @@ export default {
         'startDownloadProgress',
         'setDownloadProgress',
         'startArchiveUnpacking',
-        'completeArchiveUnpacking'
+        'completeArchiveUnpacking',
+        'setUpdaterProgress',
+        'toast'
       ];
       console.log(`Menu method ${method} with args`, args);
       if (method in allowedMenuMethods) {
@@ -272,6 +274,18 @@ export default {
       });
       job.start();
     },
+    setUpdaterProgress({ transferred, total }) {
+      let job = this.jobs.find((j) => j.ref == 'updates-dl');
+      if (!job) {
+        job = new Job({
+          name: this.$t('jobs.download_updates'),
+          vueComponent: this,
+          ref: 'updates-dl',
+          taskTotalCount: total
+        });
+      }
+      job.incrementProgress(transferred - job.solvedTaskCount);
+    },
     setDownloadProgress({ url, transferredBytes }) {
       let job = this.jobs.find((j) => j.ref == `dl-${url}`);
       if (!job) {
@@ -279,11 +293,10 @@ export default {
       }
       job.incrementProgress(transferredBytes - job.solvedTaskCount);
     },
-    startArchiveUnpacking({ url, archiveTitle }) {
+    startArchiveUnpacking({ archiveTitle }) {
       let job = new Job({
         name: this.$t('jobs.unpacking-archive', [archiveTitle]),
         vueComponent: this,
-        ref: `dl-${url}`,
         taskTotalCount: 1
       });
       job.start();
@@ -496,6 +509,9 @@ export default {
       this.duplicatedFiles = dups;
     },
     toast(message) {
+      if (message.code) {
+        message = this.$t(message.code);
+      }
       this.statusMessage = message;
       this.isStatusMessageVisible = true;
     },

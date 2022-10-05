@@ -30,7 +30,8 @@
     "edit": "Edit",
     "view": "View",
     "help": "Help",
-    "load_tags_from_saucenao": "Load tags from Saucenao for current files"
+    "load_tags_from_saucenao": "Load tags from Saucenao for current files",
+    "check_updates": "Check updates"
   },
   "about": {
     "copyright": "Created by Tauraloke Esteru and Github contributors.",
@@ -77,7 +78,9 @@
     "no_new_files_in_folder": "No new file in a folder",
     "file_improved": "The file has been improved.",
     "file_not_improved": "Something wrong with downloading by that url",
-    "unknown_duplicate_error": "Unknown duplicate searching error"
+    "unknown_duplicate_error": "Unknown duplicate searching error",
+    "updates_unavailable": "Updates are unavailable",
+    "error_in_updater": "Error in updater"
   },
   "form_search_files": {
     "find_by_tags_print_and_choose": "Find by tags: print and choose"
@@ -188,7 +191,8 @@
     "import_folder": "Importing folder",
     "downloading-archive": "Downloading '{0}'",
     "unpacking-archive": "Unpacking archive '{0}'",
-    "searching_dublicates": "Searching duplicates"
+    "searching_dublicates": "Searching duplicates",
+    "download_updates": "Downloading updates"
   },
   "tags": {
     "namespaces": {

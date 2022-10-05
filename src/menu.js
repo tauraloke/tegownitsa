@@ -11,6 +11,7 @@ import {
   showAboutWindow
 } from 'electron-util';
 import config from './config/store.js';
+import { autoUpdater } from 'electron-updater';
 
 function getTemplate(i18n) {
   const showPreferences = (_menuItem, browserWindow, _event) => {
@@ -19,6 +20,13 @@ function getTemplate(i18n) {
   };
 
   const helpSubmenu = [
+    {
+      label: i18n.t('main_menu.check_updates'),
+      icon: path.join(__static, 'menu', 'check_updates.png'),
+      click() {
+        autoUpdater.checkForUpdates();
+      }
+    },
     openUrlMenuItem({
       label: i18n.t('main_menu.website'),
       icon: path.join(__static, 'menu', 'website.png'),

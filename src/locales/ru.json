@@ -30,7 +30,8 @@
     "edit": "Правка",
     "view": "Вид",
     "help": "Помощь",
-    "load_tags_from_saucenao": "Загрузить теги через Saucenao для выбранных файлов"
+    "load_tags_from_saucenao": "Загрузить теги через Saucenao для выбранных файлов",
+    "check_updates": "Проверить обновления"
   },
   "about": {
     "copyright": "Сделано Тауралоке Эстеру и контрибьютерами Гитхаба.",
@@ -77,7 +78,9 @@
     "no_new_files_in_folder": "Нет новых файлов в папке",
     "file_improved": "Загружена другая версия этого файла.",
     "file_not_improved": "Что-то не так с загрузкой по этому URL",
-    "unknown_duplicate_error": "Неизвестная ошибка поиска дубликатов"
+    "unknown_duplicate_error": "Неизвестная ошибка поиска дубликатов",
+    "updates_unavailable": "Не нашлось обновлений приложения",
+    "error_in_updater": "Ошибка загрузки обновлений приложения"
   },
   "form_search_files": {
     "find_by_tags_print_and_choose": "Поиск по тегам: печатайте и выбирайте"
@@ -188,7 +191,8 @@
     "import_folder": "Импорт папки",
     "downloading-archive": "Загрузка '{0}'",
     "unpacking-archive": "Распаковка архива '{0}'",
-    "searching_dublicates": "Поиск дубликатов"
+    "searching_dublicates": "Поиск дубликатов",
+    "download_updates": "Загрузка обновлений"
   },
   "tags": {
     "namespaces": {
