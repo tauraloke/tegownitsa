@@ -29,7 +29,8 @@ export default class CatchFirstStrategy extends BaseStrategy {
       resource_name: resource.name,
       locale: resource.locale,
       file,
-      noRemoteItem: apiResponse.extractParserResponse(bestMatch, resource.name)
+      noRemoteItem: apiResponse.extractParserResponse(bestMatch, resource.name),
+      metadata: apiResponse.extractMetadata(bestMatch, resource.name)
     });
     queueList[resource.name].addTask(resourceTask);
     return true;

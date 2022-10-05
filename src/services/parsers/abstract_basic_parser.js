@@ -7,12 +7,14 @@ import { applicationUserAgent } from '../utils.js';
 export default class AbstractBasicParser {
   /**
    * @param {string} url
+   * @param {object} metadata
    */
-  constructor(url) {
+  constructor(url, metadata = {}) {
     if (url.match('^//')) {
       url = `https:${url}`;
     }
     this.url = url;
+    this.metadata = metadata;
   }
   /**
    * @returns {Promise<ParserResponse>}

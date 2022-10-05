@@ -42,12 +42,19 @@ export default class BaseResponseExtractor {
   }
   /**
    * Null or item for extraction data from items instead source url.
-   * @Abstract
    * @param {object} _candidate
    * @param {string} _resource_name
    * @returns {ParserResponse?}
    */
   extractParserResponse(_candidate, _resource_name) {
+    return null;
+  }
+  /**
+   * @param {object} _candidate
+   * @param {string} _resource_name
+   * @returns {object?}
+   */
+  extractMetadata(_candidate, _resource_name) {
     return null;
   }
 }

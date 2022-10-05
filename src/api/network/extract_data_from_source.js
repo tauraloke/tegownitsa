@@ -2,11 +2,19 @@
 import AbstractBasicParser from '@/services/parsers/abstract_basic_parser.js';
 import sourceTypes from '../../config/source_type.json';
 
-export async function run(_event, db, url, snake_source_key, file) {
+export async function run(
+  _event,
+  db,
+  url,
+  snake_source_key,
+  file,
+  metadata = {}
+) {
   /** @type {AbstractBasicParser} */
   let source =
     new (require(`../../services/parsers/${snake_source_key}_parser.js`).default)(
-      url
+      url,
+      metadata
     );
   const result = await source.parse();
   await db.run(

@@ -162,12 +162,19 @@
       "common": "Общее",
       "iqdb": "IQDB",
       "saucenao": "Saucenao",
-      "e621": "е621"
+      "e621": "е621",
+      "deviantart": "Девиантарт"
     },
     "recursive_directory_import": "При импорте из папки рекурсивно включать подпапки",
     "search_tips": "Подсказки тегов",
     "search_tips_hint": "Закладки тегов под строкой поиска",
-    "saucenao_limits": "Сегодня у вас осталось {0}/{1} запросов."
+    "saucenao_limits": "Сегодня у вас осталось {0}/{1} запросов.",
+    "e621_account_message": "Вам нужно имя пользователя учетной записи для получения тегов от E621. Вы можете зарегистрировать аккаунт ",
+    "deviantart_account_message": "Вам необходимо зарегистрировать приложение, чтобы получать теги с Deviantart. Вы можете зарегистрироваться",
+    "deviantart_client_id": "client_id",
+    "deviantart_client_id_hint": "Идентификатор приложения",
+    "deviantart_client_token": "client_secret",
+    "deviantart_client_token_hint": "Секретное слово приложения"
   },
   "list": {
     "empty": "Нет тегов в списке"

@@ -29,5 +29,7 @@ module.exports = {
     'dragon,series:genshin_impact,fresh:5,system:without_tags,limit:no',
   tag_source_saucenao_last_date: null,
   tag_source_saucenao_limit: null,
-  tag_source_saucenao_remaining: null
+  tag_source_saucenao_remaining: null,
+  deviantart_client_id: null,
+  deviantart_client_token: null
 };

@@ -145,6 +145,9 @@
                 <v-tab value="e621">
                   {{ $t('settings.tagSourcesTab.e621') }}
                 </v-tab>
+                <v-tab value="deviantart">
+                  {{ $t('settings.tagSourcesTab.deviantart') }}
+                </v-tab>
               </v-tabs>
               <v-window v-model="tagSourcesTab" direction="vertical">
                 <v-window-item value="common">
@@ -226,11 +229,43 @@
                 </v-window-item>
 
                 <v-window-item value="e621">
+                  <div>
+                    {{ $t('settings.e621_account_message') }}
+                    <a href="https://e621.net/users/new" target="_blank">
+                      {{ $t('settings.here') }}
+                    </a>
+                  </div>
+
                   <v-text-field
                     v-model="options.e621_username"
                     :label="$t('settings.e621_username')"
                     :hint="$t('settings.e621_username_hint')"
                     class="mb-12 mt-12"
+                  />
+                </v-window-item>
+
+                <v-window-item value="deviantart">
+                  <div class="mb-12">
+                    {{ $t('settings.deviantart_account_message') }}
+                    <a
+                      href="https://www.deviantart.com/developers/apps"
+                      target="_blank"
+                    >
+                      {{ $t('settings.here') }}
+                    </a>
+                  </div>
+
+                  <v-text-field
+                    v-model="options.deviantart_client_id"
+                    :label="$t('settings.deviantart_client_id')"
+                    :hint="$t('settings.deviantart_client_id_hint')"
+                    class="mb-12"
+                  />
+                  <v-text-field
+                    v-model="options.deviantart_client_token"
+                    :label="$t('settings.deviantart_client_token')"
+                    :hint="$t('settings.deviantart_client_token_hint')"
+                    class="mb-12"
                   />
                 </v-window-item>
               </v-window>

@@ -14,15 +14,25 @@ export default class ParseTagResourceTask extends BaseTask {
    * @param {string} options.url
    * @param {Job} options.job
    * @param {ParserResponse?} options.noRemoteItem replace source request if not null
+   * @param {object} metadata
    */
-  // eslint-disable-next-line no-unused-vars
-  constructor({ resource_name, file, locale, url, job, noRemoteItem }) {
+  constructor({
+    resource_name,
+    file,
+    locale,
+    url,
+    // eslint-disable-next-line no-unused-vars
+    job,
+    noRemoteItem,
+    metadata
+  }) {
     super();
     this.resource_name = resource_name;
     this.file = file;
     this.locale = locale;
     this.url = url;
     this.noRemoteItem = noRemoteItem;
+    this.metadata = metadata;
   }
   /**
    * @returns {Promise<{skip_timeout: boolean?;status: string}}
@@ -59,6 +69,7 @@ export default class ParseTagResourceTask extends BaseTask {
       this.incrementJobProgress(1);
       return { status: 'OK' };
     } catch (e) {
+      console.log('Failed', e);
       return { status: 'FAIL' };
     }
   }
@@ -72,7 +83,8 @@ export default class ParseTagResourceTask extends BaseTask {
     let data = await window.network.extractDataFromSource(
       this.url,
       this.resource_name,
-      { preview_path: this.file.preview_path, id: this.file.id }
+      { preview_path: this.file.preview_path, id: this.file.id },
+      { author: this.metadata ? this.metadata.author : null }
     );
     return data;
   }

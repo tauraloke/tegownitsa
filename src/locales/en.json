@@ -162,12 +162,19 @@
       "common": "Common",
       "iqdb": "IQDB",
       "saucenao": "Saucenao",
-      "e621": "e621"
+      "e621": "e621",
+      "deviantart": "Deviantart"
     },
     "recursive_directory_import": "Recursive directory import",
     "search_tips": "Search tips",
     "search_tips_hint": "Tag shortcuts under search string",
-    "saucenao_limits": "You have {0}/{1} requests today."
+    "saucenao_limits": "You have {0}/{1} requests today.",
+    "e621_account_message": "You need an account username for grab tags from E621. You can register an account",
+    "deviantart_account_message": "You need to register an app to grab tags from Deviantart. You can register ",
+    "deviantart_client_id": "client_id",
+    "deviantart_client_id_hint": "Application ID",
+    "deviantart_client_token": "client_secret",
+    "deviantart_client_token_hint": "Application secret word"
   },
   "list": {
     "empty": "No tags in list"

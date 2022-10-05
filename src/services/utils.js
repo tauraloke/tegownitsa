@@ -23,3 +23,6 @@ export function applicationUserAgent() {
   const version = process.env.npm_package_version || '?';
   return `Tegownitsa: ${version} / Source: https://github.com/tauraloke/tegownitsa`;
 }
+export function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

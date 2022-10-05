@@ -51,4 +51,15 @@ export default class SaucenaoResponseExtractor extends BaseResponseExtractor {
     }
     return null;
   }
+  /**
+   * @param {object} candidate
+   * @param {string} resource_name
+   * @returns {object?}
+   */
+  extractMetadata(candidate, resource_name) {
+    if (resource_name == 'deviantart') {
+      return { author: candidate.data.author_name };
+    }
+    return null;
+  }
 }
