@@ -9,9 +9,6 @@ export default class UpdateService {
   }
   sendStatusToWindow(text) {
     console.log('Updater message: ', text);
-    if (this.mainWindow && this.mainWindow.webContents) {
-      this.mainWindow.webContents.send('message', text);
-    }
   }
   connect() {
     if (!store.get('has_auto_updates')) {
@@ -37,11 +34,27 @@ export default class UpdateService {
     });
     autoUpdater.on('update-not-available', (_info) => {
       this.sendStatusToWindow('Update not available.');
+      if (this.mainWindow && this.mainWindow.webContents) {
+        this.mainWindow.webContents.send('execute', 'toast', {
+          code: 'toast.updates_unavailable'
+        });
+      }
     });
     autoUpdater.on('error', (err) => {
       this.sendStatusToWindow('Error in auto-updater. ' + err);
+      if (this.mainWindow && this.mainWindow.webContents) {
+        this.mainWindow.webContents.send('execute', 'toast', {
+          code: 'toast.error_in_updater'
+        });
+      }
     });
     autoUpdater.on('download-progress', (progressObj) => {
+      if (this.mainWindow && this.mainWindow.webContents) {
+        this.mainWindow.webContents.send('execute', 'setUpdaterProgress', {
+          transferred: progressObj.transferred,
+          total: progressObj.total
+        });
+      }
       let log_message = 'Download speed: ' + progressObj.bytesPerSecond;
       log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
       log_message =
