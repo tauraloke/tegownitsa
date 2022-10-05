@@ -22,6 +22,11 @@
           <!-- tags -->
           <div id="tags">
             <h3>{{ $t('main_window.tags') }}</h3>
+            <v-progress-linear
+              v-if="tagsInProgess"
+              indeterminate
+              color="white darken-2"
+            />
             <list-tag-groups
               :tags="tags"
               @search-by-title="searchFilesByTag($event)"
@@ -34,6 +39,11 @@
         <v-col cols="12" sm="8">
           <!-- files -->
           <h3>{{ $t('main_window.files') }}</h3>
+          <v-progress-linear
+            v-if="filesInProgress"
+            indeterminate
+            color="white darken-2"
+          />
           <div class="justify-center">
             {{ $t('main_window.found_x_files', files?.length) }}
           </div>
@@ -190,7 +200,9 @@ export default {
       jobs: [],
       /** @type {Object<string, number>} */
       jobProgresses: {},
-      authorUrls: []
+      authorUrls: [],
+      tagsInProgess: false,
+      filesInProgress: false
     };
   },
   watch: {
@@ -199,8 +211,10 @@ export default {
         this.tags = [];
         return true;
       }
+      this.tagsInProgess = true;
       window.sqliteApi.getTagsForFiles(value.map((f) => f.id)).then((tags) => {
         this.tags = tags;
+        this.tagsInProgess = false;
       });
       return true;
     }
@@ -330,7 +344,7 @@ export default {
     async searchFilesByTagTitles(tags_titles) {
       this.hideFile();
       this.hideAuthorBlock();
-      this.duplicatedFiles = null;
+      this.filesInProgress = true;
       let files = await window.sqliteApi.findFilesByTags(tags_titles);
       for (let i = 0; i < files.length; i++) {
         if (i >= 1) {
@@ -340,6 +354,7 @@ export default {
           files[i]['next'] = files[i + 1];
         }
       }
+      this.filesInProgress = false;
       this.files = files;
     },
     async showFile(file) {
@@ -507,7 +522,6 @@ export default {
         }
       }
       this.$refs.dialog_dublicates.showComponent(dups);
-      this.duplicatedFiles = dups;
     },
     toast(message) {
       if (message.code) {
