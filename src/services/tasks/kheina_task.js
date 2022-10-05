@@ -3,7 +3,7 @@
 import BaseTask from './base_task.js';
 // eslint-disable-next-line no-unused-vars
 import BaseStrategy from '../tag_sources_strategies/base_strategy.js';
-import SaucenaoResponseExtractor from '../response_extractor/saucenao_response_extractor.js';
+import KheinaResponseExtractor from '../response_extractor/kheina_response_extractor.js';
 // eslint-disable-next-line no-unused-vars
 import Job from '../job.js';
 import sourceTypes from '../../config/source_type.json';
@@ -29,7 +29,7 @@ export default class IqdbTask extends BaseTask {
       if (
         await window.sqliteApi.isFileAlreadyPolled(
           this.file.id,
-          sourceTypes.SAUCENAO
+          sourceTypes.KHEINA
         )
       ) {
         console.log(
@@ -40,11 +40,11 @@ export default class IqdbTask extends BaseTask {
       }
 
       console.log(
-        `Looking #${this.file.id} ${this.file['preview_path']} at Saucenao`
+        `Looking #${this.file.id} ${this.file['preview_path']} at Kheina`
       );
 
-      let response = new SaucenaoResponseExtractor(
-        await window.network.lookupSaucenaoFile({
+      let response = new KheinaResponseExtractor(
+        await window.network.lookupKheinaFile({
           preview_path: this.file.preview_path,
           id: this.file.id
         }),

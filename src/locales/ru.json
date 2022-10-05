@@ -31,7 +31,8 @@
     "view": "Вид",
     "help": "Помощь",
     "load_tags_from_saucenao": "Загрузить теги через Saucenao для выбранных файлов",
-    "check_updates": "Проверить обновления"
+    "check_updates": "Проверить обновления",
+    "load_tags_from_kheina": "Загрузить теги с Kheina для текущих файлов..."
   },
   "about": {
     "copyright": "Сделано Тауралоке Эстеру и контрибьютерами Гитхаба.",
@@ -166,7 +167,9 @@
       "iqdb": "IQDB",
       "saucenao": "Saucenao",
       "e621": "е621",
-      "deviantart": "Девиантарт"
+      "deviantart": "Девиантарт",
+      "kheina": "Kheina",
+      "furaffinity": "Furaffinity"
     },
     "recursive_directory_import": "При импорте из папки рекурсивно включать подпапки",
     "search_tips": "Подсказки тегов",
@@ -177,7 +180,9 @@
     "deviantart_client_id": "client_id",
     "deviantart_client_id_hint": "Идентификатор приложения",
     "deviantart_client_token": "client_secret",
-    "deviantart_client_token_hint": "Секретное слово приложения"
+    "deviantart_client_token_hint": "Секретное слово приложения",
+    "kheina_similarity_threshold": "Порог подобия для Kheina",
+    "furaffinity_cookies": "Куки от Furaffinity"
   },
   "list": {
     "empty": "Нет тегов в списке"

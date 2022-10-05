@@ -31,7 +31,8 @@
     "view": "View",
     "help": "Help",
     "load_tags_from_saucenao": "Load tags from Saucenao for current files",
-    "check_updates": "Check updates"
+    "check_updates": "Check updates",
+    "load_tags_from_kheina": "Load tags from Kheina for current files..."
   },
   "about": {
     "copyright": "Created by Tauraloke Esteru and Github contributors.",
@@ -166,7 +167,9 @@
       "iqdb": "IQDB",
       "saucenao": "Saucenao",
       "e621": "e621",
-      "deviantart": "Deviantart"
+      "deviantart": "Deviantart",
+      "kheina": "Kheina",
+      "furaffinity": "Furaffinity"
     },
     "recursive_directory_import": "Recursive directory import",
     "search_tips": "Search tips",
@@ -177,7 +180,9 @@
     "deviantart_client_id": "client_id",
     "deviantart_client_id_hint": "Application ID",
     "deviantart_client_token": "client_secret",
-    "deviantart_client_token_hint": "Application secret word"
+    "deviantart_client_token_hint": "Application secret word",
+    "kheina_similarity_threshold": "Kheina similarity threshold",
+    "furaffinity_cookies": "Furaffinity cookies"
   },
   "list": {
     "empty": "No tags in list"

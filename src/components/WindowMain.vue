@@ -169,6 +169,7 @@ import Job from '@/services/job.js';
 import TaskQueue from '@/services/task_queue.js';
 import IqdbTask from '@/services/tasks/iqdb_task.js';
 import SaucenaoTask from '@/services/tasks/saucenao_task.js';
+import KheinaTask from '@/services/tasks/kheina_task.js';
 import constants from '@/config/constants.json';
 import getStrategy from '@/services/tag_sources_strategies/get_strategy.js';
 import tagNamespace from '@/config/tag_namespaces.js';
@@ -230,6 +231,7 @@ export default {
         'lookUpDups',
         'loadTagsFromIQDB',
         'loadTagsFromSaucenao',
+        'loadTagsFromKheina',
         'openPreferencesDialog',
         'setTheme',
         'openTagEditor',
@@ -272,6 +274,7 @@ export default {
         this.task_queues.e621 = new TaskQueue(1, 5);
         this.task_queues.saucenao = new TaskQueue(31, 40);
         this.task_queues.twitter = new TaskQueue(0, 0);
+        this.task_queues.kheina = new TaskQueue(bc, tc);
       });
     });
   },
@@ -584,6 +587,34 @@ export default {
           job
         });
         this.task_queues.saucenao.addTask(saucenaoTask);
+      }
+    },
+    async loadTagsFromKheina() {
+      let strategy = getStrategy({
+        key: await window.configApi.getConfig('tag_source_strategies')
+      });
+      let similarityThreshold = await window.configApi.getConfig(
+        'tag_source_threshold_kheina'
+      );
+      if (similarityThreshold === undefined) {
+        similarityThreshold = 80;
+      }
+      let job = new Job({
+        name: this.$t('jobs.retrieving_tags_from_sources'),
+        taskTotalCount: this.files.length,
+        queue: this.task_queues.iqdb,
+        vueComponent: this
+      });
+      job.start();
+      for (let i = 0; i < this.files.length; i++) {
+        let task = new KheinaTask({
+          file: this.files[i],
+          similarityThreshold,
+          strategy,
+          task_queues: this.task_queues,
+          job
+        });
+        this.task_queues.kheina.addTask(task);
       }
     },
     openPreferencesDialog() {

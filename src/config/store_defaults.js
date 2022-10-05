@@ -23,6 +23,7 @@ module.exports = {
   lang: 'en',
   import_exif_tags_as_tags: true,
   tag_source_threshold_saucenao: 80,
+  tag_source_threshold_kheina: 80,
   e621_username: '',
   recursive_directory_import: false,
   search_tips:
@@ -31,5 +32,6 @@ module.exports = {
   tag_source_saucenao_limit: null,
   tag_source_saucenao_remaining: null,
   deviantart_client_id: null,
-  deviantart_client_token: null
+  deviantart_client_token: null,
+  furaffinity_cookies: null
 };

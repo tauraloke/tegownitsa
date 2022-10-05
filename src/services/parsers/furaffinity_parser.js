@@ -1,6 +1,7 @@
 import AbstractBasicParser from './abstract_basic_parser.js';
 // eslint-disable-next-line no-unused-vars
 import { ResponseImage } from './parser_response.js';
+import config from '../../config/store.js';
 
 export default class FuraffinityParser extends AbstractBasicParser {
   getTagGroups() {
@@ -76,5 +77,8 @@ export default class FuraffinityParser extends AbstractBasicParser {
     } catch {
       return null;
     }
+  }
+  getCookie() {
+    return config.get('furaffinity_cookies');
   }
 }

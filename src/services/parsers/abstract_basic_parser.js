@@ -70,13 +70,19 @@ export default class AbstractBasicParser {
       this._buffer ||
       (await (
         await fetchUrl(this.getFetchUrl(), {
-          headers: { 'User-Agent': this.getUserAgent() }
+          headers: {
+            'User-Agent': this.getUserAgent(),
+            cookie: this.getCookie()
+          }
         })
       ).text());
     return this._buffer;
   }
   getUserAgent() {
     return applicationUserAgent();
+  }
+  getCookie() {
+    return null;
   }
   /**
    * @abstract

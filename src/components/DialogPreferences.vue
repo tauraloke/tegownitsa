@@ -142,8 +142,14 @@
                 <v-tab value="Saucenao">
                   {{ $t('settings.tagSourcesTab.saucenao') }}
                 </v-tab>
+                <v-tab value="Kheina">
+                  {{ $t('settings.tagSourcesTab.kheina') }}
+                </v-tab>
                 <v-tab value="e621">
                   {{ $t('settings.tagSourcesTab.e621') }}
+                </v-tab>
+                <v-tab value="furaffinity">
+                  {{ $t('settings.tagSourcesTab.furaffinity') }}
                 </v-tab>
                 <v-tab value="deviantart">
                   {{ $t('settings.tagSourcesTab.deviantart') }}
@@ -226,6 +232,27 @@
                       {{ $t('settings.here') }}
                     </a>
                   </div>
+                </v-window-item>
+
+                <v-window-item value="Kheina">
+                  <v-slider
+                    v-model="options.tag_source_threshold_kheina"
+                    thumb-label="always"
+                    :min="0"
+                    :max="1"
+                    class="mt-12"
+                  ></v-slider>
+                  <div class="text-caption mb-12">
+                    {{ $t('settings.kheina_similarity_threshold') }}
+                  </div>
+                </v-window-item>
+
+                <v-window-item value="furaffinity">
+                  <v-text-field
+                    v-model="options.furaffinity_cookies"
+                    :label="$t('settings.furaffinity_cookies')"
+                    class="mb-12 mt-12"
+                  />
                 </v-window-item>
 
                 <v-window-item value="e621">

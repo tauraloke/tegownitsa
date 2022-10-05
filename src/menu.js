@@ -245,6 +245,14 @@ ${debugInfo()}`;
           click(_menuItem, browserWindow, _event) {
             browserWindow.webContents.send('execute', 'loadTagsFromSaucenao');
           }
+        },
+        {
+          label: i18n.t('main_menu.load_tags_from_kheina'),
+          accelerator: 'CmdOrCtrl+N',
+          icon: path.join(__static, 'menu', 'kheina.png'),
+          click(_menuItem, browserWindow, _event) {
+            browserWindow.webContents.send('execute', 'loadTagsFromKheina');
+          }
         }
       ]
     },
