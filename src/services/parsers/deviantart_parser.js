@@ -50,6 +50,7 @@ export default class DeviantartParser extends AbstractBasicParser {
       let item = all.results.find((i) => i.url.match('-' + item_id));
       if (item) {
         deviation_id = item.deviationid;
+        break;
       }
       offset = offset + limit;
       await sleep(2000);
