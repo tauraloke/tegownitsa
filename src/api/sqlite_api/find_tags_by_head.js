@@ -1,3 +1,4 @@
+import { prepareTag } from '@/services/utils.js';
 import tagNamespaces from '../../config/tag_namespaces.js';
 const namespaces = Object.keys(tagNamespaces).map((n) => n.toLowerCase());
 
@@ -12,6 +13,7 @@ export async function run(_event, db, head, namespace = null) {
   if (!head) {
     return [];
   }
+  head = prepareTag(head);
   let namespaceCondition = '1=1';
   if (namespaces.includes(namespace)) {
     let namespace_id = tagNamespaces[namespace.toUpperCase()];

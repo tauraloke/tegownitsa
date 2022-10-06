@@ -1,3 +1,4 @@
+import { prepareTag } from '@/services/utils.js';
 import tagNamespaces from '../../config/tag_namespaces.js';
 
 /**
@@ -16,6 +17,7 @@ export async function run(_event, db, tag, url) {
   if (!url || !tag || !tag.title) {
     return false;
   }
+  tag.title = prepareTag(tag.title);
   tag.locale = tag.locale || 'en';
   console.log('Add author url', tag.title, url);
   let checkDup = await db.query('SELECT id FROM author_urls WHERE url=?', [

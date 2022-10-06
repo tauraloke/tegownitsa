@@ -1,8 +1,9 @@
+import { prepareTag } from '@/services/utils.js';
 import tagNamespaces from '../../config/tag_namespaces.js';
 
 export async function run(_event, db, file_id, title, locale, source_type) {
   console.log('Add tag', title, locale, source_type);
-  title = title.trim().replace(',', '').replace(/\s/, '_');
+  title = prepareTag(title);
   if (!title || !locale || !file_id) {
     return false;
   }

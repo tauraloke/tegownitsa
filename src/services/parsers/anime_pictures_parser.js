@@ -11,6 +11,9 @@ export default class AnimePicturesParser extends AbstractBasicParser {
       character: 'character:'
     };
   }
+  getFetchUrl() {
+    return this.url.replace(/lang=([a-z]+)/, 'lang=en');
+  }
   async tagGroupsExtractor(groupName, prefix) {
     let _tags = [];
     let $ = await this.getHtmlParser();

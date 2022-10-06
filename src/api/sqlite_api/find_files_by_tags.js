@@ -1,3 +1,4 @@
+import { prepareTag } from '@/services/utils.js';
 import tagNamespaces from '../../config/tag_namespaces.js';
 import hardConditionParsers from '../../services/file_condition_pair_parser.js';
 
@@ -37,9 +38,11 @@ export async function run(_event, db, titles) {
         pair.length > 1 ? [pair[0], pair[1]] : [null, pair[0]];
       title = sqliteSanitize(title);
       if (namespace === null) {
+        title = prepareTag(title);
         return `tag_locales.title='${title}'`;
       }
       if (namespacePrefixes.includes(namespace.toUpperCase())) {
+        title = prepareTag(title);
         return `tag_locales.title='${title}' AND tags.namespace_id=${
           tagNamespaces[namespace.toUpperCase()]
         }`;

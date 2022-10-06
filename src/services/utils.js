@@ -26,3 +26,6 @@ export function applicationUserAgent() {
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+export function prepareTag(title) {
+  return title.trim().replace(',', '').replace(/\s/, '_');
+}
