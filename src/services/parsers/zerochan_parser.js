@@ -48,7 +48,15 @@ export default class ZerochanParser extends AbstractBasicParser {
    * @returns {Promize<string[]?>}
    */
   async extractSourceUrls() {
-    return null;
+    try {
+      let $ = await this.getHtmlParser();
+      let source = $('#menu')
+        .text()
+        .match(/Source(.*)Share\n/)[1];
+      return source ? [source] : null;
+    } catch {
+      return null;
+    }
   }
   getTagGroups() {
     return {
