@@ -173,6 +173,7 @@ import KheinaTask from '@/services/tasks/kheina_task.js';
 import constants from '@/config/constants.json';
 import getStrategy from '@/services/tag_sources_strategies/get_strategy.js';
 import tagNamespace from '@/config/tag_namespaces.js';
+import sourceTypes from '@/config/source_type.json';
 
 export default {
   name: 'WindowMain',
@@ -428,8 +429,12 @@ export default {
         this.toast(this.$t('toast.form_cancelled'));
         return false;
       }
-      const tmpFilePath = await window.fileApi.saveTempFileFromUrl(
+      let analyzeResponse = await window.network.analyzeUrlForDl(
         this.urlForImport
+      );
+      console.log('analyzeResponse', analyzeResponse);
+      const tmpFilePath = await window.fileApi.saveTempFileFromUrl(
+        analyzeResponse.image_url
       );
       if (!tmpFilePath) {
         this.toast(
@@ -445,7 +450,23 @@ export default {
         );
         return false;
       }
-      await window.sqliteApi.addUrlToFile({ url: this.urlForImport }, file_id);
+      await window.sqliteApi.addUrlToFile(
+        {
+          url: analyzeResponse.source_url,
+          title: analyzeResponse?.metadata?.title
+        },
+        file_id
+      );
+      if (analyzeResponse?.metadata?.tags?.length > 0) {
+        for (let i in analyzeResponse.metadata.tags) {
+          await window.sqliteApi.addTag(
+            file_id,
+            analyzeResponse?.metadata?.tags[i],
+            analyzeResponse?.resource?.locale,
+            sourceTypes[analyzeResponse?.resource?.name?.toUpperCase()]
+          );
+        }
+      }
       this.toast(this.$t('toast.file_has_imported', [this.urlForImport]));
       this.searchFilesByTagTitle('fresh:5');
     },

@@ -7,12 +7,13 @@ export default class DanbooruParser extends BasicJsonMoebooruParser {
     if (this.itemId) {
       return this.itemId;
     }
-    let parseUrl = this.url.match(/post\/show\/([0-9]+)$/);
+    let trimmed = this.url.split('?')[0];
+    let parseUrl = trimmed.match(/post\/show\/([0-9]+)$/);
     if (parseUrl && parseUrl[1]) {
       this.itemId = parseUrl[1];
       return this.itemId;
     }
-    parseUrl = this.url.match(/posts\/([0-9]+)$/);
+    parseUrl = trimmed.match(/posts\/([0-9]+)$/);
     if (parseUrl && parseUrl[1]) {
       this.itemId = parseUrl[1];
       return this.itemId;
