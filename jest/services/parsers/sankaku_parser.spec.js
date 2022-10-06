@@ -14,7 +14,11 @@ describe('Sankaku parser', () => {
   });
 
   test('extract full url', async () => {
-    expect(await parser.extractFullSizeImage()).toEqual(null); // expirable links are not useful links here
+    expect(await parser.extractFullSizeImage()).toEqual({
+      height: 450,
+      url: 'https://s.sankakucomplex.com/data/3d/04/3d04f8a1a518fa9d7a40c4989303956b.jpg?e=1663148261&m=CRhDkP9KL_q734Zbr7WGbQ',
+      width: 800
+    }); // expirable links are not useful links here
   });
 
   test('extract source', async () => {

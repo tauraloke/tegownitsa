@@ -7,7 +7,8 @@ export default class SankakuParser extends BasicJsonMoebooruParser {
    * @returns {Promise<ResponseImage?>}
    */
   async extractFullSizeImage() {
-    return null;
+    let json = await this.getJson();
+    return { url: json.file_url, width: json.width, height: json.height };
   }
   /**
    * @returns {Promize<string[]?>}
