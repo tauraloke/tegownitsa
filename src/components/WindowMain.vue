@@ -450,13 +450,15 @@ export default {
         );
         return false;
       }
-      new ParseTagResourceTask({
-        resource_name: analyzeResponse?.resource?.name,
-        file: { id: file_id },
-        locale: analyzeResponse?.resource?.locale,
-        url: analyzeResponse.source_url,
-        noRemoteItem: analyzeResponse.metadata
-      }).run();
+      if (analyzeResponse.metadata) {
+        new ParseTagResourceTask({
+          resource_name: analyzeResponse?.resource?.name,
+          file: { id: file_id },
+          locale: analyzeResponse?.resource?.locale,
+          url: analyzeResponse.source_url,
+          noRemoteItem: analyzeResponse.metadata
+        }).run();
+      }
       this.toast(this.$t('toast.file_has_imported', [this.urlForImport]));
       this.searchFilesByTagTitle('fresh:5');
     },

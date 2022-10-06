@@ -15,11 +15,9 @@ export async function run(_event, _db, source_url) {
   let response = { image_url: source_url, source_url: source_url };
   try {
     let domain = url.parse(source_url).host;
-    let resource = tagResources.find((r) => domain.match(r.mask));
-    if (!resource) {
-      let regeneratorRow = resourceRegenerators.find((r) =>
-        domain.match(r.mask)
-      );
+    let tagResourceRow = null;
+    let regeneratorRow = resourceRegenerators.find((r) => domain.match(r.mask));
+    if (regeneratorRow) {
       /** @type {AbstractRegenerator} */
       let regenerator =
         new (require(`../../services/regenerators/${regeneratorRow.name}_regenerator.js`).default)(
@@ -27,19 +25,23 @@ export async function run(_event, _db, source_url) {
         );
       source_url = await regenerator.regenerateUrl();
       response.source_url = source_url;
-      resource = tagResources.find((r) => r.name == regeneratorRow.name);
+      tagResourceRow = tagResources.find((r) => r.name == regeneratorRow.name);
     }
-    if (!resource) {
+
+    if (!tagResourceRow) {
+      tagResourceRow = tagResources.find((r) => domain.match(r.mask));
+    }
+    if (!tagResourceRow) {
       return response;
     }
 
     /** @type {AbstractBasicParser} */
     let source =
-      new (require(`../../services/parsers/${resource.name}_parser.js`).default)(
+      new (require(`../../services/parsers/${tagResourceRow.name}_parser.js`).default)(
         source_url
       );
     response.metadata = await source.parse();
-    response.resource = resource;
+    response.resource = tagResourceRow;
     if (
       response.metadata.fullSizeImage &&
       response.metadata.fullSizeImage.url
