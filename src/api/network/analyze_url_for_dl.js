@@ -23,9 +23,15 @@ export async function run(_event, _db, source_url) {
         new (require(`../../services/regenerators/${regeneratorRow.name}_regenerator.js`).default)(
           source_url
         );
-      source_url = await regenerator.regenerateUrl();
-      response.source_url = source_url;
-      tagResourceRow = tagResources.find((r) => r.name == regeneratorRow.name);
+      try {
+        source_url = await regenerator.regenerateUrl();
+        response.source_url = source_url;
+        tagResourceRow = tagResources.find(
+          (r) => r.name == regeneratorRow.name
+        );
+      } catch (error) {
+        console.log('cannot extract url', source_url, error);
+      }
     }
 
     if (!tagResourceRow) {
