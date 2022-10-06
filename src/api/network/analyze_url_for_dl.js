@@ -22,10 +22,11 @@ export async function run(_event, _db, source_url) {
       );
       /** @type {AbstractRegenerator} */
       let regenerator =
-        new (require(`../../services/regenerators/${resource.name}_regenerator.js`).default)(
+        new (require(`../../services/regenerators/${regeneratorRow.name}_regenerator.js`).default)(
           source_url
         );
-      let source_url = await regenerator.regenerateUrl();
+      source_url = await regenerator.regenerateUrl();
+      response.source_url = source_url;
       resource = tagResources.find((r) => r.name == regeneratorRow.name);
     }
     if (!resource) {

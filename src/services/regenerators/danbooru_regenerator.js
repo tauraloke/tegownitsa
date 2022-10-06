@@ -7,7 +7,7 @@ export default class DanbooruRegenerator extends AbstractRegenerator {
    * @returns {string}
    */
   getMD5() {
-    let md5 = this.url.toLowerCase().match('[0-9a-f]{32}.')[1];
+    let md5 = this.url.toLowerCase().match('([0-9a-f]{32}).')[1];
     if (!md5) {
       throw { message: 'cannot parse url', url: this.url };
     }
@@ -18,7 +18,7 @@ export default class DanbooruRegenerator extends AbstractRegenerator {
    */
   async regenerateUrl() {
     let response = JSON.parse(
-      (
+      await (
         await fetch(
           `https://danbooru.donmai.us/posts.json?tags=md5%3A${this.getMD5()}`,
           {
