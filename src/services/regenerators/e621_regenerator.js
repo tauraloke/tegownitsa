@@ -33,8 +33,7 @@ export default class E621Regenerator extends AbstractRegenerator {
         })
       ).text()
     );
-    console.log(response); // TODO:remove
     await sleep(1000);
-    return `https://e621.net/posts/${response[0].id}`;
+    return `https://e621.net/posts/${response.posts[0].id}`;
   }
 }
