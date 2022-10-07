@@ -12,8 +12,9 @@ import {
   CAPTION_YET_NOT_SCANNED
 } from '../config/constants.json';
 import { EXIF } from '../config/source_type.json';
-import { randomDigit } from './utils.js';
+import { applicationUserAgent, randomDigit } from './utils.js';
 import { run as addTag } from '../api/sqlite_api/add_tag.js';
+import urlParser from 'url';
 
 const PREVIEW_WIDTH = 140;
 
@@ -172,7 +173,19 @@ class FileImporter {
     return { full_path: newFilePathInStorage, file_id: file_id };
   }
   async importFileFromUrl(url) {
-    let buffer = Buffer.from(await (await fetch(url)).buffer());
+    let parsed = urlParser.parse(url);
+    console.log(parsed.protocol + '//' + parsed.hostname);
+    let buffer = Buffer.from(
+      await (
+        await fetch(url, {
+          headers: {
+            'User-Agent': applicationUserAgent(),
+            Referer: parsed.protocol + '//' + parsed.hostname
+          },
+          method: 'GET'
+        })
+      ).buffer()
+    );
     const storageRootDir = this.getStorageDirectoryPath();
     const storageDirPathForFile = join(storageRootDir, 'tmp');
     mkdirSync(storageDirPathForFile, {

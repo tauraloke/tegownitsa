@@ -20,7 +20,6 @@ export default class AbstractBasicParser {
    * @returns {Promise<ParserResponse>}
    */
   async parse() {
-    console.log('sources', await this.extractSourceUrls()); //TODO: remove
     return new ParserResponse({
       requestedUrl: this.url,
       tags: await this.extractTags(),

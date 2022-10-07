@@ -125,11 +125,9 @@ export default class ParseTagResourceTask extends BaseTask {
    */
   async _processAuthorUrls(data) {
     let authorTags = data.tags.filter((t) => t.match(/^creator:/));
-    console.log('authorTags', authorTags); // TODO: remove
     if (data?.authorUrls?.length > 0 && authorTags.length == 1) {
       for (let i in data.authorUrls) {
         let authorUrl = data.authorUrls[i];
-        console.log('authorUrl', authorUrl); // TODO: remove
         await window.sqliteApi.addAuthorUrl(
           { title: authorTags[0].split(':')[1], locale: this.locale },
           authorUrl
