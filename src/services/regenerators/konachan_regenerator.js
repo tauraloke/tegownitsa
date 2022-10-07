@@ -28,6 +28,6 @@ export default class KonachanRegenerator extends AbstractRegenerator {
         )
       ).text()
     );
-    return `https://konachan.com/post/show/348226/${response[0].id}`;
+    return `https://konachan.com/post/show/${response[0].id}`;
   }
 }
