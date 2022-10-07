@@ -27,5 +27,5 @@ export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 export function prepareTag(title) {
-  return title.trim().replace(',', '').replace(/\s/, '_');
+  return title.trim().replace(/,/g, '').replace(/\s/g, '_');
 }
