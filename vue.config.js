@@ -24,10 +24,7 @@ module.exports = defineConfig({
       preload: 'src/preload.js',
       builderOptions: {
         appId: 'com.electron.Tegownitsa',
-        asarUnpack: [
-          '**/node_modules/sharp/**',
-          '**/node_modules/@tensorflow/**'
-        ],
+        asarUnpack: ['**/node_modules/sharp/**'],
         extraFiles: [
           ...['./libs/autotagger/.gitkeep'],
           ...(process.platform == 'win32' ? ['./libs/sqlite/fuzzy.dll'] : []),
