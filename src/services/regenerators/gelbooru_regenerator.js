@@ -43,10 +43,11 @@ export default class KonachanRegenerator extends AbstractRegenerator {
    */
   async regenerateUrl() {
     let $ = await this.getHtmlParser();
-    console.log($('#container > main > div.thumbnail-container > article')); // TODO: remove
-    let id = $($('#container > main > div.thumbnail-container > article')[0])
+    let id = $(
+      $('#container > main > div.thumbnail-container > article > a')[0]
+    )
       .attr('id')
       .match(/p([0-9]+)/)[1];
-    return `https://konachan.com/post/show/${id}`;
+    return `https://gelbooru.com/index.php?page=post&s=view&id=${id}`;
   }
 }
