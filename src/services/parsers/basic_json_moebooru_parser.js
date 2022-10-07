@@ -7,7 +7,7 @@ export default class BasicJsonMoebooruParser extends AbstractBasicParser {
     if (this.itemId) {
       return this.itemId;
     }
-    let parseUrl = this.url.match(/post\/show\/([0-9]+)$/);
+    let parseUrl = this.url.match(/post\/show\/([0-9]+)/);
     if (parseUrl && parseUrl[1]) {
       this.itemId = parseUrl[1];
       return this.itemId;

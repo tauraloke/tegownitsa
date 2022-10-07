@@ -7,7 +7,7 @@ export default class YandereRegenerator extends AbstractRegenerator {
    * @returns {string}
    */
   getMD5() {
-    let md5 = this.url.toLowerCase().match(/\/([0-9a-f]{32})\//)[1];
+    let md5 = this.url.toLowerCase().match(/\/([0-9a-f]{32})/)[1];
     if (!md5) {
       throw { message: 'cannot parse url', url: this.url };
     }
