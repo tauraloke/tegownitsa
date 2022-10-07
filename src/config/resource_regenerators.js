@@ -11,5 +11,6 @@ module.exports = [
     name: 'furrynetwork'
   },
   { mask: /furaffinity\.net\//, name: 'furaffinity' },
-  { mask: /e-shuushuu\.net\//, name: 'eshuushuu' }
+  { mask: /e-shuushuu\.net\//, name: 'eshuushuu' },
+  { mask: /e621\.net\//, name: 'e621' }
 ];
