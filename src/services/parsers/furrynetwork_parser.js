@@ -7,7 +7,12 @@ export default class FurrynetworkParser extends AbstractBasicParser {
     if (this.itemId) {
       return this.itemId;
     }
-    let parseUrl = this.url.match(/artwork\/([0-9A-Za-z]+)/);
+    let parseUrl = this.url.match(/artwork\/([0-9]+)/);
+    if (parseUrl && parseUrl[1]) {
+      this.itemId = parseUrl[1];
+      return this.itemId;
+    }
+    parseUrl = this.url.match(/viewId=([0-9]+)/);
     if (parseUrl && parseUrl[1]) {
       this.itemId = parseUrl[1];
       return this.itemId;
