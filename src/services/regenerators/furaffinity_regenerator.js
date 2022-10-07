@@ -60,7 +60,6 @@ export default class FuraffinityRegenerator extends AbstractRegenerator {
           let srcIconMatch = src.match(
             `furaffinity\\.net\\/([0-9]+)@[0-9]+-${image_id}\\.`
           );
-          console.log(src, srcIconMatch); //TODO: remove
           item_id = srcIconMatch[1];
         } catch (error) {
           1;
@@ -77,7 +76,7 @@ export default class FuraffinityRegenerator extends AbstractRegenerator {
         $(
           '#columnpage > div > section > div > div > div:nth-child(4) > div:nth-child(3) > form > button'
         ).length > 0;
-      //await sleep(1000);
+      await sleep(500);
     } while (has_next);
     if (!item_id) {
       throw {
