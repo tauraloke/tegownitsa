@@ -34,10 +34,6 @@ export default class FurrynetworkRegenerator extends AbstractRegenerator {
     let offset = 0;
     let limit = 72;
     do {
-      console.log(
-        'fetch',
-        `https://furrynetwork.com/api/search?size=${limit}&from=${offset}&character=${this.getAuthor()}&types%5B%5D=artwork&sort=published`
-      ); // TODO: remove
       response = JSON.parse(
         await (
           await fetch(
