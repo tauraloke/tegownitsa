@@ -459,7 +459,7 @@ export default {
           noRemoteItem: analyzeResponse.metadata
         }).run();
       }
-      this.toast(this.$t('toast.file_has_imported', [this.urlForImport]));
+      console.log(this.$t('toast.file_has_imported', [this.urlForImport]));
       this.searchFilesByTagTitle('fresh:5');
     },
     async showAllTags() {

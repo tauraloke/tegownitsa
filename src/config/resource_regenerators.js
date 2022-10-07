@@ -10,5 +10,6 @@ module.exports = [
     mask: /cloudfront\.net\/[a-z0-9]{2}\/[a-z0-9]+\/submission\/[0-9]{4}\/[0-9]{2}\//,
     name: 'furrynetwork'
   },
-  { mask: /furaffinity\.net\//, name: 'furaffinity' }
+  { mask: /furaffinity\.net\//, name: 'furaffinity' },
+  { mask: /e-shuushuu\.net\//, name: 'eshuushuu' }
 ];
