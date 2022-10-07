@@ -27,7 +27,7 @@ export default class E621Parser extends BasicJsonMoebooruParser {
   getUserAgent() {
     const username = config.get('e621_username');
     if (!username) {
-      throw 'We do not recomment to request this source without a username in user-agent, see https://e621.net/help/api';
+      throw 'We do not recommend to request this source without a username in user-agent, see https://e621.net/help/api';
     }
     return `${applicationUserAgent()} / e621 username: ${username}`;
   }
