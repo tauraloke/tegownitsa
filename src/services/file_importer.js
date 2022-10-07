@@ -174,7 +174,6 @@ class FileImporter {
   }
   async importFileFromUrl(url) {
     let parsed = urlParser.parse(url);
-    console.log(parsed.protocol + '//' + parsed.hostname);
     let buffer = Buffer.from(
       await (
         await fetch(url, {

@@ -25,7 +25,7 @@ export default class AbstractBasicParser {
       tags: await this.extractTags(),
       fullSizeImage: await this.extractFullSizeImage(),
       title: await this.extractTitle(),
-      sourceURLs: await this.extractSourceUrls(),
+      sourceUrls: await this.extractSourceUrls(),
       authorUrls: await this.extractAuthorUrls()
     });
   }
