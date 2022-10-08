@@ -92,7 +92,7 @@
   "dialog_tag_editor": {
     "remove_locale": "Remove locale",
     "edit_tag_x": "Edit tag #{0}",
-    "tag_linked_to_x_files": "Tag is linked to {0} files.",
+    "tag_linked_to_x_files": "There is no linked files for tags.|Tag is linked to {n} file.|Tag is linked to {n} files.",
     "add_new_row": "Add a new row"
   },
   "dialog_tag-editor": {

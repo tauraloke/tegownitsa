@@ -15,7 +15,7 @@
       </v-toolbar>
       <v-card-text>
         <v-row class="justify-center">
-          {{ $t('dialog_tag_editor.tag_linked_to_x_files', [tag.file_count]) }}
+          {{ $t('dialog_tag_editor.tag_linked_to_x_files', tag.file_count) }}
         </v-row>
         <v-row
           v-for="(locale, index) in tagLocales"
