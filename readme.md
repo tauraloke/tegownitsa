@@ -135,7 +135,6 @@ npm start
 - [x] Try to add tag prediction like [Autotagger](https://github.com/danbooru/autotagger).
 - [x] Refine search interface for tags and other texts of images.
 - [x] Mark requested tag sources of a file as visited to prevent double requesting.
-- [ ] Add tag extraction when a file imported by URL.
-- [ ] Add a new strategy for tag extraction: catch tags directly from IQDB/Saucenao instead booru APIs.
+- [x] Add tag extraction when a file imported by URL.
 - [ ] Add an architecture of plugins for Tesseract and Autotagging options. Current bundle is really too big.
 
