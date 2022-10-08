@@ -70,6 +70,6 @@ export default class TaskQueue {
     }
   }
   cancelTaskByJob(jobId) {
-    this.tasks = this.tasks.filter((task) => task.job?.id != jobId);
+    this.tasks = this.tasks.filter((task) => task.job?.uid != jobId);
   }
 }

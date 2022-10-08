@@ -135,7 +135,7 @@ class FileImporter {
       storageDirPathForFile,
       PREVIEW_PREFIX + filename
     );
-    image.resize(PREVIEW_WIDTH).toFile(newPreviewPathInStorage);
+    await image.resize(PREVIEW_WIDTH).toFile(newPreviewPathInStorage);
 
     return {
       metadata: metadata,
