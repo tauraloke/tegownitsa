@@ -312,16 +312,17 @@ export default {
       }
       job.incrementProgress(transferredBytes - job.solvedTaskCount);
     },
-    startArchiveUnpacking({ archiveTitle }) {
+    startArchiveUnpacking({ archiveTitle, url }) {
       let job = new Job({
         name: this.$t('jobs.unpacking-archive', [archiveTitle]),
         vueComponent: this,
+        ref: `unpack-${url}`,
         taskTotalCount: 1
       });
       job.start();
     },
     completeArchiveUnpacking({ url }) {
-      let job = this.jobs.find((j) => j.ref == `dl-${url}`);
+      let job = this.jobs.find((j) => j.ref == `unpack-${url}`);
       if (!job) {
         return;
       }
