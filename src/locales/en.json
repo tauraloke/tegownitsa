@@ -212,7 +212,11 @@
     },
     "name": "Name",
     "score": "Score",
-    "namespace": "Namespace"
+    "namespace": "Namespace",
+    "sources": {
+      "all": "All",
+      "label": "Filter sources"
+    }
   },
   "image": {
     "width": "Width",

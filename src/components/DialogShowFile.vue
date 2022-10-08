@@ -53,6 +53,7 @@
             <list-tag-groups
               :tags="tags"
               closable-tags
+              filter-by-source
               @search-by-title="
                 $emit('search-by-tag', $event);
                 hideComponent();

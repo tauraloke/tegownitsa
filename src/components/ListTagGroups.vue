@@ -4,7 +4,7 @@
       {{ $t('list.empty') }}
     </div>
     <v-sheet
-      v-for="group in tagsGroupped(tags)"
+      v-for="group in tagsGroupped(filteredTags(tags))"
       :key="group.id"
       elevation="3"
       rounded="xl"
@@ -39,6 +39,15 @@
         </v-chip-group>
       </div>
     </v-sheet>
+    <div v-if="filterBySource">
+      <v-select
+        v-model="sourceFilter"
+        :items="tagSources()"
+        :label="$t('tags.sources.label')"
+        variant="solo"
+        menu-icon="mdi-filter"
+      />
+    </div>
   </v-container>
 
   <v-snackbar v-model="isRestoreToastVisible">
@@ -57,6 +66,8 @@
 import tagNamespaces from '@/config/tag_namespaces.js';
 import { swap } from '@/services/utils.js';
 const tagNameSpacesById = swap(tagNamespaces);
+import tagSources from '@/config/source_type.json';
+const tagSourcesById = swap(tagSources);
 
 export default {
   name: 'ListTagGroups',
@@ -68,17 +79,18 @@ export default {
     closableTags: {
       type: Boolean,
       default: false
+    },
+    filterBySource: {
+      type: Boolean,
+      default: false
     }
   },
   emits: { 'search-by-title': null, 'tag-added': null, 'tag-removed': null },
   data() {
     return {
-      searchCaption: null,
-      searchTags: null,
-      isLoading: false,
-      search: null,
       isRestoreToastVisible: false,
-      tagToRestoring: null
+      tagToRestoring: null,
+      sourceFilter: null
     };
   },
   methods: {
@@ -170,6 +182,23 @@ export default {
         groups[tag.namespace_id].tags.push(tag);
       }
       return Object.values(groups);
+    },
+    filteredTags() {
+      if (this.sourceFilter === null) {
+        return this.tags;
+      }
+      return this.tags.filter((t) => t.source_type === this.sourceFilter);
+    },
+    tagSources() {
+      return [
+        { value: null, title: this.$t('tags.sources.all') },
+        ...this.tags
+          .map((t) => t.source_type)
+          .filter((v, i, a) => a.indexOf(v) === i)
+          .map((s) => {
+            return { value: s, title: tagSourcesById[s] };
+          })
+      ];
     }
   }
 };
