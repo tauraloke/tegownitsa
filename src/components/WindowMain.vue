@@ -110,6 +110,11 @@
     <dialog-tag-editor
       ref="dialog_tag_editor"
       @tag-updated="redrawTag($event)"
+      @tag-removed="
+        toast($t('toast.tag_removed'));
+        tags = tags.filter((t) => t?.id != $event?.id);
+      "
+      @error="toast($event)"
     />
 
     <v-snackbar v-model="isStatusMessageVisible" style="z-index: 3001">

@@ -81,7 +81,8 @@
     "file_not_improved": "Что-то не так с загрузкой по этому URL",
     "unknown_duplicate_error": "Неизвестная ошибка поиска дубликатов",
     "updates_unavailable": "Не нашлось обновлений приложения",
-    "error_in_updater": "Ошибка загрузки обновлений приложения"
+    "error_in_updater": "Ошибка загрузки обновлений приложения",
+    "tag_removed": "Тег удален."
   },
   "form_search_files": {
     "find_by_tags_print_and_choose": "Поиск по тегам: печатайте и выбирайте"
@@ -93,10 +94,11 @@
     "tag_linked_to_x_files": "Тег не связан с файлами.|Тег связан с {n} файлом.|Тег связан с {n} файлами.|Тег связан с {n} файлами.",
     "edit_tag_x": "Редактировать тег #{0}",
     "remove_locale": "Удалить синоним",
-    "add_new_row": "Добавить строку"
-  },
-  "dialog_tag-editor": {
-    "update_tag": "Обновить тег"
+    "add_new_row": "Добавить строку",
+    "update_tag": "Обновить тег",
+    "remove_tag": "Удалить тег",
+    "confirm_removing": "Вы уверены?",
+    "wrong_tag_removing": "Что-то пошло не так во время удаления тега."
   },
   "dialog_show_file": {
     "exif_data": "Данные EXIF",

@@ -32,19 +32,44 @@
             @click="tagLocales = tagLocales.filter((_, i) => i != index)"
           />
         </v-row>
-        <v-row class="ma-8 justify-center">
-          <v-btn @click="tagLocales.push({ title: '', locale: 'en' })">
-            {{ $t('dialog_tag_editor.add_new_row') }}
-          </v-btn>
-          <v-btn
-            :disabled="tagLocales.map((t) => t.title).join('') == ''"
-            color="success ml-10"
-            @click="updateTag()"
-          >
-            {{ $t('dialog_tag-editor.update_tag') }}
-          </v-btn>
-        </v-row>
       </v-card-text>
+      <v-card-actions class="ma-8 justify-center">
+        <v-btn @click="tagLocales.push({ title: '', locale: 'en' })">
+          {{ $t('dialog_tag_editor.add_new_row') }}
+        </v-btn>
+        <v-btn
+          :disabled="tagLocales.map((t) => t.title).join('') == ''"
+          color="warning"
+          @click="isTagRemovingInEditor = true"
+        >
+          {{ $t('dialog_tag_editor.remove_tag') }}
+        </v-btn>
+        <v-btn
+          :disabled="tagLocales.map((t) => t.title).join('') == ''"
+          color="success"
+          @click="updateTag()"
+        >
+          {{ $t('dialog_tag_editor.update_tag') }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+  <v-dialog v-model="isTagRemovingInEditor">
+    <v-card>
+      <v-card-title style="text-align: center">
+        {{ $t('dialog_tag_editor.remove_tag') }}
+      </v-card-title>
+      <v-card-text style="text-align: center">
+        {{ $t('dialog_tag_editor.confirm_removing') }}
+      </v-card-text>
+      <v-card-actions class="justify-center">
+        <v-btn color="green" @click="isTagRemovingInEditor = false">
+          {{ $t('button.cancel') }}
+        </v-btn>
+        <v-btn color="warning" @click="removeTag()">
+          {{ $t('dialog_tag_editor.remove_tag') }}
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -52,12 +77,13 @@
 <script>
 export default {
   name: 'DialogTagEditor',
-  emits: ['tag-updated'],
+  emits: ['tag-updated', 'tag-removed', 'error'],
   data() {
     return {
       isDialogVisible: false,
       tag: null,
-      tagLocales: []
+      tagLocales: [],
+      isTagRemovingInEditor: false
     };
   },
   methods: {
@@ -71,9 +97,11 @@ export default {
         return false;
       }
       this.isDialogVisible = true;
+      this.isTagRemovingInEditor = false;
     },
     hideComponent() {
       this.isDialogVisible = false;
+      this.isTagRemovingInEditor = false;
     },
     async updateTag() {
       let newTagLocales = this.tagLocales.map((t) => {
@@ -85,6 +113,15 @@ export default {
         newLocales: newTagLocales
       });
       this.isDialogVisible = false;
+    },
+    async removeTag() {
+      if (await window.sqliteApi.removeTag(this.tag?.id)) {
+        this.hideComponent();
+        this.$emit('tag-removed', this.tag);
+      } else {
+        this.$emit('error', this.$t('dialog_tag_editor.wrong_tag_removing'));
+        this.isTagRemovingInEditor = false;
+      }
     }
   }
 };
