@@ -65,7 +65,7 @@
   },
   "toast": {
     "preferences_saved": "Preferences saved",
-    "file_has_removed": "File has removed",
+    "file_has_removed": "File has been removed",
     "unknown_scan_error": "Something wrong with scanning...",
     "file_has_imported": "File has imported from url '{0}'.",
     "cannot_copy_file_from_url": "Can't copy file from {0}.",
@@ -114,7 +114,9 @@
     "fullsizes": "Found copies in the Internet",
     "size_parameters": "Image sizes",
     "improve_file": "Download and change",
-    "cannot_process_by_neuronet": "Something wrong - cannot recognize tags"
+    "cannot_process_by_neuronet": "Something wrong - cannot recognize tags",
+    "remove_file": "Remove the file",
+    "wrong_file_removing": "Something wrong while file was removing"
   },
   "settings": {
     "application": "Application",

@@ -114,7 +114,9 @@
     "fullsizes": "Найденные копии в Интернете",
     "size_parameters": "Размеры изображения",
     "improve_file": "Скачать и заменить",
-    "cannot_process_by_neuronet": "Что-то не так - не удаётся распознать теги"
+    "cannot_process_by_neuronet": "Что-то не так - не удаётся распознать теги",
+    "remove_file": "Удалить файл",
+    "wrong_file_removing": "Что-то не так при удалении файла"
   },
   "settings": {
     "application": "Приложение",

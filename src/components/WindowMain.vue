@@ -75,6 +75,10 @@
       @search-by-tag="searchFilesByTag($event)"
       @added-tag="tags.push($event)"
       @tag-removed="tags = tags.filter((t) => t.id != $event?.id)"
+      @file-removed="
+        toast($t('toast.file_has_removed'));
+        files = files.filter((f) => f?.id != $event?.id);
+      "
       @toast="toast($event)"
     />
 

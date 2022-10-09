@@ -180,9 +180,33 @@
                 </ul>
               </v-card>
             </div>
+
+            <div>
+              <v-btn color="warning" @click="isFileRemovingInDialog = true">
+                {{ $t('dialog_show_file.remove_file') }}
+              </v-btn>
+            </div>
           </v-col>
         </v-row>
       </v-card-text>
+    </v-card>
+  </v-dialog>
+  <v-dialog v-model="isFileRemovingInDialog">
+    <v-card>
+      <v-card-title style="text-align: center">
+        {{ $t('dialog_show_file.remove_file') }}
+      </v-card-title>
+      <v-card-text style="text-align: center">
+        {{ $t('dialog_tag_editor.confirm_removing') }}
+      </v-card-text>
+      <v-card-actions class="justify-center">
+        <v-btn color="green" @click="isFileRemovingInDialog = false">
+          {{ $t('button.cancel') }}
+        </v-btn>
+        <v-btn color="warning" @click="removeFile()">
+          {{ $t('dialog_show_file.remove_file') }}
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -198,7 +222,7 @@ import { swap } from '@/services/utils.js';
 export default {
   name: 'DialogShowFile',
   components: { FormAddNewTagToFile, ListTagGroups, PredictedTags },
-  emits: ['search-by-tag', 'toast', 'added-tag', 'tag-removed'],
+  emits: ['search-by-tag', 'toast', 'added-tag', 'tag-removed', 'file-removed'],
   data() {
     return {
       isDialogVisible: false,
@@ -209,7 +233,8 @@ export default {
       authorUrls: [],
       fullsizes: [],
       polleeFileSources: [],
-      sourceTypesById: swap(sourceTypes)
+      sourceTypesById: swap(sourceTypes),
+      isFileRemovingInDialog: false
     };
   },
   computed: {
@@ -292,6 +317,7 @@ export default {
       this.urls = [];
       this.authorUrls = [];
       this.fullsizes = [];
+      this.isFileRemovingInDialog = false;
     },
     async afterAddTagHandler(event) {
       this.tags.push(event);
@@ -355,6 +381,15 @@ export default {
         this.polleeFileSources = this.polleeFileSources.filter(
           (r) => r.id != row_id
         );
+      }
+    },
+    async removeFile() {
+      if (await window.fileApi.removeFileById(this.currentFile?.id)) {
+        this.hideComponent();
+        this.$emit('file-removed', this.currentFile);
+      } else {
+        this.$emit('toast', this.$t('dialog_show_file.wrong_file_removing'));
+        this.isFileRemovingInDialog = false;
       }
     }
   }
