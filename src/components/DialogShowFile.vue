@@ -358,6 +358,15 @@ export default {
         return t;
       });
     },
+    // Callable from parent component
+    updateTagNamespace({ tag_id, namespace_id }) {
+      if (!this.isDialogVisible) {
+        return false;
+      }
+      this.tags = this.tags.map((t) =>
+        t?.id == tag_id ? { ...t, namespace_id: namespace_id } : t
+      );
+    },
     async improveFile(url) {
       let updatedFile = await window.fileApi.improveFile(
         this.currentFile.id,

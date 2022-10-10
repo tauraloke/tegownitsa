@@ -161,6 +161,16 @@ ipcMain.on('context-menu-message', (_event, msg) => {
         browserWindow.webContents.send('execute', 'openTagEditor', msg.tagId);
       }
     });
+    template.push({
+      label: i18n.t('context_menu.change_tag_namespace'),
+      click: (_event, browserWindow) => {
+        browserWindow.webContents.send(
+          'execute',
+          'openTagNamespaceEditor',
+          msg.tagId
+        );
+      }
+    });
   }
   if (isDevelopment) {
     template.push({

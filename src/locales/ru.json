@@ -2,7 +2,8 @@
   "context_menu": {
     "copy_image_to_clipboard": "Скопировать картинку в буфер обмена",
     "edit_tag": "Редактировать тег",
-    "inspect_element": "Инспектировать элемент"
+    "inspect_element": "Инспектировать элемент",
+    "change_tag_namespace": "Изменить пространство имен тега"
   },
   "main_menu": {
     "import_image_from_file": "Импортировать картинку из файла…",
@@ -225,5 +226,8 @@
   "image": {
     "width": "Ширина",
     "height": "Высота"
+  },
+  "dialog_tag_namespace": {
+    "choose_namespace": "Выберите пространство имен тега"
   }
 }

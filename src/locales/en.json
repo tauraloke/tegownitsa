@@ -2,7 +2,8 @@
   "context_menu": {
     "copy_image_to_clipboard": "Copy image to clipboard",
     "edit_tag": "Edit tag",
-    "inspect_element": "Inspect element"
+    "inspect_element": "Inspect element",
+    "change_tag_namespace": "Change a namespace of the tag"
   },
   "main_menu": {
     "import_image_from_file": "Import image from file…",
@@ -225,5 +226,8 @@
   "image": {
     "width": "Width",
     "height": "Height"
+  },
+  "dialog_tag_namespace": {
+    "choose_namespace": "Choose a tag namespace"
   }
 }

@@ -121,6 +121,11 @@
       @error="toast($event)"
     />
 
+    <dialog-tag-namespace-editor
+      ref="dialog_tag_namespace_editor"
+      @tag-updated="updateTagNamespace($event)"
+    />
+
     <v-snackbar v-model="isStatusMessageVisible" style="z-index: 3001">
       {{ statusMessage }}
       <template #actions>
@@ -172,6 +177,7 @@ import ListTagGroups from '@/components/ListTagGroups.vue';
 import DialogPreferences from '@/components/DialogPreferences.vue';
 import DialogShowFile from '@/components/DialogShowFile.vue';
 import DialogTagEditor from '@/components/DialogTagEditor.vue';
+import DialogTagNamespaceEditor from '@/components/DialogTagNamespaceEditor.vue';
 import DialogDublicates from '@/components/DialogDublicates.vue';
 
 import Job from '@/services/job.js';
@@ -192,6 +198,7 @@ export default {
     DialogPreferences,
     DialogShowFile,
     DialogTagEditor,
+    DialogTagNamespaceEditor,
     DialogDublicates
   },
   data() {
@@ -245,6 +252,7 @@ export default {
         'openPreferencesDialog',
         'setTheme',
         'openTagEditor',
+        'openTagNamespaceEditor',
         'startDownloadProgress',
         'setDownloadProgress',
         'startArchiveUnpacking',
@@ -339,6 +347,9 @@ export default {
     },
     openTagEditor(tag_id) {
       this.$refs.dialog_tag_editor.showComponent(tag_id);
+    },
+    openTagNamespaceEditor(tag_id) {
+      this.$refs.dialog_tag_namespace_editor.showComponent(tag_id);
     },
     async searchFilesByTag(tag) {
       this.$refs.form_search_files.reset(tag?.locales?.[0]?.title);
@@ -652,6 +663,12 @@ export default {
         return t;
       });
       this.$refs.dialog_show_file.updateTag({ newLocales, tagId });
+    },
+    updateTagNamespace({ tag_id, namespace_id }) {
+      this.tags = this.tags.map((t) =>
+        t?.id == tag_id ? { ...t, namespace_id: namespace_id } : t
+      );
+      this.$refs.dialog_show_file.updateTagNamespace({ tag_id, namespace_id });
     }
   }
 };
