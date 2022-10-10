@@ -4,9 +4,15 @@ import TaskQueue from '../task_queue.js';
 import BaseResponseExtractor from '../response_extractor/base_response_extractor.js';
 
 export default class BaseStrategy {
-  constructor() {}
-  // @Abstract
   /**
+   * @param {Object} options
+   * @param {()=>{}} options.onAfterTagsAdded
+   */
+  constructor({ onAfterTagsAdded }) {
+    this.onAfterTagsAdded = onAfterTagsAdded;
+  }
+  /**
+   * @abstract
    * @param {Object} arg
    * @param {Object} arg.file
    * @param {Object<string, TaskQueue>} arg.queueList

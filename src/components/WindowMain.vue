@@ -79,6 +79,7 @@
         toast($t('toast.file_has_removed'));
         files = files.filter((f) => f?.id != $event?.id);
       "
+      @close="currentFile = null"
       @toast="toast($event)"
     />
 
@@ -207,8 +208,6 @@ export default {
       isStatusMessageVisible: false,
       tags: [],
       currentFile: null,
-      currentFileUrls: null,
-      currentFileTags: [],
       files: [],
       /** @type {Object<string, TaskQueue>} */
       task_queues: {},
@@ -386,6 +385,7 @@ export default {
       if (typeof file === 'number') {
         file = await window.sqliteApi.getFile(file);
       }
+      this.currentFile = file;
       this.$refs.dialog_show_file.showComponent(file);
     },
     async hideFile() {
@@ -487,7 +487,7 @@ export default {
       this.tags = await window.sqliteApi.getAllTags();
     },
     async scanSelectedFiles() {
-      let filesToScan = this.files.filter(
+      let filesToScan = this.getCurrrentFiles().filter(
         (f) => f?.caption == constants.CAPTION_YET_NOT_SCANNED
       );
       if (filesToScan.length == 0) {
@@ -524,6 +524,9 @@ export default {
             [caption, file['id']]
           );
           filesToScan[i].caption = caption;
+          if (this.currentFile) {
+            this.$refs.dialog_show_file.updateCaption(caption);
+          }
           scanJob.incrementProgress(1);
         } catch (e) {
           console.error(e);
@@ -532,9 +535,12 @@ export default {
         }
       }
     },
+    getCurrrentFiles() {
+      return this.currentFile ? [this.currentFile] : this.files;
+    },
     async lookUpDups() {
       this.hideFile();
-      let files = this.files;
+      let files = this.getCurrrentFiles();
       let job = new Job({
         name: this.$t('jobs.searching_dublicates'),
         taskTotalCount: files.length,
@@ -567,10 +573,19 @@ export default {
       this.statusMessage = message;
       this.isStatusMessageVisible = true;
     },
+    afterTagsAdded() {
+      if (this.currentFile) {
+        this.$refs.dialog_show_file.reloadStuff();
+      }
+    },
     async loadTagsFromIQDB() {
       let strategy = getStrategy({
-        key: await window.configApi.getConfig('tag_source_strategies')
+        key: await window.configApi.getConfig('tag_source_strategies'),
+        onAfterTagsAdded: () => {
+          this.afterTagsAdded();
+        }
       });
+      let files = this.getCurrrentFiles();
       let similarityThreshold = await window.configApi.getConfig(
         'tag_source_threshold_iqdb'
       );
@@ -579,14 +594,14 @@ export default {
       }
       let job = new Job({
         name: this.$t('jobs.retrieving_tags_from_sources'),
-        taskTotalCount: this.files.length,
+        taskTotalCount: files.length,
         queue: this.task_queues.iqdb,
         vueComponent: this
       });
       job.start();
-      for (let i = 0; i < this.files.length; i++) {
+      for (let i = 0; i < files.length; i++) {
         let iqdbTask = new IqdbTask({
-          file: this.files[i],
+          file: files[i],
           similarityThreshold,
           strategy,
           task_queues: this.task_queues,
@@ -596,8 +611,12 @@ export default {
       }
     },
     async loadTagsFromSaucenao() {
+      let files = this.getCurrrentFiles();
       let strategy = getStrategy({
-        key: await window.configApi.getConfig('tag_source_strategies')
+        key: await window.configApi.getConfig('tag_source_strategies'),
+        onAfterTagsAdded: () => {
+          this.afterTagsAdded();
+        }
       });
       let similarityThreshold = await window.configApi.getConfig(
         'tag_source_threshold_saucenao'
@@ -607,14 +626,14 @@ export default {
       }
       let job = new Job({
         name: this.$t('jobs.retrieving_tags_from_sources'),
-        taskTotalCount: this.files.length,
+        taskTotalCount: files.length,
         queue: this.task_queues.iqdb,
         vueComponent: this
       });
       job.start();
-      for (let i = 0; i < this.files.length; i++) {
+      for (let i = 0; i < files.length; i++) {
         let saucenaoTask = new SaucenaoTask({
-          file: this.files[i],
+          file: files[i],
           similarityThreshold,
           strategy,
           task_queues: this.task_queues,
@@ -624,8 +643,12 @@ export default {
       }
     },
     async loadTagsFromKheina() {
+      let files = this.getCurrrentFiles();
       let strategy = getStrategy({
-        key: await window.configApi.getConfig('tag_source_strategies')
+        key: await window.configApi.getConfig('tag_source_strategies'),
+        onAfterTagsAdded: () => {
+          this.afterTagsAdded();
+        }
       });
       let similarityThreshold = await window.configApi.getConfig(
         'tag_source_threshold_kheina'
@@ -635,14 +658,14 @@ export default {
       }
       let job = new Job({
         name: this.$t('jobs.retrieving_tags_from_sources'),
-        taskTotalCount: this.files.length,
+        taskTotalCount: files.length,
         queue: this.task_queues.iqdb,
         vueComponent: this
       });
       job.start();
-      for (let i = 0; i < this.files.length; i++) {
+      for (let i = 0; i < files.length; i++) {
         let task = new KheinaTask({
-          file: this.files[i],
+          file: files[i],
           similarityThreshold,
           strategy,
           task_queues: this.task_queues,

@@ -222,7 +222,14 @@ import { swap } from '@/services/utils.js';
 export default {
   name: 'DialogShowFile',
   components: { FormAddNewTagToFile, ListTagGroups, PredictedTags },
-  emits: ['search-by-tag', 'toast', 'added-tag', 'tag-removed', 'file-removed'],
+  emits: [
+    'search-by-tag',
+    'toast',
+    'added-tag',
+    'tag-removed',
+    'file-removed',
+    'close'
+  ],
   data() {
     return {
       isDialogVisible: false,
@@ -283,30 +290,7 @@ export default {
         this.$refs.predicted_tags.reset();
       }
       this.currentFile = file;
-      this.tags = await window.sqliteApi.findTagsByFile(file.id);
-      let authors = this.tags.filter(
-        (t) => t.namespace_id == tagNamespaces.CREATOR
-      );
-      for (let i in authors) {
-        let urls = await window.sqliteApi.getAuthorUrls(authors[i].id);
-        this.authorUrls.push(...urls);
-      }
-      this.fullsizes = await window.sqliteApi.getFileFullsizes(file.id);
-      this.polleeFileSources = await window.sqliteApi.queryAll(
-        'SELECT * FROM pollee_file_sources WHERE file_id=?',
-        [file.id]
-      );
-      this.urls = (
-        await window.sqliteApi.queryAll(
-          'SELECT url, title FROM file_urls WHERE file_id=?',
-          [file.id]
-        )
-      ).map((t) => {
-        return {
-          url: t.url,
-          title: t.title
-        };
-      });
+      this.reloadStuff();
     },
     hideComponent() {
       if (this.$refs.predicted_tags) {
@@ -318,12 +302,16 @@ export default {
       this.authorUrls = [];
       this.fullsizes = [];
       this.isFileRemovingInDialog = false;
+      this.$emit('close');
     },
     async afterAddTagHandler(event) {
       this.tags.push(event);
       this.$emit('added-tag', event);
     },
-    async updateCaption() {
+    async updateCaption(caption = null) {
+      if (caption) {
+        this.currentFile.caption = caption;
+      }
       if (!this.currentFile?.id) {
         console.log('Have no current file!');
         return false;
@@ -332,18 +320,49 @@ export default {
         this.currentFile?.caption,
         this.currentFile?.id
       ]);
-      this.$emit(
-        'toast',
-        this.$t('dialog_show_file.caption_updated_for_file_x', [
-          this.currentFile?.id
-        ])
-      );
+      if (!caption) {
+        this.$emit(
+          'toast',
+          this.$t('dialog_show_file.caption_updated_for_file_x', [
+            this.currentFile?.id
+          ])
+        );
+      }
     },
     clickedOnCaptionTextarea(event) {
       if (event?.path?.[0]?.nodeName == 'I') {
         this.updateCaption();
         this.fileCaptionTextareaIcon = 'mdi-floppy';
       }
+    },
+    // Callable from parent component
+    async reloadStuff() {
+      this.tags = await window.sqliteApi.findTagsByFile(this.currentFile.id);
+      let authors = this.tags.filter(
+        (t) => t.namespace_id == tagNamespaces.CREATOR
+      );
+      for (let i in authors) {
+        let urls = await window.sqliteApi.getAuthorUrls(authors[i].id);
+        this.authorUrls.push(...urls);
+      }
+      this.fullsizes = await window.sqliteApi.getFileFullsizes(
+        this.currentFile.id
+      );
+      this.polleeFileSources = await window.sqliteApi.queryAll(
+        'SELECT * FROM pollee_file_sources WHERE file_id=?',
+        [this.currentFile.id]
+      );
+      this.urls = (
+        await window.sqliteApi.queryAll(
+          'SELECT url, title FROM file_urls WHERE file_id=?',
+          [this.currentFile.id]
+        )
+      ).map((t) => {
+        return {
+          url: t.url,
+          title: t.title
+        };
+      });
     },
     // Callable from parent component
     updateTag({ newLocales, tagId }) {

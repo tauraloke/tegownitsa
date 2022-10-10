@@ -14,7 +14,8 @@ export default class ParseTagResourceTask extends BaseTask {
    * @param {string} options.url
    * @param {Job} options.job
    * @param {ParserResponse?} options.noRemoteItem replace source request if not null
-   * @param {object} metadata
+   * @param {object} options.metadata
+   * @param {()=>{}} options.onAfterTagsAdded
    */
   constructor({
     resource_name,
@@ -24,7 +25,8 @@ export default class ParseTagResourceTask extends BaseTask {
     // eslint-disable-next-line no-unused-vars
     job,
     noRemoteItem,
-    metadata
+    metadata,
+    onAfterTagsAdded
   }) {
     super();
     this.resource_name = resource_name;
@@ -33,6 +35,7 @@ export default class ParseTagResourceTask extends BaseTask {
     this.url = url;
     this.noRemoteItem = noRemoteItem;
     this.metadata = metadata;
+    this.onAfterTagsAdded = onAfterTagsAdded;
   }
   /**
    * @returns {Promise<{skip_timeout: boolean?;status: string}}
@@ -119,6 +122,7 @@ export default class ParseTagResourceTask extends BaseTask {
       `Added tags to file #${this.file['id']} from ${this.resource_name}`,
       data.tags
     );
+    this?.onAfterTagsAdded();
   }
   /**
    * @param {ParserResponse} data
