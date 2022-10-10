@@ -12,6 +12,7 @@ Now you can put your image collection in order... Or not.
 - Lurk tags, mark tags by your own hands or choose smooth tips of a neural net.
 - Find images by tag net. You can use pseudonamespaces like `in_url:...` (find images with linked urls), `in_title:...` (find images with titles of linked urls), `in_filename:...` (find by original filename), `in_reco:...` (find by recognized text), `fresh:15` (find images created latest 15 minutes), `limit:100` (get  a limited image set), `limit:no` (get images without a limit).
 - Find remote sources of an image by this application.
+- Scanning and tag lurking are batch operation. These ones operate current file instead a query files if you have selected a file.
 - You can edit tags after a right click.
 - Export images by a right click on an image and copying to a clipboard.
 - Great! Now you have remembered the image you want... Perhaps.
