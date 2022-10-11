@@ -17,6 +17,7 @@ export async function run(_event, _db, source_url) {
     let regeneratorRow = resourceRegenerators.find((r) =>
       source_url.match(r.mask)
     );
+    let isReplaceable = true;
     if (regeneratorRow) {
       console.log('Chosen regenerator', regeneratorRow);
       /** @type {AbstractRegenerator} */
@@ -30,6 +31,9 @@ export async function run(_event, _db, source_url) {
         tagResourceRow = tagResources.find(
           (r) => r.name == regeneratorRow.name
         );
+        if (regeneratorRow.multipleImagesPerPost) {
+          isReplaceable = false;
+        }
       } catch (error) {
         console.log('cannot extract url', source_url, error);
       }
@@ -51,7 +55,8 @@ export async function run(_event, _db, source_url) {
     response.resource = tagResourceRow;
     if (
       response.metadata.fullSizeImage &&
-      response.metadata.fullSizeImage.url
+      response.metadata.fullSizeImage.url &&
+      isReplaceable
     ) {
       response.image_url = response.metadata.fullSizeImage.url;
     }
