@@ -1,6 +1,6 @@
 # Tegownitsa ![main workflow](https://github.com/tauraloke/tegownitsa/actions/workflows/main.yml/badge.svg?branch=main&event=push)
 
-GUI for a image tag manager in Linux, Windows.
+GUI for a image tag manager.
 
 Now you can put your image collection in order... Or not.
 
