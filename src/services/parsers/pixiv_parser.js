@@ -67,7 +67,7 @@ export default class PixivParser extends AbstractBasicParser {
   }
   async extractTags() {
     try {
-      let json = JSON.parse(await this.getBuffer());
+      let json = await this.getJson();
       let tags = json.body.tags.tags
         .map((t) => {
           if (t.translation && t.translation.en) {

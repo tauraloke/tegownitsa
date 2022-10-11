@@ -284,6 +284,7 @@ export default {
         this.task_queues.zerochan = new TaskQueue(bc, tc);
         this.task_queues.anime_pictures = new TaskQueue(bc, tc);
         this.task_queues.pixiv = new TaskQueue(bc, tc);
+        this.task_queues.reactor = new TaskQueue(bc, tc);
         this.task_queues.deviantart = new TaskQueue(bc, tc);
         this.task_queues.furaffinity = new TaskQueue(bc, tc);
         this.task_queues.artstation = new TaskQueue(bc, tc);
@@ -581,7 +582,7 @@ export default {
     async loadTagsFromIQDB() {
       let strategy = getStrategy({
         key: await window.configApi.getConfig('tag_source_strategies'),
-        onAfterTagsAdded: () => {
+        onAfterDataAdded: () => {
           this.afterTagsAdded();
         }
       });
@@ -614,7 +615,7 @@ export default {
       let files = this.getCurrrentFiles();
       let strategy = getStrategy({
         key: await window.configApi.getConfig('tag_source_strategies'),
-        onAfterTagsAdded: () => {
+        onAfterDataAdded: () => {
           this.afterTagsAdded();
         }
       });
@@ -646,7 +647,7 @@ export default {
       let files = this.getCurrrentFiles();
       let strategy = getStrategy({
         key: await window.configApi.getConfig('tag_source_strategies'),
-        onAfterTagsAdded: () => {
+        onAfterDataAdded: () => {
           this.afterTagsAdded();
         }
       });

@@ -1,0 +1,58 @@
+{
+    "data": {
+      "node": {
+        "header": null,
+        "locale": "ru",
+        "text": "<h3>The Crimson Hourglass</h3><p>&attribute_insert_1&</p>",
+        "attributes": [
+          {
+            "id": "UG9zdEF0dHJpYnV0ZVBpY3R1cmU6NzYzMTU2OA==",
+            "type": "PICTURE",
+            "image": {
+              "width": 1070,
+              "height": 1600,
+              "type": "PNG"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "isvoc",
+            "category": {
+              "name": "artist"
+            },
+            "unsafe": false
+          },
+          {
+            "name": "artist",
+            "category": null,
+            "unsafe": false
+          },
+          {
+            "name": "Dragon",
+            "category": null,
+            "unsafe": false
+          },
+          {
+            "name": "Мифические существа",
+            "category": {
+              "name": "Fantasy"
+            },
+            "unsafe": false
+          },
+          {
+            "name": "Fantasy",
+            "category": {
+              "name": "art"
+            },
+            "unsafe": false
+          },
+          {
+            "name": "art",
+            "category": null,
+            "unsafe": false
+          }
+        ]
+      }
+    }
+  }

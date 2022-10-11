@@ -7,10 +7,10 @@ import CatchAllStrategy from './catch_all_strategy.js';
 /**
  * @param {object} arg
  * @param {string} arg.key
- * @param {()=>{}} arg.onAfterTagsAdded
+ * @param {()=>{}} arg.onAfterDataAdded
  * @returns {BaseStrategy}
  */
-export default function getStrategy({ key, onAfterTagsAdded }) {
+export default function getStrategy({ key, onAfterDataAdded }) {
   let className = {
     [tss.CATCH_FIRST_ONE]: CatchFirstStrategy,
     [tss.CATCH_ALL]: CatchAllStrategy
@@ -18,5 +18,5 @@ export default function getStrategy({ key, onAfterTagsAdded }) {
   if (!className) {
     throw `Cannot find a strategy by a key '${key}'`;
   }
-  return new className({ onAfterTagsAdded });
+  return new className({ onAfterDataAdded });
 }

@@ -29,7 +29,7 @@ export default class CatchAllStrategy extends BaseStrategy {
           file,
           noRemoteItem: apiResponse.extractParserResponse(item, resource.name),
           metadata: apiResponse.extractMetadata(item, resource.name),
-          onAfterTagsAdded: this.onAfterTagsAdded
+          onAfterDataAdded: this.onAfterDataAdded
         });
         queueList[resource.name].addTask(resourceTask);
       }

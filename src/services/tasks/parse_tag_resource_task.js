@@ -15,7 +15,7 @@ export default class ParseTagResourceTask extends BaseTask {
    * @param {Job} options.job
    * @param {ParserResponse?} options.noRemoteItem replace source request if not null
    * @param {object} options.metadata
-   * @param {()=>{}} options.onAfterTagsAdded
+   * @param {()=>{}} options.onAfterDataAdded
    */
   constructor({
     resource_name,
@@ -26,7 +26,7 @@ export default class ParseTagResourceTask extends BaseTask {
     job,
     noRemoteItem,
     metadata,
-    onAfterTagsAdded
+    onAfterDataAdded
   }) {
     super();
     this.resource_name = resource_name;
@@ -35,7 +35,7 @@ export default class ParseTagResourceTask extends BaseTask {
     this.url = url;
     this.noRemoteItem = noRemoteItem;
     this.metadata = metadata;
-    this.onAfterTagsAdded = onAfterTagsAdded;
+    this.onAfterDataAdded = onAfterDataAdded;
   }
   /**
    * @returns {Promise<{skip_timeout: boolean?;status: string}}
@@ -68,7 +68,9 @@ export default class ParseTagResourceTask extends BaseTask {
           data.fullSizeImage
         );
       }
-
+      if (this.onAfterDataAdded) {
+        this.onAfterDataAdded();
+      }
       this.incrementJobProgress(1);
       return { status: 'OK' };
     } catch (e) {
@@ -122,7 +124,6 @@ export default class ParseTagResourceTask extends BaseTask {
       `Added tags to file #${this.file['id']} from ${this.resource_name}`,
       data.tags
     );
-    this?.onAfterTagsAdded();
   }
   /**
    * @param {ParserResponse} data

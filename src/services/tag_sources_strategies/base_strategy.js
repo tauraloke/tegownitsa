@@ -6,10 +6,10 @@ import BaseResponseExtractor from '../response_extractor/base_response_extractor
 export default class BaseStrategy {
   /**
    * @param {Object} options
-   * @param {()=>{}} options.onAfterTagsAdded
+   * @param {()=>{}} options.onAfterDataAdded
    */
-  constructor({ onAfterTagsAdded }) {
-    this.onAfterTagsAdded = onAfterTagsAdded;
+  constructor({ onAfterDataAdded }) {
+    this.onAfterDataAdded = onAfterDataAdded;
   }
   /**
    * @abstract
