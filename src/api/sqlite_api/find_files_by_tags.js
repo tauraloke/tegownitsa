@@ -70,7 +70,7 @@ export async function run(_event, db, titles) {
   hardConditions = hardConditions.map((c) => `(${c})`);
   let limitSubQuery = limit == 'no' ? '' : `LIMIT ${limit}`;
 
-  const totalTagContidion =
+  const totalTagCondition =
     softConditions.length == 0
       ? ALWAYS_TRUE_CONTIDION
       : `file_tags.tag_id IN (
@@ -83,7 +83,7 @@ export async function run(_event, db, titles) {
     SELECT files.*, COUNT(*) AS tego_rating
       FROM files 
       LEFT JOIN file_tags ON file_tags.file_id = files.id
-    WHERE ${totalTagContidion}
+    WHERE ${totalTagCondition}
     AND ${hardConditions.join(' AND ')}
     GROUP BY files.id
     ORDER BY tego_rating DESC
