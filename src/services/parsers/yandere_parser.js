@@ -13,4 +13,12 @@ export default class YandereParser extends BasicJsonMoebooruParser {
   getFetchUrl() {
     return `https://yande.re/post.json?tags=id:${this.getItemId()}&api_version=2&include_tags=1`;
   }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    let json = await this.getJson();
+    const safeRatings = ['s', 'q'];
+    return safeRatings.includes(json.posts[0].rating);
+  }
 }

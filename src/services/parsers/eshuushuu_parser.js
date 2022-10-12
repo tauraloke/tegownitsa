@@ -63,4 +63,10 @@ export default class EshuushuuParser extends AbstractBasicParser {
   async extractAuthorUrls() {
     return null;
   }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    return true;
+  }
 }

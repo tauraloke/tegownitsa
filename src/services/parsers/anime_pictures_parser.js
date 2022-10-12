@@ -84,4 +84,19 @@ export default class AnimePicturesParser extends AbstractBasicParser {
       return null;
     }
   }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    const tags = await this.extractTags();
+    let unsafeList = ['erotic', 'эротика', 'hard erotic', 'тяжёлая эротика'];
+    let isSafe = true;
+    for (let i in tags) {
+      if (unsafeList.includes(tags[i])) {
+        isSafe = false;
+        break;
+      }
+    }
+    return isSafe;
+  }
 }

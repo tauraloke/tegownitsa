@@ -78,4 +78,19 @@ export default class ZerochanParser extends AbstractBasicParser {
     });
     return _tags;
   }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    const tags = await this.extractTags();
+    const unsafeTags = ['Not Safe for Work'];
+    let isSafe = true;
+    for (let i in tags) {
+      if (unsafeTags.includes(tags[i])) {
+        isSafe = false;
+        break;
+      }
+    }
+    return isSafe;
+  }
 }

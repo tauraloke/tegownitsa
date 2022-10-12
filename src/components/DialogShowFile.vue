@@ -82,6 +82,10 @@
                 <b>{{ $t('image.width') }}:</b> {{ currentFile.width }}
                 <b>{{ $t('image.height') }}:</b> {{ currentFile.height }}
               </div>
+              <v-checkbox
+                v-model="currentFile.is_safe"
+                :label="$t('settings.dialog_show_file.is_safe')"
+              />
               <div v-if="fullsizes && fullsizes.length > 0">
                 <h5>{{ $t('dialog_show_file.fullsizes') }}</h5>
                 <ul>
@@ -279,18 +283,34 @@ export default {
       return this.currentFile.exif_make + ' ' + this.currentFile.exif_model;
     }
   },
+  watch: {
+    'currentFile.is_safe'(newVal) {
+      if (!this.isDialogVisible) {
+        return;
+      }
+      console.log(
+        'switched is_safe checkbox for file',
+        this.currentFile?.id,
+        newVal
+      );
+      window.sqliteApi.updateFileIsSafeField(this.currentFile?.id, newVal);
+    }
+  },
   methods: {
     // Callable from parent component
     async showComponent(file) {
       if (!file?.id) {
         return false;
       }
-      this.isDialogVisible = true;
       if (this.$refs.predicted_tags) {
         this.$refs.predicted_tags.reset();
       }
       this.currentFile = file;
+      if (![true, false].includes(this.currentFile.is_safe)) {
+        this.currentFile.is_safe = this.currentFile.is_safe === 1;
+      }
       this.reloadStuff();
+      this.isDialogVisible = true;
     },
     hideComponent() {
       if (this.$refs.predicted_tags) {

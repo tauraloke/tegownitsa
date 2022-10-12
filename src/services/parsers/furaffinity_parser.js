@@ -81,4 +81,21 @@ export default class FuraffinityParser extends AbstractBasicParser {
   getCookie() {
     return config.get('furaffinity_cookies');
   }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    try {
+      let $ = await this.getHtmlParser();
+      const safeRatings = ['General'];
+      let rating = $(
+        $('div.rating > span.font-large.rating-box.inline').get()[0]
+      )
+        .text()
+        .trim();
+      return safeRatings.includes(rating);
+    } catch {
+      return true;
+    }
+  }
 }

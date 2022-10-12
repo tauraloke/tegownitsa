@@ -82,4 +82,12 @@ export default class E621Parser extends BasicJsonMoebooruParser {
       return null;
     }
   }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    let json = await this.getJson();
+    const safeRatings = ['s', 'q'];
+    return safeRatings.includes(json.post.rating);
+  }
 }

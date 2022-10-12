@@ -78,4 +78,12 @@ export default class FurrynetworkParser extends AbstractBasicParser {
       return null;
     }
   }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    let json = await this.getJson();
+    const safeRatings = [0];
+    return safeRatings.includes(json.rating);
+  }
 }

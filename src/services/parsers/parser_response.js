@@ -15,6 +15,7 @@ export default class ParserResponse {
    * @param {object[]?} args.title title of an artwork
    * @param {string[]?} args.sourceUrls collection of next source links
    * @param {string[]?} args.authorUrls links to an author' galleries
+   * @param {boolean} args.isSafeForWork mark SFW/NSFW images
    */
   constructor({
     requestedUrl,
@@ -22,7 +23,8 @@ export default class ParserResponse {
     fullSizeImage,
     title,
     sourceUrls,
-    authorUrls
+    authorUrls,
+    isSafeForWork
   }) {
     /** @type {string} */
     this.requestedUrl = requestedUrl;
@@ -36,5 +38,7 @@ export default class ParserResponse {
     this.sourceUrls = sourceUrls;
     /** @type {string} */
     this.authorUrls = authorUrls;
+    /** @type {boolean} */
+    this.isSafeForWork = isSafeForWork;
   }
 }

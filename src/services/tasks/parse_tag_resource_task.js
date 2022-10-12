@@ -68,6 +68,9 @@ export default class ParseTagResourceTask extends BaseTask {
           data.fullSizeImage
         );
       }
+      if (!data.isSafeForWork) {
+        await window.sqliteApi.updateFileIsSafeField(this.file['id'], false);
+      }
       if (this.onAfterDataAdded) {
         this.onAfterDataAdded();
       }

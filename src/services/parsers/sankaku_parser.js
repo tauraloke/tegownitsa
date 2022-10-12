@@ -53,4 +53,12 @@ export default class SankakuParser extends BasicJsonMoebooruParser {
       return [];
     }
   }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    let json = await this.getJson();
+    const safeRatings = ['s'];
+    return safeRatings.includes(json.rating);
+  }
 }

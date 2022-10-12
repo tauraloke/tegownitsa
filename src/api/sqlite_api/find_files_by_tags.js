@@ -1,4 +1,5 @@
 import { prepareTag } from '@/services/utils.js';
+import config from '../../config/store.js';
 import tagNamespaces from '../../config/tag_namespaces.js';
 import hardConditionParsers from '../../services/file_condition_pair_parser.js';
 
@@ -30,6 +31,9 @@ export async function run(_event, db, titles) {
 
   let namespacePrefixes = Object.keys(tagNamespaces);
   let hardConditions = [ALWAYS_TRUE_CONTIDION];
+  if (!config.get('show_nsfw_files')) {
+    hardConditions.push('is_safe=TRUE');
+  }
   let softConditions = titles
     .split(',')
     .map((tag) => {

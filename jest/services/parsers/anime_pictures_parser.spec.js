@@ -23,6 +23,10 @@ describe('Anime-Pictures parser', () => {
     });
   });
 
+  test('is safe for work', async () => {
+    expect(await parser.isSafeForWork()).toEqual(true);
+  });
+
   test('extract source', async () => {
     expect(await parser.extractSourceUrls()).toEqual(null);
   });

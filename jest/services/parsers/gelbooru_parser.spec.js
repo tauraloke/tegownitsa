@@ -35,6 +35,10 @@ describe('Gelbooru parser', () => {
     expect(await parser.extractTitle()).toEqual(null);
   });
 
+  test('is safe for work', async () => {
+    expect(await parser.isSafeForWork()).toEqual(true);
+  });
+
   test('extracts tags', async () => {
     let tags = await parser.extractTags();
     expect(tags).toEqual([

@@ -74,4 +74,12 @@ export default class DanbooruParser extends BasicJsonMoebooruParser {
       return null;
     }
   }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    let json = await this.getJson();
+    const safeRatings = ['g', 's'];
+    return safeRatings.includes(json.rating);
+  }
 }

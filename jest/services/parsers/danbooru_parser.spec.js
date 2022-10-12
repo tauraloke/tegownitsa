@@ -21,6 +21,10 @@ describe('Danbooru parser', () => {
     });
   });
 
+  test('is safe for work', async () => {
+    expect(await parser.isSafeForWork()).toEqual(true);
+  });
+
   test('extract source', async () => {
     expect(await parser.extractSourceUrls()).toEqual([
       'https://i.pximg.net/img-original/img/2022/08/18/03/50/04/100569046_p0.png'

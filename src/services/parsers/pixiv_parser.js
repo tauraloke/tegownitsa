@@ -88,4 +88,11 @@ export default class PixivParser extends AbstractBasicParser {
       return [];
     }
   }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    let json = await this.getJson();
+    return json.body.xRestrict == 0;
+  }
 }

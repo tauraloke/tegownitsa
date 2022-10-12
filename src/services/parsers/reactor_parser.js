@@ -117,9 +117,12 @@ export default class ReactorParser extends AbstractBasicParser {
     return this._buffer;
   }
   async extractTags() {
+    if (this._tags) {
+      return this._tags;
+    }
     try {
       let json = await this.getJson();
-      let tags = json.data.node.tags
+      this._tags = json.data.node.tags
         .map((t) => {
           if (t.category && t.category.name == 'artist') {
             return `creator:${t.name}`;
@@ -127,10 +130,25 @@ export default class ReactorParser extends AbstractBasicParser {
           return t.name;
         })
         .filter((t) => t);
-      return tags;
     } catch (error) {
       console.log('Cannot parse url', this.url, error);
-      return [];
+      this.tags = [];
     }
+    return this._tags;
+  }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    const json = await this.getJson();
+    const tags = json.data.node.tags;
+    let isSafe = true;
+    for (let i in tags) {
+      if (tags[i].unsafe) {
+        isSafe = false;
+        break;
+      }
+    }
+    return isSafe;
   }
 }

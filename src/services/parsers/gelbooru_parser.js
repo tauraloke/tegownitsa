@@ -64,4 +64,17 @@ export default class GelbooruParser extends BasicHTMLMoebooruParser {
       return null;
     }
   }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    try {
+      let $ = await this.getHtmlParser();
+      const safeRatings = ['general'];
+      let rating = $($('meta[name="rating"]').get()[0]).attr('content').trim();
+      return safeRatings.includes(rating);
+    } catch {
+      return true;
+    }
+  }
 }

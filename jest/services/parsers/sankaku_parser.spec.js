@@ -27,6 +27,10 @@ describe('Sankaku parser', () => {
     ]);
   });
 
+  test('is safe for work', async () => {
+    expect(await parser.isSafeForWork()).toEqual(true);
+  });
+
   test('extracts tags', async () => {
     let tags = await parser.extractTags();
     expect(tags).toEqual([

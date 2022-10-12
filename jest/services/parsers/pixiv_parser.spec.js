@@ -34,6 +34,10 @@ describe('Pixiv parser', () => {
     expect(await parser.extractTitle()).toEqual('逆');
   });
 
+  test('is safe for work', async () => {
+    expect(await parser.isSafeForWork()).toEqual(true);
+  });
+
   test('extracts tags', async () => {
     let tags = await parser.extractTags();
     expect(tags).toEqual([

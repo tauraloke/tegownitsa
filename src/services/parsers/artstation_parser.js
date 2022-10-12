@@ -74,4 +74,15 @@ export default class ArtstationParser extends AbstractBasicParser {
       return null;
     }
   }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    try {
+      let json = await this.getJson();
+      return !json.hide_as_adult;
+    } catch {
+      return true;
+    }
+  }
 }

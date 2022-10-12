@@ -26,7 +26,8 @@ export default class AbstractBasicParser {
       fullSizeImage: await this.extractFullSizeImage(),
       title: await this.extractTitle(),
       sourceUrls: await this.extractSourceUrls(),
-      authorUrls: await this.extractAuthorUrls()
+      authorUrls: await this.extractAuthorUrls(),
+      isSafeForWork: await this.isSafeForWork()
     });
   }
   /**
@@ -118,6 +119,12 @@ export default class AbstractBasicParser {
   }
   // @Abstract
   getClassTemplate() {
+    throw { error: 'Direct call of an interface method getClassTemplate()' };
+  }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
     throw { error: 'Direct call of an interface method getClassTemplate()' };
   }
   async getJson() {

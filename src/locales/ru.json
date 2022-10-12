@@ -187,7 +187,11 @@
     "deviantart_client_token": "client_secret",
     "deviantart_client_token_hint": "Секретное слово приложения",
     "kheina_similarity_threshold": "Порог подобия для Kheina",
-    "furaffinity_cookies": "Куки от Furaffinity"
+    "furaffinity_cookies": "Куки от Furaffinity",
+    "show_nsfw_files": "Показывать файлы NSFW ( ͡° ͜ʖ ͡°)",
+    "dialog_show_file": {
+      "is_safe": "SFW"
+    }
   },
   "list": {
     "empty": "Нет тегов в списке"

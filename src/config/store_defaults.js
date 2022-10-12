@@ -33,5 +33,6 @@ module.exports = {
   tag_source_saucenao_remaining: null,
   deviantart_client_id: null,
   deviantart_client_token: null,
-  furaffinity_cookies: null
+  furaffinity_cookies: null,
+  show_nsfw_files: true
 };

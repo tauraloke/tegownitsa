@@ -33,6 +33,10 @@ describe('Reactor parser', () => {
     expect(await parser.extractTitle()).toEqual('The Crimson Hourglass');
   });
 
+  test('is safe for work', async () => {
+    expect(await parser.isSafeForWork()).toEqual(true);
+  });
+
   test('extracts tags', async () => {
     let tags = await parser.extractTags();
     expect(tags).toEqual([

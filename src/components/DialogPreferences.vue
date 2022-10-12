@@ -65,6 +65,11 @@
               />
 
               <v-checkbox
+                v-model="options.show_nsfw_files"
+                :label="$t('settings.show_nsfw_files')"
+              />
+
+              <v-checkbox
                 v-model="options.import_exif_tags_as_tags"
                 :label="$t('settings.import_exif_tags_as_tags')"
               />

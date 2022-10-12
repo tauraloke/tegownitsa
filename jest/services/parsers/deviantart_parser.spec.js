@@ -43,6 +43,10 @@ describe('Deviantart parser', () => {
     expect(await parser.extractTitle()).toEqual('Maiden of Flames (Craiyon)');
   });
 
+  test('is safe for work', async () => {
+    expect(await parser.isSafeForWork()).toEqual(true);
+  });
+
   test('extract tags', async () => {
     let tags = await parser.extractTags();
     expect(tags).toEqual([

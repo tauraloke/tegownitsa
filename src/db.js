@@ -107,6 +107,13 @@ async function initDatabase({ dbPath }) {
       updated_at TIMESTAMP
     )`
   );
+  try {
+    dbConnection.run(
+      'ALTER TABLE files ADD COLUMN is_safe BOOLEAN DEFAULT TRUE'
+    );
+  } catch {
+    // do nothing
+  }
   dbConnection.run(
     `CREATE TABLE IF NOT EXISTS file_urls (
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,

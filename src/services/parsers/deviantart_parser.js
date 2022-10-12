@@ -151,4 +151,11 @@ export default class DeviantartParser extends AbstractBasicParser {
       return null;
     }
   }
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async isSafeForWork() {
+    let json = await this.getMetadata();
+    return !json.metadata.isMature;
+  }
 }
