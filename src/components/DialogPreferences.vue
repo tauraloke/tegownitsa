@@ -244,7 +244,7 @@
                     v-model="options.tag_source_threshold_kheina"
                     thumb-label="always"
                     :min="0"
-                    :max="1"
+                    :max="100"
                     class="mt-12"
                   ></v-slider>
                   <div class="text-caption mb-12">
