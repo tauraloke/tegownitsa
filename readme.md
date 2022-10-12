@@ -137,5 +137,4 @@ npm start
 - [x] Refine search interface for tags and other texts of images.
 - [x] Mark requested tag sources of a file as visited to prevent double requesting.
 - [x] Add tag extraction when a file imported by URL.
-- [ ] Add an architecture of plugins for Tesseract and Autotagging options. Current bundle is really too big.
 
