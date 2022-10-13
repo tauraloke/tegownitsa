@@ -28,7 +28,7 @@ describe('Yandere parser', () => {
   });
 
   test('is safe for work', async () => {
-    expect(await parser.isSafeForWork()).toEqual(true);
+    expect(await parser.isSafeForWork()).toEqual(false);
   });
 
   test('extracts tags', async () => {
