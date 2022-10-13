@@ -85,6 +85,7 @@
               <v-checkbox
                 v-model="currentFile.is_safe"
                 :label="$t('settings.dialog_show_file.is_safe')"
+                @change="onIsSafeUpdated"
               />
               <div v-if="fullsizes && fullsizes.length > 0">
                 <h5>{{ $t('dialog_show_file.fullsizes') }}</h5>
@@ -283,19 +284,6 @@ export default {
       return this.currentFile.exif_make + ' ' + this.currentFile.exif_model;
     }
   },
-  watch: {
-    'currentFile.is_safe'(newVal) {
-      if (!this.isDialogVisible) {
-        return;
-      }
-      console.log(
-        'switched is_safe checkbox for file',
-        this.currentFile?.id,
-        newVal
-      );
-      window.sqliteApi.updateFileIsSafeField(this.currentFile?.id, newVal);
-    }
-  },
   methods: {
     // Callable from parent component
     async showComponent(file) {
@@ -305,7 +293,9 @@ export default {
       if (this.$refs.predicted_tags) {
         this.$refs.predicted_tags.reset();
       }
-      this.currentFile = file;
+      this.currentFile = await window.sqliteApi.getFile(file.id);
+      this.currentFile.prev = file.prev;
+      this.currentFile.next = file.next;
       if (![true, false].includes(this.currentFile.is_safe)) {
         this.currentFile.is_safe = this.currentFile.is_safe === 1;
       }
@@ -328,10 +318,10 @@ export default {
       this.tags.push(event);
       this.$emit('added-tag', event);
     },
-    async updateCaption(caption = null) {
-      if (caption) {
-        this.currentFile.caption = caption;
-      }
+    setCaption(caption) {
+      this.currentFile.caption = caption;
+    },
+    async updateCaption() {
       if (!this.currentFile?.id) {
         console.log('Have no current file!');
         return false;
@@ -340,14 +330,12 @@ export default {
         this.currentFile?.caption,
         this.currentFile?.id
       ]);
-      if (!caption) {
-        this.$emit(
-          'toast',
-          this.$t('dialog_show_file.caption_updated_for_file_x', [
-            this.currentFile?.id
-          ])
-        );
-      }
+      this.$emit(
+        'toast',
+        this.$t('dialog_show_file.caption_updated_for_file_x', [
+          this.currentFile?.id
+        ])
+      );
     },
     clickedOnCaptionTextarea(event) {
       if (event?.path?.[0]?.nodeName == 'I') {
@@ -439,6 +427,15 @@ export default {
         this.$emit('toast', this.$t('dialog_show_file.wrong_file_removing'));
         this.isFileRemovingInDialog = false;
       }
+    },
+    onIsSafeUpdated() {
+      let newVal = !!this.currentFile.is_safe;
+      console.log(
+        'switched is_safe checkbox for file',
+        this.currentFile?.id,
+        newVal
+      );
+      window.sqliteApi.updateFileIsSafeField(this.currentFile?.id, newVal);
     }
   }
 };

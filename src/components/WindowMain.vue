@@ -525,8 +525,8 @@ export default {
             [caption, file['id']]
           );
           filesToScan[i].caption = caption;
-          if (this.currentFile) {
-            this.$refs.dialog_show_file.updateCaption(caption);
+          if (this.currentFile && this.currentFile.id == file['id']) {
+            this.$refs.dialog_show_file.setCaption(caption);
           }
           scanJob.incrementProgress(1);
         } catch (e) {

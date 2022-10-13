@@ -18,7 +18,7 @@ export default class YandereParser extends BasicJsonMoebooruParser {
    */
   async isSafeForWork() {
     let json = await this.getJson();
-    const safeRatings = ['s', 'q'];
+    const safeRatings = ['s'];
     return safeRatings.includes(json.posts[0].rating);
   }
 }
