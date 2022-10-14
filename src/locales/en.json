@@ -191,7 +191,9 @@
     "show_nsfw_files": "Show NSFW files ( ͡° ͜ʖ ͡°)",
     "dialog_show_file": {
       "is_safe": "SFW"
-    }
+    },
+    "page_limit": "Image limit per page",
+    "search": "Search"
   },
   "list": {
     "empty": "No tags in list"

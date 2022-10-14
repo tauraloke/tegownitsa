@@ -18,6 +18,10 @@
           <v-icon start> mdi-application-cog-outline </v-icon>
           {{ $t('settings.application') }}
         </v-tab>
+        <v-tab value="search">
+          <v-icon start> mdi-magnify </v-icon>
+          {{ $t('settings.search') }}
+        </v-tab>
         <v-tab value="tesseract">
           <v-icon start> mdi-cube-outline </v-icon>
           {{ $t('settings.tesseract_ocr') }}
@@ -65,11 +69,6 @@
               />
 
               <v-checkbox
-                v-model="options.show_nsfw_files"
-                :label="$t('settings.show_nsfw_files')"
-              />
-
-              <v-checkbox
                 v-model="options.import_exif_tags_as_tags"
                 :label="$t('settings.import_exif_tags_as_tags')"
               />
@@ -78,13 +77,35 @@
                 v-model="options.recursive_directory_import"
                 :label="$t('settings.recursive_directory_import')"
               />
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+        <v-window-item value="search">
+          <v-card flat>
+            <v-card-text>
+              <v-checkbox
+                v-model="options.show_nsfw_files"
+                :label="$t('settings.show_nsfw_files')"
+              />
 
               <v-text-field
                 v-model="options.search_tips"
                 :label="$t('settings.search_tips')"
                 :hint="$t('settings.search_tips_hint')"
-                class="mb-8 mt-8"
+                class="mb-12 mt-8"
               />
+
+              <v-slider
+                v-model="options.page_limit"
+                thumb-label="always"
+                :step="1"
+                :min="10"
+                :max="100"
+                class="mt-12"
+              ></v-slider>
+              <div class="text-caption mb-12">
+                {{ $t('settings.page_limit') }}
+              </div>
             </v-card-text>
           </v-card>
         </v-window-item>
@@ -335,7 +356,7 @@ let previousOptions = {};
 
 export default {
   name: 'DialogPreferences',
-  emits: ['option-changed'],
+  emits: ['option-changed', 'update-page-limit'],
   data() {
     return {
       isDialogVisible: false,
@@ -481,6 +502,9 @@ export default {
         } else {
           return;
         }
+      }
+      if (key === 'page_limit') {
+        this.$emit('update-page-limit', value);
       }
       if (key === 'lang') {
         this.$root.$i18n.locale = value;

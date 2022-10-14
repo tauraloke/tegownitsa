@@ -31,8 +31,9 @@ export async function run(_event, db, titles) {
 
   let namespacePrefixes = Object.keys(tagNamespaces);
   let hardConditions = [ALWAYS_TRUE_CONTIDION];
+  let nsfwCondition = null;
   if (!config.get('show_nsfw_files')) {
-    hardConditions.push('is_safe=TRUE');
+    nsfwCondition = 'is_safe=TRUE';
   }
   let softConditions = titles
     .split(',')
@@ -55,6 +56,11 @@ export async function run(_event, db, titles) {
         limit = title;
         return null;
       }
+      if (namespace == 'nsfw') {
+        if (title == 'true') {
+          nsfwCondition = 'is_safe=FALSE';
+        }
+      }
       if (!hardConditionParsers[namespace] || !title) {
         return null;
       }
@@ -67,6 +73,9 @@ export async function run(_event, db, titles) {
     .filter((c) => c)
     .map((c) => `(${c})`);
 
+  if (nsfwCondition) {
+    hardConditions.push(nsfwCondition);
+  }
   hardConditions = hardConditions.map((c) => `(${c})`);
   let limitSubQuery = limit == 'no' ? '' : `LIMIT ${limit}`;
 

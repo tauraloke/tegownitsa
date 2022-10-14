@@ -34,5 +34,6 @@ module.exports = {
   deviantart_client_id: null,
   deviantart_client_token: null,
   furaffinity_cookies: null,
-  show_nsfw_files: true
+  show_nsfw_files: true,
+  page_limit: 30
 };

@@ -41,7 +41,10 @@ import tagNamespaces from '../config/tag_namespaces.js';
 import hardConditionParsers from '../services/file_condition_pair_parser.js';
 
 const namespaces = Object.keys(tagNamespaces).map((n) => n.toLowerCase());
-const pseudoNameSpaces = [...Object.keys(hardConditionParsers), ...['limit']];
+const pseudoNameSpaces = [
+  ...Object.keys(hardConditionParsers),
+  ...['limit', 'nsfw']
+];
 
 export default {
   name: 'FormSearchFiles',

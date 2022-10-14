@@ -39,17 +39,24 @@
         <v-col cols="12" sm="8">
           <!-- files -->
           <h3>{{ $t('main_window.files') }}</h3>
+
           <v-progress-linear
             v-if="filesInProgress"
             indeterminate
             color="white darken-2"
           />
+          <div v-if="filePages > 1" class="text-center">
+            <v-pagination
+              v-model="currentFilesPage"
+              :length="filePages"
+            ></v-pagination>
+          </div>
           <div class="justify-center">
             {{ $t('main_window.found_x_files', files?.length) }}
           </div>
           <v-row id="files" class="mt-4">
             <v-col
-              v-for="file in files"
+              v-for="file in filesOnPage"
               :key="file.id"
               class="d-flex child-flex"
               cols="2"
@@ -66,6 +73,12 @@
               />
             </v-col>
           </v-row>
+          <div v-if="filePages > 1" class="text-center">
+            <v-pagination
+              v-model="currentFilesPage"
+              :length="filePages"
+            ></v-pagination>
+          </div>
         </v-col>
       </v-row>
     </main>
@@ -104,7 +117,10 @@
       </v-card>
     </v-dialog>
 
-    <dialog-preferences ref="dialog_preferences" />
+    <dialog-preferences
+      ref="dialog_preferences"
+      @update-page-limit="setPageLimit($event)"
+    />
 
     <dialog-dublicates
       ref="dialog_dublicates"
@@ -220,8 +236,24 @@ export default {
       jobProgresses: {},
       authorUrls: [],
       tagsInProgess: false,
-      filesInProgress: false
+      filesInProgress: false,
+      pageLimit: 30,
+      currentFilesPage: 1
     };
+  },
+  computed: {
+    filePages() {
+      if (this.pageLimit == 0) {
+        return 1;
+      }
+      return Math.ceil(this.files.length / this.pageLimit);
+    },
+    filesOnPage() {
+      return this.files.slice(
+        (this.currentFilesPage - 1) * this.pageLimit,
+        this.currentFilesPage * this.pageLimit
+      );
+    }
   },
   watch: {
     files: function (value) {
@@ -230,11 +262,33 @@ export default {
         return true;
       }
       this.tagsInProgess = true;
-      window.sqliteApi.getTagsForFiles(value.map((f) => f.id)).then((tags) => {
-        this.tags = tags;
-        this.tagsInProgess = false;
-      });
+      window.sqliteApi
+        .getTagsForFiles(
+          value
+            .slice(
+              (this.currentFilesPage - 1) * this.pageLimit,
+              this.currentFilesPage * this.pageLimit
+            )
+            .map((f) => f.id)
+        )
+        .then((tags) => {
+          this.tags = tags;
+          this.tagsInProgess = false;
+        });
       return true;
+    },
+    currentFilesPage: function (value) {
+      this.tagsInProgess = true;
+      window.sqliteApi
+        .getTagsForFiles(
+          this.files
+            .slice((value - 1) * this.pageLimit, value * this.pageLimit)
+            .map((f) => f.id)
+        )
+        .then((tags) => {
+          this.tags = tags;
+          this.tagsInProgess = false;
+        });
     }
   },
   mounted() {
@@ -267,11 +321,13 @@ export default {
       this[method](...args);
     });
     this.searchFilesByTagTitle('limit:100');
-    this.showAllTags();
     window.configApi.getConfig('dark_theme').then((isDark) => {
       if (isDark) {
         this.$root.setTheme(isDark);
       }
+    });
+    window.configApi.getConfig('page_limit').then((page_limit) => {
+      this.pageLimit = page_limit;
     });
     window.configApi.getConfig('tag_source_iqdb_bottom_cooldown').then((bc) => {
       window.configApi.getConfig('tag_source_iqdb_top_cooldown').then((tc) => {
@@ -298,6 +354,10 @@ export default {
     });
   },
   methods: {
+    setPageLimit(page_limit) {
+      this.currentFilesPage = 1;
+      this.pageLimit = page_limit;
+    },
     startDownloadProgress({ totalBytes, url, archiveTitle }) {
       let job = new Job({
         name: this.$t('jobs.downloading-archive', [archiveTitle]),
@@ -484,9 +544,6 @@ export default {
       }
       console.log(this.$t('toast.file_has_imported', [this.urlForImport]));
       this.searchFilesByTagTitle('fresh:5');
-    },
-    async showAllTags() {
-      this.tags = await window.sqliteApi.getAllTags();
     },
     async scanSelectedFiles() {
       let filesToScan = this.getCurrrentFiles().filter(

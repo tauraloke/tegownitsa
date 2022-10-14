@@ -191,7 +191,9 @@
     "show_nsfw_files": "Показывать файлы NSFW ( ͡° ͜ʖ ͡°)",
     "dialog_show_file": {
       "is_safe": "SFW"
-    }
+    },
+    "page_limit": "Количество изображений на страницу",
+    "search": "Поиск"
   },
   "list": {
     "empty": "Нет тегов в списке"
