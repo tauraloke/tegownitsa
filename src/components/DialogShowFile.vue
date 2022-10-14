@@ -350,6 +350,7 @@ export default {
         (t) => t.namespace_id == tagNamespaces.CREATOR
       );
       for (let i in authors) {
+        this.authorUrls = [];
         let urls = await window.sqliteApi.getAuthorUrls(authors[i].id);
         this.authorUrls.push(...urls);
       }

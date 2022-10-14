@@ -190,6 +190,7 @@ import constants from '@/config/constants.json';
 import getStrategy from '@/services/tag_sources_strategies/get_strategy.js';
 import tagNamespace from '@/config/tag_namespaces.js';
 import ParseTagResourceTask from '@/services/tasks/parse_tag_resource_task.js';
+import sourceTypes from '@/config/source_type.json';
 
 export default {
   name: 'WindowMain',
@@ -539,6 +540,14 @@ export default {
     getCurrrentFiles() {
       return this.currentFile ? [this.currentFile] : this.files;
     },
+    async getFilteredCurrentFiles(source_type) {
+      const polledFileIds = await window.sqliteApi.getFileIdPolledWithSource(
+        source_type
+      );
+      return this.getCurrrentFiles().filter(
+        (f) => !polledFileIds.includes(f.id)
+      );
+    },
     async lookUpDups() {
       this.hideFile();
       let files = this.getCurrrentFiles();
@@ -586,7 +595,7 @@ export default {
           this.afterTagsAdded();
         }
       });
-      let files = this.getCurrrentFiles();
+      let files = await this.getFilteredCurrentFiles(sourceTypes.IQDB);
       let similarityThreshold = await window.configApi.getConfig(
         'tag_source_threshold_iqdb'
       );
@@ -612,7 +621,7 @@ export default {
       }
     },
     async loadTagsFromSaucenao() {
-      let files = this.getCurrrentFiles();
+      let files = await this.getFilteredCurrentFiles(sourceTypes.SAUCENAO);
       let strategy = getStrategy({
         key: await window.configApi.getConfig('tag_source_strategies'),
         onAfterDataAdded: () => {
@@ -644,7 +653,7 @@ export default {
       }
     },
     async loadTagsFromKheina() {
-      let files = this.getCurrrentFiles();
+      let files = await this.getFilteredCurrentFiles(sourceTypes.KHEINA);
       let strategy = getStrategy({
         key: await window.configApi.getConfig('tag_source_strategies'),
         onAfterDataAdded: () => {

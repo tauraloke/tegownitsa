@@ -33,7 +33,7 @@ export default class IqdbTask extends BaseTask {
         )
       ) {
         console.log(
-          `Resource ${this.resource_name} is already polled for the file #${this.file['id']}`
+          `Resource IQDB is already polled for the file #${this.file['id']}`
         );
         this.incrementJobProgress(1);
         return { skip_timeout: true };

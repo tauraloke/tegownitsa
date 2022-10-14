@@ -8,7 +8,7 @@ import KheinaResponseExtractor from '../response_extractor/kheina_response_extra
 import Job from '../job.js';
 import sourceTypes from '../../config/source_type.json';
 
-export default class IqdbTask extends BaseTask {
+export default class KheinaTask extends BaseTask {
   /**
    * @param {object} options
    * @param {object} options.file
@@ -33,7 +33,7 @@ export default class IqdbTask extends BaseTask {
         )
       ) {
         console.log(
-          `Resource ${this.resource_name} is already polled for the file #${this.file['id']}`
+          `Resource Kheina is already polled for the file #${this.file['id']}`
         );
         this.incrementJobProgress(1);
         return { skip_timeout: true, status: 'OK' };
