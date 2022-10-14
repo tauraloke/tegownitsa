@@ -261,6 +261,7 @@ export default {
         this.tags = [];
         return true;
       }
+      this.currentFilesPage = 1;
       this.tagsInProgess = true;
       window.sqliteApi
         .getTagsForFiles(
