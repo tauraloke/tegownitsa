@@ -654,6 +654,10 @@ export default {
         }
       });
       let files = await this.getFilteredCurrentFiles(sourceTypes.IQDB);
+      if (files.length == 0) {
+        this.toast(this.$t('main_window.no_files_to_tag_search'));
+        return false;
+      }
       let similarityThreshold = await window.configApi.getConfig(
         'tag_source_threshold_iqdb'
       );
@@ -661,7 +665,7 @@ export default {
         similarityThreshold = 0.8;
       }
       let job = new Job({
-        name: this.$t('jobs.retrieving_tags_from_sources'),
+        name: 'IQDB / ' + this.$t('jobs.tag_retrieving'),
         taskTotalCount: files.length,
         queue: this.task_queues.iqdb,
         vueComponent: this
@@ -680,6 +684,10 @@ export default {
     },
     async loadTagsFromSaucenao() {
       let files = await this.getFilteredCurrentFiles(sourceTypes.SAUCENAO);
+      if (files.length == 0) {
+        this.toast(this.$t('main_window.no_files_to_tag_search'));
+        return false;
+      }
       let strategy = getStrategy({
         key: await window.configApi.getConfig('tag_source_strategies'),
         onAfterDataAdded: () => {
@@ -693,7 +701,7 @@ export default {
         similarityThreshold = 80;
       }
       let job = new Job({
-        name: this.$t('jobs.retrieving_tags_from_sources'),
+        name: 'Saucenao / ' + this.$t('jobs.tag_retrieving'),
         taskTotalCount: files.length,
         queue: this.task_queues.iqdb,
         vueComponent: this
@@ -712,6 +720,10 @@ export default {
     },
     async loadTagsFromKheina() {
       let files = await this.getFilteredCurrentFiles(sourceTypes.KHEINA);
+      if (files.length == 0) {
+        this.toast(this.$t('main_window.no_files_to_tag_search'));
+        return false;
+      }
       let strategy = getStrategy({
         key: await window.configApi.getConfig('tag_source_strategies'),
         onAfterDataAdded: () => {
@@ -725,7 +737,7 @@ export default {
         similarityThreshold = 80;
       }
       let job = new Job({
-        name: this.$t('jobs.retrieving_tags_from_sources'),
+        name: 'Kheina / ' + this.$t('jobs.tag_retrieving'),
         taskTotalCount: files.length,
         queue: this.task_queues.iqdb,
         vueComponent: this

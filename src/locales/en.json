@@ -49,7 +49,8 @@
     "no_files_to_scan": "No new files to scan",
     "found_x_files": "No files found. | Found {n} file. | Found {n} files.",
     "author_urls": "Author links",
-    "pollee_file_sources": "Pollee tag sources"
+    "pollee_file_sources": "Pollee tag sources",
+    "no_files_to_tag_search": "All files in query are already inspected for tags."
   },
   "button": {
     "close": "Close",
@@ -202,13 +203,13 @@
     "time_left": "Remaining Time Prediction",
     "done": "Job is done",
     "scan_selected_files": "Scan selected files",
-    "retrieving_tags_from_sources": "Retrieving tags",
     "cancel": "Cancel this job",
     "import_folder": "Importing folder",
     "downloading-archive": "Downloading '{0}'",
     "unpacking-archive": "Unpacking archive '{0}'",
     "searching_dublicates": "Searching duplicates",
-    "download_updates": "Downloading updates"
+    "download_updates": "Downloading updates",
+    "tag_retrieving": "Tags retrieving"
   },
   "tags": {
     "namespaces": {

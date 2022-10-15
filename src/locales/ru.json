@@ -49,7 +49,8 @@
     "no_files_to_scan": "Нет новых файлов для сканирования",
     "found_x_files": "Файлы не найдены. | Найден {n} файл. | Найдено {n} файла. | Найдено {n} файлов.",
     "author_urls": "Ссылки на автора",
-    "pollee_file_sources": "Опрошенные источники тегов"
+    "pollee_file_sources": "Опрошенные источники тегов",
+    "no_files_to_tag_search": "Все файлы в запросе уже проверены на наличие тегов."
   },
   "button": {
     "cancel": "Отмена",
@@ -202,13 +203,13 @@
     "time_left": "Прогноз оставшегося времени",
     "done": "Задача выполнена",
     "scan_selected_files": "Распознать текст",
-    "retrieving_tags_from_sources": "Добыча тегов",
     "cancel": "Отменить это задание",
     "import_folder": "Импорт папки",
     "downloading-archive": "Загрузка '{0}'",
     "unpacking-archive": "Распаковка архива '{0}'",
     "searching_dublicates": "Поиск дубликатов",
-    "download_updates": "Загрузка обновлений"
+    "download_updates": "Загрузка обновлений",
+    "tag_retrieving": "Получение тегов"
   },
   "tags": {
     "namespaces": {
