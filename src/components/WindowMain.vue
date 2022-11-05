@@ -506,6 +506,11 @@ export default {
       if (!this.showDialogUrlForImport) {
         this.urlForImport = null;
         this.showDialogUrlForImport = true;
+        let clipboardText = await window.fileApi.getTextFromClipboard();
+        let isTextUrl = clipboardText.match(/http(s?):\/\//);
+        if (isTextUrl) {
+          this.urlForImport = clipboardText;
+        }
         return;
       }
       this.showDialogUrlForImport = false;
