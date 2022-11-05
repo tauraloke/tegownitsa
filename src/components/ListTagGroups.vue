@@ -137,6 +137,9 @@ export default {
       element.classList.add(classResult);
       setTimeout(() => {
         element.classList.remove(classResult);
+        if (classResult == 'success_glued') {
+          this.$emit('tag-removed', sourceTag);
+        }
       }, 2000);
     },
     isClosable(tag) {
