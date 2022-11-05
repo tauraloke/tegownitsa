@@ -542,6 +542,11 @@ export default {
           url: analyzeResponse.source_url,
           noRemoteItem: analyzeResponse.metadata
         }).run();
+      } else {
+        window.sqliteApi.addUrlToFile(
+          { url: analyzeResponse.source_url },
+          file_id
+        );
       }
       console.log(this.$t('toast.file_has_imported', [this.urlForImport]));
       this.searchFilesByTagTitle('fresh:5');
