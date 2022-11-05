@@ -401,6 +401,9 @@ export default {
         url
       );
       if (updatedFile) {
+        if (![true, false].includes(updatedFile.is_safe)) {
+          updatedFile.is_safe = updatedFile.is_safe === 1;
+        }
         this.currentFile = updatedFile;
         this.$emit('toast', this.$t('toast.file_improved'));
       } else {
