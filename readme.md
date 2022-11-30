@@ -137,4 +137,4 @@ npm start
 - [x] Refine search interface for tags and other texts of images.
 - [x] Mark requested tag sources of a file as visited to prevent double requesting.
 - [x] Add tag extraction when a file imported by URL.
-
+- [ ] Add proxy options and requesting tags with proxy.
