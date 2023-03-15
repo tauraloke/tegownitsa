@@ -47,7 +47,7 @@
     "roboto-fontface": "*",
     "sharp": "^0.31.1",
     "sharp-phash": "^2.0.0",
-    "sqlite3": "^5.1.2",
+    "sqlite3": "^5.1.6",
     "tesseract.js": "^3.0.3",
     "vue": "^3.2.40",
     "vue-i18n": "^9.2.2",
