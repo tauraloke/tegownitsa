@@ -1,6 +1,6 @@
 {
   "name": "tegownitsa",
-  "version": "1.2.0",
+  "version": "2.0.0-alpha",
   "private": true,
   "description": "Yet another image tag manager",
   "author": {
@@ -31,7 +31,8 @@
   "main": "background.js",
   "dependencies": {
     "@mdi/font": "7.0.96",
-    "@tensorflow/tfjs-node": "^3.21.1",
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "adm-zip": "^0.5.16",
     "core-js": "^3.25.5",
     "deviantart.ts": "^0.2.6",
     "electron-debug": "^3.2.0",
@@ -47,7 +48,7 @@
     "roboto-fontface": "*",
     "sharp": "^0.31.1",
     "sharp-phash": "^2.0.0",
-    "sqlite3": "^5.1.2",
+    "sqlite3": "^5.1.7",
     "tesseract.js": "^3.0.3",
     "vue": "^3.2.40",
     "vue-i18n": "^9.2.2",
