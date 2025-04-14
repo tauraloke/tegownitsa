@@ -124,6 +124,8 @@ if (isDevelopment) {
 
 // Connect IPC handlers and load DB
 let db = null;
+const userDataPath = app.getPath('userData');
+console.log('userDataPath', userDataPath); // TODO: вписать это ниже, если проверка будет корректной
 const sql_filename_path = path.join(
   path.dirname(app.getPath('exe')),
   'db.sqlite3'
@@ -132,6 +134,23 @@ const sql_filename_path = path.join(
   db = await getDb({ dbPath: sql_filename_path });
   new ApiConnector().connectIpcMainHandlers(db);
 })();
+
+const isDevMode =
+  process.env.NODE_ENV === 'development' || process.argv.includes('--dev');
+const isServeMode = process.argv.includes('--serve');
+const isInstalled =
+  process.execPath.includes('AppData') ||
+  process.execPath.includes('Applications');
+
+if (isDevMode) {
+  console.log('Developer mode!');
+} else if (isServeMode) {
+  console.log('Serve mode!');
+} else if (isInstalled) {
+  console.log('Installed mode!');
+} else {
+  console.log('Unknown mode!');
+}
 
 new UpdateService({ cooldown_hours: 4, mainWindow: win }).connect();
 
