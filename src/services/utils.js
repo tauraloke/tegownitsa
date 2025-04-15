@@ -29,3 +29,30 @@ export function sleep(ms) {
 export function prepareTag(title) {
   return title.trim().replace(/,/g, '').replace(/\s/g, '_');
 }
+/**
+ * Only for nodejs part of the application.
+ * @param {Electron.App} app
+ * @param {object} path
+ * @returns {string}
+ */
+export function getAppFilesDir(app, path) {
+  if (
+    process.env.NODE_ENV === 'development' ||
+    process.argv.includes('--dev')
+  ) {
+    //Developer mode
+    return path.dirname(app.getPath('exe'));
+  } else if (process.argv.includes('--serve')) {
+    //Serve mode
+    return path.dirname(app.getPath('exe'));
+  } else if (
+    process.execPath.includes('AppData') ||
+    process.execPath.includes('Applications')
+  ) {
+    //Installed mode
+    return app.getPath('userData');
+  } else {
+    //Unknown mode
+    return path.dirname(app.getPath('exe'));
+  }
+}

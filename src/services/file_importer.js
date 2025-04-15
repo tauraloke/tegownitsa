@@ -1,6 +1,6 @@
 import { readFileSync, statSync, mkdirSync, copyFile, writeFileSync } from 'fs';
 import { app, clipboard } from 'electron';
-import { join, dirname, extname, basename, parse } from 'path';
+import path from 'path';
 import phash from 'sharp-phash';
 import sharp from 'sharp';
 import { create } from 'exif-parser';
@@ -12,7 +12,7 @@ import {
   CAPTION_YET_NOT_SCANNED
 } from '../config/constants.json';
 import { EXIF } from '../config/source_type.json';
-import { applicationUserAgent, randomDigit } from './utils.js';
+import { applicationUserAgent, randomDigit, getAppFilesDir } from './utils.js';
 import { run as addTag } from '../api/sqlite_api/add_tag.js';
 import urlParser from 'url';
 
@@ -23,11 +23,11 @@ class FileImporter {
     this.db = db;
   }
   getStorageDirectoryPath() {
-    let currentDirPath = join(dirname(app.getPath('exe')), 'storage');
+    let currentDirPath = path.join(getAppFilesDir(app, path), 'storage');
     return config.get('storage_dir') || currentDirPath;
   }
   generateStorageDirPathForFile() {
-    return join(
+    return path.join(
       this.getStorageDirectoryPath(),
       randomDigit().toString(),
       randomDigit().toString()
@@ -38,7 +38,7 @@ class FileImporter {
       new Date().getTime() +
       randomDigit() +
       randomDigit() +
-      extname(absolutePath)
+      path.extname(absolutePath)
     );
   }
   extractExifTags(file_id, exif) {
@@ -104,7 +104,7 @@ class FileImporter {
         newFilePathInStorage,
         newPreviewPathInStorage,
         absolutePath,
-        basename(absolutePath),
+        path.basename(absolutePath),
         imagehash,
         metadata.width,
         metadata.height,
@@ -124,14 +124,14 @@ class FileImporter {
     const storageDirPathForFile = this.generateStorageDirPathForFile();
     const filename = this.generateFilename(absolutePath);
     mkdirSync(storageDirPathForFile, { recursive: true });
-    const newFilePathInStorage = join(storageDirPathForFile, filename);
+    const newFilePathInStorage = path.join(storageDirPathForFile, filename);
 
     copyFile(absolutePath, newFilePathInStorage, () => {});
     const image = sharp(fileImage);
     const metadata = await image.metadata();
 
     // make preview
-    const newPreviewPathInStorage = join(
+    const newPreviewPathInStorage = path.join(
       storageDirPathForFile,
       PREVIEW_PREFIX + filename
     );
@@ -186,13 +186,13 @@ class FileImporter {
       ).buffer()
     );
     const storageRootDir = this.getStorageDirectoryPath();
-    const storageDirPathForFile = join(storageRootDir, 'tmp');
+    const storageDirPathForFile = path.join(storageRootDir, 'tmp');
     mkdirSync(storageDirPathForFile, {
       recursive: true
     });
-    let tmpFilePath = join(
+    let tmpFilePath = path.join(
       storageDirPathForFile,
-      parse(url).name.split('?')[0] + '.png'
+      path.parse(url).name.split('?')[0] + '.png'
     );
     await sharp(buffer).toFormat('png').toFile(tmpFilePath);
     return tmpFilePath;
@@ -203,11 +203,11 @@ class FileImporter {
       return false;
     }
     const storageRootDir = this.getStorageDirectoryPath();
-    const storageDirPathForFile = join(storageRootDir, 'tmp');
+    const storageDirPathForFile = path.join(storageRootDir, 'tmp');
     mkdirSync(storageDirPathForFile, {
       recursive: true
     });
-    let tmpFilePath = join(
+    let tmpFilePath = path.join(
       storageDirPathForFile,
       new Date().getTime() +
         randomDigit() +
