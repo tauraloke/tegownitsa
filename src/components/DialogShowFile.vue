@@ -42,14 +42,6 @@
               :tags="tags"
               @after-add-tag="afterAddTagHandler($event)"
             />
-            <predicted-tags
-              ref="predicted_tags"
-              :current-file="currentFile"
-              :tags="tags"
-              class="mb-6"
-              @after-add-tag="afterAddTagHandler($event)"
-              @toast="$emit('toast', $event)"
-            />
             <list-tag-groups
               :tags="tags"
               closable-tags
@@ -219,14 +211,13 @@
 <script>
 import FormAddNewTagToFile from '@/components/FormAddNewTagToFile.vue';
 import ListTagGroups from '@/components/ListTagGroups.vue';
-import PredictedTags from '@/components/PredictedTags.vue';
 import tagNamespaces from '@/config/tag_namespaces.js';
 import sourceTypes from '@/config/source_type.json';
 import { swap } from '@/services/utils.js';
 
 export default {
   name: 'DialogShowFile',
-  components: { FormAddNewTagToFile, ListTagGroups, PredictedTags },
+  components: { FormAddNewTagToFile, ListTagGroups },
   emits: [
     'search-by-tag',
     'toast',
@@ -290,9 +281,6 @@ export default {
       if (!file?.id) {
         return false;
       }
-      if (this.$refs.predicted_tags) {
-        this.$refs.predicted_tags.reset();
-      }
       this.currentFile = await window.sqliteApi.getFile(file.id);
       this.currentFile.prev = file.prev;
       this.currentFile.next = file.next;
@@ -303,9 +291,6 @@ export default {
       this.isDialogVisible = true;
     },
     hideComponent() {
-      if (this.$refs.predicted_tags) {
-        this.$refs.predicted_tags.reset();
-      }
       this.isDialogVisible = false;
       this.tags = [];
       this.urls = [];

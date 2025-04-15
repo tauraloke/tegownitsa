@@ -116,8 +116,6 @@ npm start
   transformation, `Apache 2.0 license`.
   - [Tesseract](https://github.com/tesseract-ocr/tesseract) OCR engine for
   extracting textes from images for better indexing, `Apache 2.0 license`.
-  - [TensorflowJS](https://www.tensorflow.org/js/) is a ML library adapted for JavaScript, `Apache-2.0 license`.
-  - [Autotagger](https://github.com/danbooru/autotagger) is a project to predict tags on anime images. You can see [online demo](https://autotagger.donmai.us/). `MIT license`.
 
 
 ## How you can help
@@ -138,3 +136,5 @@ npm start
 - [x] Mark requested tag sources of a file as visited to prevent double requesting.
 - [x] Add tag extraction when a file imported by URL.
 - [ ] Add proxy options and requesting tags with proxy.
+- [ ] Remove old tag predictor.
+- [ ] Add tag predictor WD Tagger 14 Big (with Python).

@@ -60,8 +60,6 @@
     "restore": "Restore",
     "add": "Add",
     "back": "Go back",
-    "predict_tags": "Predict tags by neuronet",
-    "hide_predicted_tags": "Hide predictions",
     "previous": "To previous one",
     "next": "To next one"
   },
@@ -111,12 +109,9 @@
     "click_to_floppy_to_save_changes": "Click to floppy to save changes",
     "sources": "Sources",
     "caption_updated_for_file_x": "Caption updated for file #{0}",
-    "wait_for_neuronet_files": "No data found to predictions. You can wait for loading neural network files or cancel its.",
-    "neuronet_files_still_loading": "Files for a neuronet are still loading.",
     "fullsizes": "Found copies in the Internet",
     "size_parameters": "Image sizes",
     "improve_file": "Download and change",
-    "cannot_process_by_neuronet": "Something wrong - cannot recognize tags",
     "remove_file": "Remove the file",
     "wrong_file_removing": "Something wrong while file was removing"
   },
