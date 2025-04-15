@@ -32,7 +32,6 @@
   "main": "background.js",
   "dependencies": {
     "@mdi/font": "7.0.96",
-    "@tensorflow/tfjs-node": "^4.22.0",
     "adm-zip": "^0.5.16",
     "core-js": "^3.25.5",
     "deviantart.ts": "^0.2.6",
