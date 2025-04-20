@@ -68,6 +68,17 @@
               />
             </div>
 
+            <v-card
+              v-if="currentFile.birthtime"
+              elevation="4"
+              class="ma-2 pa-8"
+            >
+              <h5>{{ $t('dialog_show_file.birthtime') }}</h5>
+              <div>
+                {{ currentFile.birthtime }}
+              </div>
+            </v-card>
+
             <v-card elevation="4" class="ma-2 pa-8">
               <h5>{{ $t('dialog_show_file.size_parameters') }}</h5>
               <div>
@@ -120,6 +131,44 @@
                 {{ $t('dialog_show_file.maked_by') }}: {{ currentFileModel }}
               </div>
             </v-card>
+
+            <v-card
+              v-if="AIMetadataExists"
+              id="file_info_ai_metadata"
+              elevation="4"
+              class="ma-2 pa-4"
+            >
+              <h4>{{ $t('dialog_show_file.ai_metadata') }}</h4>
+              <div v-if="currentFile.neuro_prompt">
+                {{ $t('dialog_show_file.ai_prompt') }}:
+                {{ currentFile.neuro_prompt }}
+              </div>
+              <div v-if="currentFile.neuro_negativePrompt">
+                {{ $t('dialog_show_file.ai_negative_prompt') }}:
+                {{ currentFile.neuro_negativePrompt }}
+              </div>
+              <div v-if="currentFile.neuro_steps">
+                {{ $t('dialog_show_file.ai_steps') }}:
+                {{ currentFile.neuro_steps }}
+              </div>
+              <div v-if="currentFile.neuro_sampler">
+                {{ $t('dialog_show_file.ai_sampler') }}:
+                {{ currentFile.neuro_sampler }}
+              </div>
+              <div v-if="currentFile.neuro_cfgScale">
+                {{ $t('dialog_show_file.ai_cfg_scale') }}:
+                {{ currentFile.neuro_cfgScale }}
+              </div>
+              <div v-if="currentFile.neuro_seed">
+                {{ $t('dialog_show_file.neuro_seed') }}:
+                {{ currentFile.neuro_seed }}
+              </div>
+              <div v-if="currentFile.neuro_model">
+                {{ $t('dialog_show_file.neuro_model') }}:
+                {{ currentFile.neuro_model }}
+              </div>
+            </v-card>
+
             <v-card elevation="4" class="ma-2 clickable-i">
               <v-textarea
                 v-model="currentFile.caption"
@@ -246,6 +295,17 @@ export default {
         this.currentFile?.exif_create_date ||
         (this.currentFile?.exif_latitude && this.currentFile?.exif_longitude) ||
         this.currentFile?.exif_make
+      );
+    },
+    AIMetadataExists() {
+      return (
+        this.currentFile?.neuro_model ||
+        this.currentFile?.neuro_seed ||
+        this.currentFile?.neuro_cfgScale ||
+        this.currentFile?.neuro_sampler ||
+        this.currentFile?.neuro_steps ||
+        this.currentFile?.neuro_negativePrompt ||
+        this.currentFile?.neuro_prompt
       );
     },
     currentFileDateCreated() {

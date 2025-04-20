@@ -109,6 +109,31 @@ async function initDatabase({ dbPath }) {
     )`
   );
   dbConnection.run(
+    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_prompt TEXT'
+  );
+  dbConnection.run(
+    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_negativePrompt TEXT'
+  );
+  dbConnection.run(
+    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_steps INTEGER'
+  );
+  dbConnection.run(
+    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_sampler TEXT'
+  );
+  dbConnection.run(
+    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_cfgScale REAL'
+  );
+  dbConnection.run(
+    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_seed INTEGER'
+  );
+  dbConnection.run(
+    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_model TEXT'
+  );
+  dbConnection.run(
+    'ALTER TABLE files ADD COLUMN IF NOT EXISTS birthtime INTEGER'
+  );
+
+  dbConnection.run(
     `CREATE TABLE IF NOT EXISTS file_urls (
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
       file_id INTEGER,

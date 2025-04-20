@@ -22,6 +22,16 @@ module.exports = defineConfig({
       customFileProtocol: './',
       externals: ['tesseract.js'],
       preload: 'src/preload.js',
+      chainWebpackMainProcess: (config) => {
+        config.module
+          .rule('babel')
+          .test(/\.js$/)
+          .use('babel-loader')
+          .loader('babel-loader')
+          .options({
+            plugins: ['@babel/plugin-transform-optional-chaining']
+          });
+      },
       builderOptions: {
         appId: 'com.electron.Tegownitsa',
         asarUnpack: ['**/node_modules/sharp/**'],

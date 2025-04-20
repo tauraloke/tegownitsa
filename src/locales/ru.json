@@ -113,7 +113,16 @@
     "size_parameters": "Размеры изображения",
     "improve_file": "Скачать и заменить",
     "remove_file": "Удалить файл",
-    "wrong_file_removing": "Что-то не так при удалении файла"
+    "wrong_file_removing": "Что-то не так при удалении файла",
+    "ai_metadata": "Обнаруженные метаданные ИИ-генерации",
+    "ai_prompt": "Положительная подсказка",
+    "ai_negative_prompt": "Негативная подсказка",
+    "ai_steps": "Число шагов",
+    "ai_sampler": "Сэмплер",
+    "ai_cfg_scale": "CFG",
+    "neuro_seed": "Зерно генерации",
+    "neuro_model": "Модель",
+    "birthtime": "Время создания файла"
   },
   "settings": {
     "application": "Приложение",

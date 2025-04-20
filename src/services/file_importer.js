@@ -11,10 +11,15 @@ import {
   PREVIEW_PREFIX,
   CAPTION_YET_NOT_SCANNED
 } from '../config/constants.json';
-import { EXIF } from '../config/source_type.json';
+import { EXIF, AI_GENERATED } from '../config/source_type.json';
 import { applicationUserAgent, randomDigit, getAppFilesDir } from './utils.js';
 import { run as addTag } from '../api/sqlite_api/add_tag.js';
 import urlParser from 'url';
+import { extractAIMetadata } from './extract_neuro_metadata.js';
+
+/** @type {[{name:string, id:Number, post_count:Number, category:Number}]} */
+import booruTagList from '../config/danbooru_tags.json';
+const booruTagNames = booruTagList.map((t) => t.name);
 
 const PREVIEW_WIDTH = 140;
 
@@ -41,6 +46,36 @@ class FileImporter {
       path.extname(absolutePath)
     );
   }
+  /**
+   * Parse prompt string and save valuable tokens as tags
+   * @param {Number} file_id
+   * @param {string} prompt
+   */
+  extractAIPromptTags(file_id, prompt) {
+    const tags = prompt
+      .split(',')
+      .map((s) =>
+        s.replace(' ', '_').replace('\\(', '(').replace('\\)', ')').trim()
+      );
+    let locale = 'en'; // just default
+    let source_type = AI_GENERATED;
+    for (let i in tags) {
+      let booruTag = booruTagNames.find((t) => t.name === tags[i]);
+      if (booruTag) {
+        let prefix = '';
+        if (booruTag.category === 3) prefix = 'series:';
+        if (booruTag.category === 4) prefix = 'character:';
+
+        // Add only if find the tag
+        addTag({}, this.db, file_id, prefix + tags[i], locale, source_type);
+      }
+    }
+  }
+  /**
+   * Extract tag from exif and save any of them
+   * @param {Number} file_id
+   * @param {object} exif
+   */
   extractExifTags(file_id, exif) {
     // try to extract exif tags
     if (!exif) {
@@ -70,7 +105,13 @@ class FileImporter {
     //save keywords
     let source_type = EXIF;
     for (let i in tags) {
-      addTag({}, this.db, file_id, tags[i], locale, source_type);
+      let prefix = '';
+      let booruTag = booruTagNames.find((t) => t.name === tags[i]);
+      if (booruTag) {
+        if (booruTag.category === 3) prefix = 'series:';
+        if (booruTag.category === 4) prefix = 'character:';
+      }
+      addTag({}, this.db, file_id, prefix + tags[i], locale, source_type);
     }
   }
   async getPHash(absolutePath, fileImage) {
@@ -90,16 +131,30 @@ class FileImporter {
       return {};
     }
   }
+  /**
+   *
+   * @param {object} exif
+   * @param {string} newFilePathInStorage
+   * @param {string} newPreviewPathInStorage
+   * @param {string} absolutePath
+   * @param {string} imagehash
+   * @param {object} metadata
+   * @param {import('./extract_neuro_metadata.js').AIMetadata} AIMetadata
+   * @param {Number} birthtime
+   * @returns
+   */
   async insertFile(
     exif,
     newFilePathInStorage,
     newPreviewPathInStorage,
     absolutePath,
     imagehash,
-    metadata
+    metadata,
+    AIMetadata,
+    birthtime
   ) {
     let { file_id } = await this.db.query(
-      'INSERT INTO files (full_path, preview_path, source_path, source_filename, imagehash, width, height, caption, exif_make, exif_model, exif_latitude, exif_longitude, exif_create_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id AS file_id;',
+      'INSERT INTO files (full_path, preview_path, source_path, source_filename, imagehash, width, height, caption, exif_make, exif_model, exif_latitude, exif_longitude, exif_create_date, neuro_prompt, neuro_negativePrompt, neuro_steps, neuro_sampler, neuro_cfgScale, neuro_seed, neuro_model, file_birthtime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id AS file_id;',
       [
         newFilePathInStorage,
         newPreviewPathInStorage,
@@ -113,7 +168,15 @@ class FileImporter {
         exif.Model,
         exif.GPSLatitude,
         exif.GPSLongitude,
-        exif.CreateDate
+        exif.CreateDate,
+        AIMetadata.prompt,
+        AIMetadata.negativePrompt,
+        AIMetadata.steps,
+        AIMetadata.sampler,
+        AIMetadata.cfgScale,
+        AIMetadata.seed,
+        AIMetadata.model,
+        birthtime
       ]
     );
     return file_id;
@@ -129,6 +192,7 @@ class FileImporter {
     copyFile(absolutePath, newFilePathInStorage, () => {});
     const image = sharp(fileImage);
     const metadata = await image.metadata();
+    const AIMetadata = await extractAIMetadata(newFilePathInStorage);
 
     // make preview
     const newPreviewPathInStorage = path.join(
@@ -140,7 +204,8 @@ class FileImporter {
     return {
       metadata: metadata,
       newPreviewPathInStorage: newPreviewPathInStorage,
-      newFilePathInStorage: newFilePathInStorage
+      newFilePathInStorage: newFilePathInStorage,
+      AIMetadata: AIMetadata
     };
   }
   async importFileToStorage(absolutePath) {
@@ -153,9 +218,14 @@ class FileImporter {
     if (!imagehash) {
       return false;
     }
+    const { birthtime } = statSync(absolutePath);
 
-    let { newFilePathInStorage, newPreviewPathInStorage, metadata } =
-      await this.moveFileToMainStorage(fileImage, absolutePath);
+    let {
+      newFilePathInStorage,
+      newPreviewPathInStorage,
+      metadata,
+      AIMetadata
+    } = await this.moveFileToMainStorage(fileImage, absolutePath);
 
     let exif = this.getExif(absolutePath);
     let file_id = await this.insertFile(
@@ -164,11 +234,14 @@ class FileImporter {
       newPreviewPathInStorage,
       absolutePath,
       imagehash,
-      metadata
+      metadata,
+      AIMetadata,
+      birthtime
     );
     if (config.get('import_exif_tags_as_tags')) {
       this.extractExifTags(file_id, exif);
     }
+    this.extractAIPromptTags(file_id, AIMetadata.prompt);
 
     return { full_path: newFilePathInStorage, file_id: file_id };
   }

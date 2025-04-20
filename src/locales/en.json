@@ -113,7 +113,16 @@
     "size_parameters": "Image sizes",
     "improve_file": "Download and change",
     "remove_file": "Remove the file",
-    "wrong_file_removing": "Something wrong while file was removing"
+    "wrong_file_removing": "Something wrong while file was removing",
+    "ai_metadata": "Detected AI metadata",
+    "ai_prompt": "Positive prompt",
+    "ai_negative_prompt": "Negative prompt",
+    "ai_steps": "Steps",
+    "ai_sampler": "Sampler",
+    "ai_cfg_scale": "CFG",
+    "neuro_seed": "Generation seed",
+    "neuro_model": "Model",
+    "birthtime": "File birth time"
   },
   "settings": {
     "application": "Application",
