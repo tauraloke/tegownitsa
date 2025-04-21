@@ -83,11 +83,34 @@ async function initDatabase({ dbPath }) {
   dbConnection.query = _query;
   dbConnection.getTagList = _getTagList;
 
+  dbConnection.get('select sqlite_version() as version', (err, row) => {
+    if (!err) console.log(row.version);
+  });
+
   console.log('before pragma');
   dbConnection.run('PRAGMA encoding = "UTF-16";');
   console.log('after pragma');
-  // make tables if not exists...
-  dbConnection.run(
+
+  return dbConnection;
+}
+
+async function addColumnIfNotExists(table, column, type) {
+  // Альтернативный метод для старых версий SQLite
+  try {
+    await dbc.query(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+    console.log(`Added column ${column} to ${table}`);
+  } catch (addErr) {
+    console.error(`Error adding column ${column} to ${table}: `, addErr);
+  }
+}
+
+/**
+ * Make tables if not exists...
+ * @param {sqlite3.Database} dbConnection
+ * @returns {Promise<boolean>}
+ */
+async function applySchema() {
+  await dbc.query(
     `CREATE TABLE IF NOT EXISTS files (
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
       full_path TEXT,
@@ -106,27 +129,26 @@ async function initDatabase({ dbPath }) {
       is_safe BOOLEAN DEFAULT TRUE,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP
-    )`,
-    (_res, _err) => {
-      // Добавление столбцов
-      const columns = [
-        { name: 'neuro_prompt', type: 'TEXT' },
-        { name: 'neuro_negativePrompt', type: 'TEXT' },
-        { name: 'neuro_steps', type: 'INTEGER' },
-        { name: 'neuro_sampler', type: 'TEXT' },
-        { name: 'neuro_cfgScale', type: 'REAL' },
-        { name: 'neuro_seed', type: 'INTEGER' },
-        { name: 'neuro_model', type: 'TEXT' },
-        { name: 'file_birthtime', type: 'INTEGER' }
-      ];
-
-      columns.forEach((col) => {
-        addColumnIfNotExists(dbConnection, 'files', col.name, col.type);
-      });
-    }
+    )`
   );
 
-  dbConnection.run(
+  // Добавление столбцов
+  const columns = [
+    { name: 'neuro_prompt', type: 'TEXT' },
+    { name: 'neuro_negativePrompt', type: 'TEXT' },
+    { name: 'neuro_steps', type: 'INTEGER' },
+    { name: 'neuro_sampler', type: 'TEXT' },
+    { name: 'neuro_cfgScale', type: 'REAL' },
+    { name: 'neuro_seed', type: 'INTEGER' },
+    { name: 'neuro_model', type: 'TEXT' },
+    { name: 'file_birthtime', type: 'INTEGER' }
+  ];
+
+  columns.forEach(async (col) => {
+    await addColumnIfNotExists('files', col.name, col.type);
+  });
+
+  await dbc.query(
     `CREATE TABLE IF NOT EXISTS file_urls (
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
       file_id INTEGER,
@@ -136,7 +158,7 @@ async function initDatabase({ dbPath }) {
       updated_at TIMESTAMP
     )`
   );
-  dbConnection.run(
+  await dbc.query(
     `CREATE TABLE IF NOT EXISTS tags (
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
       file_count INTEGER DEFAULT 0,
@@ -145,7 +167,7 @@ async function initDatabase({ dbPath }) {
       updated_at TIMESTAMP
     )`
   );
-  dbConnection.run(
+  await dbc.query(
     `CREATE TABLE IF NOT EXISTS tag_locales (
       id integer PRIMARY KEY AUTOINCREMENT NOT NULL,
       tag_id INTEGER,
@@ -155,7 +177,7 @@ async function initDatabase({ dbPath }) {
       updated_at TIMESTAMP
     )`
   );
-  dbConnection.run(
+  await dbc.query(
     `CREATE TABLE IF NOT EXISTS file_tags (
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
       file_id INTEGER,
@@ -165,7 +187,7 @@ async function initDatabase({ dbPath }) {
       updated_at TIMESTAMP
     )`
   );
-  dbConnection.run(
+  await dbc.query(
     `CREATE TABLE IF NOT EXISTS author_urls (
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
       tag_id INTEGER NOT NULL,
@@ -174,7 +196,7 @@ async function initDatabase({ dbPath }) {
       updated_at TIMESTAMP
     )`
   );
-  dbConnection.run(
+  await dbc.query(
     `CREATE TABLE IF NOT EXISTS file_fullsizes (
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
       file_id INTEGER NOT NULL,
@@ -185,7 +207,7 @@ async function initDatabase({ dbPath }) {
       updated_at TIMESTAMP
     )`
   );
-  dbConnection.run(
+  await dbc.query(
     `CREATE TABLE IF NOT EXISTS pollee_file_sources (
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
       file_id INTEGER NOT NULL,
@@ -196,21 +218,8 @@ async function initDatabase({ dbPath }) {
     )`
   );
 
-  console.log('Done.');
-  return dbConnection;
-}
-
-function addColumnIfNotExists(db, table, column, type) {
-  // Альтернативный метод для старых версий SQLite
-  try {
-    db.prepare(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`).run();
-    console.log(`Added column ${column} to ${table}`);
-  } catch (addErr) {
-    if (!addErr.message.includes('duplicate column')) {
-      console.error('Critical error adding column:', addErr);
-      throw addErr;
-    }
-  }
+  console.log('Schema is done.');
+  return true;
 }
 
 export default async ({ dbPath }) => {
@@ -218,5 +227,6 @@ export default async ({ dbPath }) => {
     return dbc;
   }
   dbc = await initDatabase({ dbPath: dbPath });
+  await applySchema();
   return dbc;
 };
