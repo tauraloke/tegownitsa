@@ -14,6 +14,7 @@ import {
 import { EXIF, AI_GENERATED } from '../config/source_type.json';
 import { applicationUserAgent, randomDigit, getAppFilesDir } from './utils.js';
 import { run as addTag } from '../api/sqlite_api/add_tag.js';
+import { run as markAsUnSafe } from '../api/sqlite_api/update_file_is_safe_field.js';
 import urlParser from 'url';
 import { extractAIMetadata } from './extract_neuro_metadata.js';
 
@@ -49,8 +50,10 @@ class FileImporter {
    * Parse prompt string and save valuable tokens as tags
    * @param {Number} file_id
    * @param {string} prompt
+   * @returns {{unsafe?:boolean}}
    */
   extractAIPromptTags(file_id, prompt) {
+    let unsafe = undefined;
     const tags = prompt
       .split(',')
       .map((s) =>
@@ -65,6 +68,7 @@ class FileImporter {
     for (let i in tags) {
       let booruTag = booruTagList.find((t) => t.name === tags[i]);
       if (booruTag) {
+        if (booruTag.unsafe) unsafe = true;
         let prefix = '';
         if (booruTag.category === 3) prefix = 'series:';
         if (booruTag.category === 4) prefix = 'character:';
@@ -72,17 +76,20 @@ class FileImporter {
         addTag({}, this.db, file_id, prefix + tags[i], locale, source_type);
       }
     }
+    return { unsafe };
   }
   /**
    * Extract tag from exif and save any of them
    * @param {Number} file_id
    * @param {object} exif
+   * @returns {{unsafe?:boolean}}
    */
   extractExifTags(file_id, exif) {
     // try to extract exif tags
     if (!exif) {
       return false;
     }
+    let unsafe = undefined;
     let tags = [];
     if (exif.Artist) {
       tags.push(`creator:${exif.Artist}`);
@@ -110,11 +117,14 @@ class FileImporter {
       let prefix = '';
       let booruTag = booruTagList.find((t) => t.name === tags[i]);
       if (booruTag) {
+        if (booruTag.unsafe) unsafe = true;
         if (booruTag.category === 3) prefix = 'series:';
         if (booruTag.category === 4) prefix = 'character:';
       }
       addTag({}, this.db, file_id, prefix + tags[i], locale, source_type);
     }
+
+    return { unsafe };
   }
   async getPHash(absolutePath, fileImage) {
     try {
@@ -242,10 +252,17 @@ class FileImporter {
       AIMetadata,
       birthtime
     );
+    let exifUnsafe = undefined;
     if (config.get('import_exif_tags_as_tags')) {
-      this.extractExifTags(file_id, exif);
+      ({ unsafe: exifUnsafe } = this.extractExifTags(file_id, exif));
     }
-    this.extractAIPromptTags(file_id, AIMetadata.prompt);
+    const { unsafe: AIUnsafe } = this.extractAIPromptTags(
+      file_id,
+      AIMetadata.prompt
+    );
+    if (exifUnsafe || AIUnsafe) {
+      markAsUnSafe({}, this.db, file_id, false);
+    }
     if (AIMetadata.model) {
       const modelTagName = AIMetadata.model
         .replace(/.*[\\/]/, '')
