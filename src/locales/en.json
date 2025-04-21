@@ -122,7 +122,8 @@
     "ai_cfg_scale": "CFG",
     "neuro_seed": "Generation seed",
     "neuro_model": "Model",
-    "birthtime": "File birth time"
+    "birthtime": "File birth time",
+    "neuro_loras": "LoRAs"
   },
   "settings": {
     "application": "Application",

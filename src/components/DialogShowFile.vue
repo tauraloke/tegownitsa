@@ -167,6 +167,10 @@
                 {{ $t('dialog_show_file.neuro_model') }}:
                 {{ currentFile.neuro_model }}
               </div>
+              <div v-if="currentFile.neuro_loras">
+                {{ $t('dialog_show_file.neuro_loras') }}:
+                {{ currentFile.neuro_loras }}
+              </div>
             </v-card>
 
             <v-card elevation="4" class="ma-2 clickable-i">
@@ -309,6 +313,8 @@ export default {
         this.currentFile?.neuro_sampler ||
         this.currentFile?.neuro_steps ||
         this.currentFile?.neuro_negativePrompt ||
+        (Array.isArray(this.currentFile.neuro_loras) &&
+          this.currentFile?.neuro_loras.length > 0) ||
         this.currentFile?.neuro_prompt
       );
     },

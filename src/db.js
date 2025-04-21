@@ -141,6 +141,7 @@ async function applySchema() {
     { name: 'neuro_cfgScale', type: 'REAL' },
     { name: 'neuro_seed', type: 'INTEGER' },
     { name: 'neuro_model', type: 'TEXT' },
+    { name: 'neuro_loras', type: 'JSON' },
     { name: 'file_birthtime', type: 'INTEGER' }
   ];
 

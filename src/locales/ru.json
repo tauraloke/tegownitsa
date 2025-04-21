@@ -122,7 +122,8 @@
     "ai_cfg_scale": "CFG",
     "neuro_seed": "Зерно генерации",
     "neuro_model": "Модель",
-    "birthtime": "Время создания файла"
+    "birthtime": "Время создания файла",
+    "neuro_loras": "LoRA"
   },
   "settings": {
     "application": "Приложение",

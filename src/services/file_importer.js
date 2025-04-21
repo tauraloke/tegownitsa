@@ -16,7 +16,6 @@ import { applicationUserAgent, randomDigit, getAppFilesDir } from './utils.js';
 import { run as addTag } from '../api/sqlite_api/add_tag.js';
 import urlParser from 'url';
 import { extractAIMetadata } from './extract_neuro_metadata.js';
-import tagNamespaces from '@/config/tag_namespaces.js';
 
 /** @type {[{name:string, id:Number, post_count:Number, category:Number}]} */
 import booruTagList from '../config/danbooru_tags.json';
@@ -157,7 +156,7 @@ class FileImporter {
     birthtime
   ) {
     let { file_id } = await this.db.query(
-      'INSERT INTO files (full_path, preview_path, source_path, source_filename, imagehash, width, height, caption, exif_make, exif_model, exif_latitude, exif_longitude, exif_create_date, neuro_prompt, neuro_negativePrompt, neuro_steps, neuro_sampler, neuro_cfgScale, neuro_seed, neuro_model, file_birthtime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id AS file_id;',
+      'INSERT INTO files (full_path, preview_path, source_path, source_filename, imagehash, width, height, caption, exif_make, exif_model, exif_latitude, exif_longitude, exif_create_date, neuro_prompt, neuro_negativePrompt, neuro_steps, neuro_sampler, neuro_cfgScale, neuro_seed, neuro_model, neuro_loras, file_birthtime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id AS file_id;',
       [
         newFilePathInStorage,
         newPreviewPathInStorage,
@@ -179,6 +178,7 @@ class FileImporter {
         AIMetadata.cfgScale,
         AIMetadata.seed,
         AIMetadata.model,
+        JSON.stringify(AIMetadata.loras),
         birthtime
       ]
     );
