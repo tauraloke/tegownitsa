@@ -69,13 +69,13 @@
             </div>
 
             <v-card
-              v-if="currentFile.birthtime"
+              v-if="currentFile.file_birthtime"
               elevation="4"
               class="ma-2 pa-8"
             >
               <h5>{{ $t('dialog_show_file.birthtime') }}</h5>
               <div>
-                {{ currentFile.birthtime }}
+                {{ fileBirthtimeDate }}
               </div>
             </v-card>
 
@@ -290,6 +290,10 @@ export default {
     };
   },
   computed: {
+    fileBirthtimeDate() {
+      const date = new Date(this.currentFile.file_birthtime);
+      return date.toLocaleString();
+    },
     exifExists() {
       return (
         this.currentFile?.exif_create_date ||

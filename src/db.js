@@ -106,31 +106,24 @@ async function initDatabase({ dbPath }) {
       is_safe BOOLEAN DEFAULT TRUE,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP
-    )`
-  );
-  dbConnection.run(
-    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_prompt TEXT'
-  );
-  dbConnection.run(
-    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_negativePrompt TEXT'
-  );
-  dbConnection.run(
-    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_steps INTEGER'
-  );
-  dbConnection.run(
-    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_sampler TEXT'
-  );
-  dbConnection.run(
-    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_cfgScale REAL'
-  );
-  dbConnection.run(
-    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_seed INTEGER'
-  );
-  dbConnection.run(
-    'ALTER TABLE files ADD COLUMN IF NOT EXISTS neuro_model TEXT'
-  );
-  dbConnection.run(
-    'ALTER TABLE files ADD COLUMN IF NOT EXISTS birthtime INTEGER'
+    )`,
+    (_res, _err) => {
+      // Добавление столбцов
+      const columns = [
+        { name: 'neuro_prompt', type: 'TEXT' },
+        { name: 'neuro_negativePrompt', type: 'TEXT' },
+        { name: 'neuro_steps', type: 'INTEGER' },
+        { name: 'neuro_sampler', type: 'TEXT' },
+        { name: 'neuro_cfgScale', type: 'REAL' },
+        { name: 'neuro_seed', type: 'INTEGER' },
+        { name: 'neuro_model', type: 'TEXT' },
+        { name: 'file_birthtime', type: 'INTEGER' }
+      ];
+
+      columns.forEach((col) => {
+        addColumnIfNotExists(dbConnection, 'files', col.name, col.type);
+      });
+    }
   );
 
   dbConnection.run(
@@ -205,6 +198,19 @@ async function initDatabase({ dbPath }) {
 
   console.log('Done.');
   return dbConnection;
+}
+
+function addColumnIfNotExists(db, table, column, type) {
+  // Альтернативный метод для старых версий SQLite
+  try {
+    db.prepare(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`).run();
+    console.log(`Added column ${column} to ${table}`);
+  } catch (addErr) {
+    if (!addErr.message.includes('duplicate column')) {
+      console.error('Critical error adding column:', addErr);
+      throw addErr;
+    }
+  }
 }
 
 export default async ({ dbPath }) => {

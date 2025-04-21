@@ -31,9 +31,7 @@
   },
   "main": "background.js",
   "dependencies": {
-    "@babel/plugin-transform-optional-chaining": "^7.25.9",
     "@mdi/font": "7.0.96",
-    "@vuetify/nightly": "^3.8.2-master.2025-04-19",
     "adm-zip": "^0.5.16",
     "core-js": "^3.25.5",
     "deviantart.ts": "^0.2.6",
@@ -57,7 +55,7 @@
     "tesseract.js": "^3.0.3",
     "vue": "^3.2.40",
     "vue-i18n": "^9.2.2",
-    "vuetify": "^3.8.2",
+    "vuetify": "^3.0.0-beta.13",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
@@ -79,7 +77,7 @@
     "vue-cli-plugin-electron-builder": "~2.1.1",
     "vue-cli-plugin-i18n": "~2.3.1",
     "vue-cli-plugin-vuetify": "~2.5.8",
-    "webpack-plugin-vuetify": "^3.1.1",
+    "webpack-plugin-vuetify": "^2.0.0-alpha.13",
     "xo": "^0.52.4"
   },
   "browserslist": [
