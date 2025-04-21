@@ -224,7 +224,8 @@
       "CHARACTER": "Character",
       "STYLE": "Style",
       "GENRE": "Genre",
-      "SPECIE": "Specie"
+      "SPECIE": "Specie",
+      "MODEL": "AI Generative Model"
     },
     "name": "Name",
     "score": "Score",

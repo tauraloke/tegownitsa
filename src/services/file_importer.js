@@ -16,10 +16,10 @@ import { applicationUserAgent, randomDigit, getAppFilesDir } from './utils.js';
 import { run as addTag } from '../api/sqlite_api/add_tag.js';
 import urlParser from 'url';
 import { extractAIMetadata } from './extract_neuro_metadata.js';
+import tagNamespaces from '@/config/tag_namespaces.js';
 
 /** @type {[{name:string, id:Number, post_count:Number, category:Number}]} */
 import booruTagList from '../config/danbooru_tags.json';
-const booruTagNames = booruTagList.map((t) => t.name);
 
 const PREVIEW_WIDTH = 140;
 
@@ -55,17 +55,20 @@ class FileImporter {
     const tags = prompt
       .split(',')
       .map((s) =>
-        s.replace(' ', '_').replace('\\(', '(').replace('\\)', ')').trim()
+        s
+          .trim()
+          .replaceAll(' ', '_')
+          .replaceAll('\\(', '(')
+          .replaceAll('\\)', ')')
       );
     let locale = 'en'; // just default
     let source_type = AI_GENERATED;
     for (let i in tags) {
-      let booruTag = booruTagNames.find((t) => t.name === tags[i]);
+      let booruTag = booruTagList.find((t) => t.name === tags[i]);
       if (booruTag) {
         let prefix = '';
         if (booruTag.category === 3) prefix = 'series:';
         if (booruTag.category === 4) prefix = 'character:';
-
         // Add only if find the tag
         addTag({}, this.db, file_id, prefix + tags[i], locale, source_type);
       }
@@ -106,7 +109,7 @@ class FileImporter {
     let source_type = EXIF;
     for (let i in tags) {
       let prefix = '';
-      let booruTag = booruTagNames.find((t) => t.name === tags[i]);
+      let booruTag = booruTagList.find((t) => t.name === tags[i]);
       if (booruTag) {
         if (booruTag.category === 3) prefix = 'series:';
         if (booruTag.category === 4) prefix = 'character:';
@@ -243,6 +246,12 @@ class FileImporter {
       this.extractExifTags(file_id, exif);
     }
     this.extractAIPromptTags(file_id, AIMetadata.prompt);
+    if (AIMetadata.model) {
+      const modelTagName = AIMetadata.model
+        .replace(/.*[\\/]/, '')
+        .replace(/\.[^.]+$/, '');
+      addTag({}, this.db, file_id, 'model:' + modelTagName, 'en', AI_GENERATED);
+    }
 
     return { full_path: newFilePathInStorage, file_id: file_id };
   }

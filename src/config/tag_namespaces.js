@@ -6,5 +6,6 @@ export default {
   CHARACTER: 4,
   STYLE: 5,
   GENRE: 6,
-  SPECIE: 7
+  SPECIE: 7,
+  MODEL: 8
 };
