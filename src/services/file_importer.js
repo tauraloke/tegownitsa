@@ -125,7 +125,7 @@ class FileImporter {
   getExif(absolutePath) {
     let fileBuffer = readFileSync(absolutePath);
     try {
-      return create(fileBuffer).parse(fileBuffer).tags;
+      return create(fileBuffer).parse(fileBuffer)?.tags || {};
     } catch (_error) {
       console.log(`Cannot extract exif from ${absolutePath}`);
       return {};
@@ -193,6 +193,7 @@ class FileImporter {
     const image = sharp(fileImage);
     const metadata = await image.metadata();
     const AIMetadata = await extractAIMetadata(newFilePathInStorage);
+    console.log('extracted AI metadata', AIMetadata);
 
     // make preview
     const newPreviewPathInStorage = path.join(

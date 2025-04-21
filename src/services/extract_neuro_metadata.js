@@ -22,8 +22,12 @@ import { decode as decodeTextChunk } from 'png-chunk-text';
  * @returns {Promise<AIMetadata>}
  */
 export async function extractAIMetadata(filePath) {
-  const ext = path.extname(filePath).toLowerCase();
   try {
+    const ext = path.extname(filePath).toLowerCase();
+
+    // Добавляем задержку для избежания EBUSY
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     if (ext === '.jpg' || ext === '.jpeg' || ext === '.webp') {
       // Используем exifr для чтения EXIF
       const exifData = await exifr.parse(filePath, {
@@ -42,8 +46,24 @@ export async function extractAIMetadata(filePath) {
     }
   } catch (e) {
     console.error('Error extracting metadata:', e);
-    return null;
+    return getDefaultAIMetadata();
   }
+}
+
+/**
+ * Default result for exceptions
+ * @returns {AIMetadata}
+ */
+function getDefaultAIMetadata() {
+  return {
+    loras: [],
+    prompt: '',
+    steps: null,
+    sampler: '',
+    cfgScale: null,
+    seed: null,
+    model: ''
+  };
 }
 
 /**
@@ -53,15 +73,7 @@ export async function extractAIMetadata(filePath) {
  */
 function extractMetadata(rawMetadata) {
   if (!rawMetadata) {
-    return {
-      loras: [],
-      prompt: '',
-      steps: null,
-      sampler: '',
-      cfgScale: null,
-      seed: null,
-      model: ''
-    };
+    return getDefaultAIMetadata();
   }
 
   const comfyData = extractComfyData(rawMetadata);
@@ -115,15 +127,7 @@ function extractMetadata(rawMetadata) {
   }
 
   // Если ничего не подошло — возвращаем пустой объект
-  return {
-    prompt: '',
-    negativePrompt: '',
-    steps: null,
-    sampler: '',
-    cfgScale: null,
-    seed: null,
-    model: ''
-  };
+  return getDefaultAIMetadata();
 }
 
 /**
@@ -178,21 +182,21 @@ function extractComfyData(rawMetadata) {
 function parseComfyMetadata(comfyData) {
   const metaNode = comfyData.nodes.find((n) => n.type === 'KSampler');
 
-  let prompt = null;
-  if (Array.isArray(comfyData?.nodes)) {
-    for (const node of comfyData.nodes) {
-      if (node.title === 'Show resulting prompt' && node.widgets_values) {
-        prompt = node.widgets_values[0];
-        break;
-      }
-    }
+  if (!Array.isArray(comfyData?.nodes) || comfyData?.nodes?.length <= 0) {
+    return getDefaultAIMetadata();
   }
-  if (!prompt && comfyData?.nodes?.length > 0) {
+
+  let prompt = comfyData.nodes.find(
+    (n) =>
+      n.title === 'Show resulting prompt' && Array.isArray(n.widgets_values)
+  )?.widgets_values[0]?.[0];
+
+  if (!prompt) {
     const posLinkId = metaNode.inputs.find((n) => n.name == 'positive')?.link;
     const posNodeId = comfyData.links.find((n) => n[0] == posLinkId)?.[1];
     prompt = comfyData.nodes.find((n) => n.id == posNodeId).widgets_values[0];
   }
-  if (!prompt && comfyData?.nodes?.length > 0) {
+  if (!prompt) {
     const firstNode = comfyData.nodes[0];
     prompt = firstNode.text2 || firstNode.prompt || '';
   }
