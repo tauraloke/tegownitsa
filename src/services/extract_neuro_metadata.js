@@ -35,8 +35,13 @@ export async function extractAIMetadata(filePath) {
         imageDescription: true
       });
       const rawMetadata =
-        exifData?.UserComment || exifData?.ImageDescription || '';
-      return extractMetadata(rawMetadata);
+        exifData?.userComment || exifData?.imageDescription || '';
+      const cleaned = Buffer.from(rawMetadata)
+        .toString('utf8')
+        .replace(/^\uFEFF?UNICODE/, '')
+        .replace(/\n/g, '')
+        .replace(/\0/g, '');
+      return extractMetadata(cleaned);
     } else if (ext === '.png') {
       // Читаем текстовые чанки PNG
       const rawMetadata = getPngTextChunks(filePath);
@@ -58,6 +63,7 @@ function getDefaultAIMetadata() {
   return {
     loras: [],
     prompt: '',
+    negativePrompt: '',
     steps: null,
     sampler: '',
     cfgScale: null,
@@ -77,8 +83,11 @@ function extractMetadata(rawMetadata) {
   }
 
   const comfyData = extractComfyData(rawMetadata);
-  if (comfyData && comfyData.nodes.length > 0) {
+  if (comfyData && comfyData?.nodes?.length > 0) {
     return parseComfyMetadata(comfyData);
+  }
+  if (comfyData && comfyData.extraMetadata) {
+    return parseCivitMetadata(comfyData.extraMetadata);
   }
 
   const webUIData = extractWebUIData(rawMetadata);
@@ -165,6 +174,12 @@ function extractComfyData(rawMetadata) {
           }
         }
       });
+    } else if (typeof rawMetadata === 'string') {
+      try {
+        comfyData = JSON.parse(rawMetadata);
+      } catch (e) {
+        console.warn('Не удалось распарсить JSON', e);
+      }
     }
   } catch (e) {
     console.warn('Ошибка при попытке распарсить JSON', e);
@@ -172,6 +187,29 @@ function extractComfyData(rawMetadata) {
   }
 
   return comfyData;
+}
+
+/**
+ * Parse data response from CivitAI
+ * @param {string} extraMetadata
+ * @returns {AIMetadata}
+ */
+function parseCivitMetadata(extraMetadata) {
+  try {
+    const jsonData = JSON.parse(extraMetadata);
+    return {
+      loras: [],
+      prompt: jsonData.prompt,
+      negativePrompt: jsonData.negativePrompt,
+      steps: jsonData.steps,
+      sampler: jsonData.sampler,
+      cfgScale: jsonData.cfgScale,
+      seed: null,
+      model: ''
+    };
+  } catch {
+    return getDefaultAIMetadata();
+  }
 }
 
 /**
