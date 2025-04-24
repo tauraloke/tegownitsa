@@ -30,3 +30,8 @@ dev.log
 #Massive models
 libs/autotagger/danbooru/*
 trash/*
+
+libs/wd_tagger/assets/*.csv
+libs/wd_tagger/assets/*.onnx
+
+**/__pycache__

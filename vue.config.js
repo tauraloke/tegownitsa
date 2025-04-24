@@ -36,7 +36,7 @@ module.exports = defineConfig({
         appId: 'com.electron.Tegownitsa',
         asarUnpack: ['**/node_modules/sharp/**'],
         extraFiles: [
-          ...['./libs/autotagger/.gitkeep'],
+          ...['./libs/wd_tagger/server.py', './libs/wd_tagger/wd_predictor.py'],
           ...(process.platform == 'win32' ? ['./libs/sqlite/fuzzy.dll'] : []),
           ...(process.platform == 'darwin' ? ['./libs/sqlite/fuzzy.dylib'] : [])
         ],

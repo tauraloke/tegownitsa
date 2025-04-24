@@ -202,6 +202,7 @@ import TaskQueue from '@/services/task_queue.js';
 import IqdbTask from '@/services/tasks/iqdb_task.js';
 import SaucenaoTask from '@/services/tasks/saucenao_task.js';
 import KheinaTask from '@/services/tasks/kheina_task.js';
+import AIDetectTask from '@/services/tasks/ai_detect_task.js';
 import constants from '@/config/constants.json';
 import getStrategy from '@/services/tag_sources_strategies/get_strategy.js';
 import tagNamespace from '@/config/tag_namespaces.js';
@@ -301,6 +302,7 @@ export default {
         'importFromClipboard',
         'scanSelectedFiles',
         'lookUpDups',
+        'detectTagsByAI',
         'loadTagsFromIQDB',
         'loadTagsFromSaucenao',
         'loadTagsFromKheina',
@@ -351,6 +353,7 @@ export default {
         this.task_queues.saucenao = new TaskQueue(31, 40);
         this.task_queues.twitter = new TaskQueue(0, 0);
         this.task_queues.kheina = new TaskQueue(bc, tc);
+        this.task_queues.ai_detect = new TaskQueue(0.001, 0.001);
       });
     });
   },
@@ -654,6 +657,46 @@ export default {
     afterTagsAdded() {
       if (this.currentFile) {
         this.$refs.dialog_show_file.reloadStuff();
+      }
+    },
+    async detectTagsByAI() {
+      let strategy = getStrategy({
+        key: await window.configApi.getConfig('tag_source_strategies'),
+        onAfterDataAdded: () => {
+          this.afterTagsAdded();
+        }
+      });
+      let files = await this.getFilteredCurrentFiles(sourceTypes.AI_DETECTED);
+      if (files.length == 0) {
+        this.toast(this.$t('main_window.no_files_to_tag_search'));
+        return false;
+      }
+      /* TODO: забирать из настроек, возможно. Для этого надо определить и вывести эти настройки.
+      let generalThreshold = await window.configApi.getConfig(
+        'tag_source_threshold_general_ai_detect'
+      );
+      if (generalThreshold === undefined) {
+        generalThreshold = 0.3;
+      }*/
+      const generalThreshold = 0.3;
+      const characterThreshold = 0.8;
+      let job = new Job({
+        name: 'AI Detect / ' + this.$t('jobs.tag_retrieving'),
+        taskTotalCount: files.length,
+        queue: this.task_queues.ai_detect,
+        vueComponent: this
+      });
+      job.start();
+      for (let i = 0; i < files.length; i++) {
+        let iqdbTask = new AIDetectTask({
+          file: files[i],
+          generalThreshold,
+          characterThreshold,
+          strategy,
+          task_queues: this.task_queues.ai_detect,
+          job
+        });
+        this.task_queues.iqdb.addTask(iqdbTask);
       }
     },
     async loadTagsFromIQDB() {

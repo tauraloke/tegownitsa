@@ -33,7 +33,8 @@
     "help": "Помощь",
     "load_tags_from_saucenao": "Загрузить теги через Saucenao для выбранных файлов",
     "check_updates": "Проверить обновления",
-    "load_tags_from_kheina": "Загрузить теги с Kheina для текущих файлов..."
+    "load_tags_from_kheina": "Загрузить теги с Kheina для текущих файлов...",
+    "ai_detect_tags": "Обнаружение тегов через ИИ"
   },
   "about": {
     "copyright": "Сделано Тауралоке Эстеру и контрибьютерами Гитхаба.",

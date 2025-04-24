@@ -21,6 +21,7 @@ import UpdateService from './services/update_service.js';
 import i18n from './i18n.backend.js';
 import electronDl from 'electron-dl';
 import { getAppFilesDir } from './services/utils.js';
+import { quitPython } from './services/python-worker.js';
 
 electronDl();
 
@@ -193,4 +194,8 @@ ipcMain.on('update-language', async (_event, lang) => {
   i18n.changeLanguage(lang);
   console.log(`Language switched to '${lang}'`);
   Menu.setApplicationMenu(menu(i18n));
+});
+
+app.on('before-quit', () => {
+  quitPython();
 });
