@@ -50,18 +50,20 @@ class FileImporter {
    * @param {string} prompt
    * @returns {{unsafe?:boolean}}
    */
-  extractAIPromptTags(file_id, prompt) {
+  extractAIPromptTags(file_id, prompt = '') {
     let unsafe = undefined;
-    const tags = prompt
-      .split(',')
-      .map((s) =>
-        s
-          .trim()
-          .replaceAll(' ', '_')
-          .replaceAll('\\(', '(')
-          .replaceAll('\\)', ')')
-          .toLowerCase()
-      );
+    const tags =
+      prompt
+        ?.split(',')
+        ?.map((s) =>
+          s
+            .trim()
+            .replaceAll(' ', '_')
+            .replaceAll('\\(', '(')
+            .replaceAll('\\)', ')')
+            .toLowerCase()
+        ) || [];
+
     let locale = 'en'; // just default
     let source_type = AI_GENERATED;
     for (let i in tags) {
@@ -74,6 +76,9 @@ class FileImporter {
         // Add only if find the tag
         addTag({}, this.db, file_id, prefix + tags[i], locale, source_type);
       }
+    }
+    if (tags?.length > 0) {
+      addTag({}, this.db, file_id, 'ai_generated', locale, source_type);
     }
     return { unsafe };
   }
@@ -255,6 +260,7 @@ class FileImporter {
     if (config.get('import_exif_tags_as_tags')) {
       ({ unsafe: exifUnsafe } = this.extractExifTags(file_id, exif));
     }
+    console.log('AIMetadata', AIMetadata);
     const { unsafe: AIUnsafe } = this.extractAIPromptTags(
       file_id,
       AIMetadata.prompt
