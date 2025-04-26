@@ -60,6 +60,7 @@ class FileImporter {
           .replaceAll(' ', '_')
           .replaceAll('\\(', '(')
           .replaceAll('\\)', ')')
+          .toLowerCase()
       );
     let locale = 'en'; // just default
     let source_type = AI_GENERATED;
