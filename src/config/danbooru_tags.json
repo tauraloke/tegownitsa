@@ -4011,7 +4011,13 @@
     "post_count": 1538,
     "category": 4
   },
-  { "name": "fellatio", "id": 8709, "post_count": 41487, "category": 0 },
+  {
+    "name": "fellatio",
+    "id": 8709,
+    "post_count": 41487,
+    "category": 0,
+    "unsafe": true
+  },
   {
     "name": "female_admiral_(kancolle)",
     "id": 1630648,
@@ -4705,7 +4711,13 @@
     "category": 0
   },
   { "name": "ganaha_hibiki", "id": 425446, "post_count": 4016, "category": 4 },
-  { "name": "gangbang", "id": 4974, "post_count": 12404, "category": 0 },
+  {
+    "name": "gangbang",
+    "id": 4974,
+    "post_count": 12404,
+    "category": 0,
+    "unsafe": true
+  },
   {
     "name": "gangut_(kancolle)",
     "id": 1630677,

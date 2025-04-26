@@ -53,6 +53,6 @@ export function getAppFilesDir(app, path) {
     return app.getPath('userData');
   } else {
     //Unknown mode
-    return path.dirname(app.getPath('exe'));
+    return app.getPath('userData');
   }
 }
