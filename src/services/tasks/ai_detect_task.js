@@ -62,6 +62,10 @@ export default class AIDetectTask extends BaseTask {
       console.log('AI Tag Detector response', tagResponse);
       let locale = 'en';
 
+      if (tagResponse.error) {
+        return { status: 'FAIL', skip_timeout: true };
+      }
+
       const tags = parseAITaggerResponse(tagResponse);
       let source_type = sourceTypes.AI_DETECTED;
 

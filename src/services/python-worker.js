@@ -1,8 +1,28 @@
 // Only NodeJS-Side.
 import { spawn } from 'child_process';
 import * as path from 'path';
+import { existsSync } from 'fs';
 
 let pythonProcess = null;
+
+/**
+ * Looking for python script.
+ * @returns {string}
+ */
+function findPythonPath() {
+  const canditates = [
+    path.join(__dirname, 'libs', 'wd_tagger', 'server.py'),
+    path.join(__dirname, '..', 'libs', 'wd_tagger', 'server.py'),
+    path.join(__dirname, '..', '..', 'libs', 'wd_tagger', 'server.py')
+  ];
+  for (const i in canditates) {
+    console.log('Looking for python ai-detection server in ', canditates[i]);
+    if (existsSync(canditates[i])) {
+      return canditates[i];
+    }
+  }
+  throw new Error('Cannot find path to python ai-detection server script!');
+}
 
 /**
  * Singleton for python process.
@@ -10,13 +30,7 @@ let pythonProcess = null;
  */
 export function getPythonProcess() {
   if (pythonProcess !== null) return pythonProcess;
-  const pythonScriptPath = path.join(
-    __dirname,
-    '..',
-    'libs',
-    'wd_tagger',
-    'server.py'
-  );
+  const pythonScriptPath = findPythonPath();
   pythonProcess = spawn('python', [pythonScriptPath], {
     stdio: ['pipe', 'pipe', 'pipe']
   });
