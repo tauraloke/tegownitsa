@@ -17,8 +17,6 @@ import { run as addTag } from '../api/sqlite_api/add_tag.js';
 import { run as markAsUnSafe } from '../api/sqlite_api/update_file_is_safe_field.js';
 import urlParser from 'url';
 import { extractAIMetadata } from './extract_neuro_metadata.js';
-
-/** @type {[{name:string, id:Number, post_count:Number, category:Number}]} */
 import booruTagList from '../config/danbooru_tags.json';
 
 const PREVIEW_WIDTH = 140;
