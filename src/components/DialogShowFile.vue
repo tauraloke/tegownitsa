@@ -42,14 +42,6 @@
               :tags="tags"
               @after-add-tag="afterAddTagHandler($event)"
             />
-            <predicted-tags
-              ref="predicted_tags"
-              :current-file="currentFile"
-              :tags="tags"
-              class="mb-6"
-              @after-add-tag="afterAddTagHandler($event)"
-              @toast="$emit('toast', $event)"
-            />
             <list-tag-groups
               :tags="tags"
               closable-tags
@@ -75,6 +67,17 @@
                 :src="'file://' + currentFile.full_path"
               />
             </div>
+
+            <v-card
+              v-if="currentFile.file_birthtime"
+              elevation="4"
+              class="ma-2 pa-8"
+            >
+              <h5>{{ $t('dialog_show_file.birthtime') }}</h5>
+              <div>
+                {{ fileBirthtimeDate }}
+              </div>
+            </v-card>
 
             <v-card elevation="4" class="ma-2 pa-8">
               <h5>{{ $t('dialog_show_file.size_parameters') }}</h5>
@@ -128,6 +131,48 @@
                 {{ $t('dialog_show_file.maked_by') }}: {{ currentFileModel }}
               </div>
             </v-card>
+
+            <v-card
+              v-if="AIMetadataExists"
+              id="file_info_ai_metadata"
+              elevation="4"
+              class="ma-2 pa-4"
+            >
+              <h4>{{ $t('dialog_show_file.ai_metadata') }}</h4>
+              <div v-if="currentFile.neuro_prompt">
+                {{ $t('dialog_show_file.ai_prompt') }}:
+                {{ currentFile.neuro_prompt }}
+              </div>
+              <div v-if="currentFile.neuro_negativePrompt">
+                {{ $t('dialog_show_file.ai_negative_prompt') }}:
+                {{ currentFile.neuro_negativePrompt }}
+              </div>
+              <div v-if="currentFile.neuro_steps">
+                {{ $t('dialog_show_file.ai_steps') }}:
+                {{ currentFile.neuro_steps }}
+              </div>
+              <div v-if="currentFile.neuro_sampler">
+                {{ $t('dialog_show_file.ai_sampler') }}:
+                {{ currentFile.neuro_sampler }}
+              </div>
+              <div v-if="currentFile.neuro_cfgScale">
+                {{ $t('dialog_show_file.ai_cfg_scale') }}:
+                {{ currentFile.neuro_cfgScale }}
+              </div>
+              <div v-if="currentFile.neuro_seed">
+                {{ $t('dialog_show_file.neuro_seed') }}:
+                {{ currentFile.neuro_seed }}
+              </div>
+              <div v-if="currentFile.neuro_model">
+                {{ $t('dialog_show_file.neuro_model') }}:
+                {{ currentFile.neuro_model }}
+              </div>
+              <div v-if="currentFile.neuro_loras">
+                {{ $t('dialog_show_file.neuro_loras') }}:
+                {{ currentFile.neuro_loras }}
+              </div>
+            </v-card>
+
             <v-card elevation="4" class="ma-2 clickable-i">
               <v-textarea
                 v-model="currentFile.caption"
@@ -219,14 +264,13 @@
 <script>
 import FormAddNewTagToFile from '@/components/FormAddNewTagToFile.vue';
 import ListTagGroups from '@/components/ListTagGroups.vue';
-import PredictedTags from '@/components/PredictedTags.vue';
 import tagNamespaces from '@/config/tag_namespaces.js';
 import sourceTypes from '@/config/source_type.json';
 import { swap } from '@/services/utils.js';
 
 export default {
   name: 'DialogShowFile',
-  components: { FormAddNewTagToFile, ListTagGroups, PredictedTags },
+  components: { FormAddNewTagToFile, ListTagGroups },
   emits: [
     'search-by-tag',
     'toast',
@@ -250,11 +294,28 @@ export default {
     };
   },
   computed: {
+    fileBirthtimeDate() {
+      const date = new Date(this.currentFile.file_birthtime);
+      return date.toLocaleString();
+    },
     exifExists() {
       return (
         this.currentFile?.exif_create_date ||
         (this.currentFile?.exif_latitude && this.currentFile?.exif_longitude) ||
         this.currentFile?.exif_make
+      );
+    },
+    AIMetadataExists() {
+      return (
+        this.currentFile?.neuro_model ||
+        this.currentFile?.neuro_seed ||
+        this.currentFile?.neuro_cfgScale ||
+        this.currentFile?.neuro_sampler ||
+        this.currentFile?.neuro_steps ||
+        this.currentFile?.neuro_negativePrompt ||
+        (Array.isArray(this.currentFile.neuro_loras) &&
+          this.currentFile?.neuro_loras.length > 0) ||
+        this.currentFile?.neuro_prompt
       );
     },
     currentFileDateCreated() {
@@ -290,9 +351,6 @@ export default {
       if (!file?.id) {
         return false;
       }
-      if (this.$refs.predicted_tags) {
-        this.$refs.predicted_tags.reset();
-      }
       this.currentFile = await window.sqliteApi.getFile(file.id);
       this.currentFile.prev = file.prev;
       this.currentFile.next = file.next;
@@ -303,9 +361,6 @@ export default {
       this.isDialogVisible = true;
     },
     hideComponent() {
-      if (this.$refs.predicted_tags) {
-        this.$refs.predicted_tags.reset();
-      }
       this.isDialogVisible = false;
       this.tags = [];
       this.urls = [];

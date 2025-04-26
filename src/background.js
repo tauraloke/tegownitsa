@@ -20,6 +20,8 @@ import path from 'path';
 import UpdateService from './services/update_service.js';
 import i18n from './i18n.backend.js';
 import electronDl from 'electron-dl';
+import { getAppFilesDir } from './services/utils.js';
+import { quitPython } from './services/python-worker.js';
 
 electronDl();
 
@@ -124,10 +126,7 @@ if (isDevelopment) {
 
 // Connect IPC handlers and load DB
 let db = null;
-const sql_filename_path = path.join(
-  path.dirname(app.getPath('exe')),
-  'db.sqlite3'
-);
+const sql_filename_path = path.join(getAppFilesDir(app, path), 'db.sqlite3');
 (async () => {
   db = await getDb({ dbPath: sql_filename_path });
   new ApiConnector().connectIpcMainHandlers(db);
@@ -195,4 +194,8 @@ ipcMain.on('update-language', async (_event, lang) => {
   i18n.changeLanguage(lang);
   console.log(`Language switched to '${lang}'`);
   Menu.setApplicationMenu(menu(i18n));
+});
+
+app.on('before-quit', () => {
+  quitPython();
 });

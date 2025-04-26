@@ -231,6 +231,20 @@ ${debugInfo()}`;
           }
         },
         {
+          type: 'separator'
+        },
+        {
+          label: i18n.t('main_menu.ai_detect_tags'),
+          accelerator: 'CmdOrCtrl+P',
+          icon: path.join(__static, 'menu', 'ai_detection.png'),
+          click(_menuItem, browserWindow, _event) {
+            browserWindow.webContents.send('execute', 'detectTagsByAI');
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
           label: i18n.t('main_menu.load_tags_from_iqbd'),
           accelerator: 'CmdOrCtrl+T',
           icon: path.join(__static, 'menu', 'iqdb.png'),

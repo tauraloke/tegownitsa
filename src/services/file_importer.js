@@ -1,6 +1,6 @@
 import { readFileSync, statSync, mkdirSync, copyFile, writeFileSync } from 'fs';
 import { app, clipboard } from 'electron';
-import { join, dirname, extname, basename, parse } from 'path';
+import path from 'path';
 import phash from 'sharp-phash';
 import sharp from 'sharp';
 import { create } from 'exif-parser';
@@ -11,10 +11,13 @@ import {
   PREVIEW_PREFIX,
   CAPTION_YET_NOT_SCANNED
 } from '../config/constants.json';
-import { EXIF } from '../config/source_type.json';
-import { applicationUserAgent, randomDigit } from './utils.js';
+import { EXIF, AI_GENERATED } from '../config/source_type.json';
+import { applicationUserAgent, randomDigit, getAppFilesDir } from './utils.js';
 import { run as addTag } from '../api/sqlite_api/add_tag.js';
+import { run as markAsUnSafe } from '../api/sqlite_api/update_file_is_safe_field.js';
 import urlParser from 'url';
+import { extractAIMetadata } from './extract_neuro_metadata.js';
+import booruTagList from '../config/danbooru_tags.json';
 
 const PREVIEW_WIDTH = 140;
 
@@ -23,11 +26,11 @@ class FileImporter {
     this.db = db;
   }
   getStorageDirectoryPath() {
-    let currentDirPath = join(dirname(app.getPath('exe')), 'storage');
+    let currentDirPath = path.join(getAppFilesDir(app, path), 'storage');
     return config.get('storage_dir') || currentDirPath;
   }
   generateStorageDirPathForFile() {
-    return join(
+    return path.join(
       this.getStorageDirectoryPath(),
       randomDigit().toString(),
       randomDigit().toString()
@@ -38,14 +41,53 @@ class FileImporter {
       new Date().getTime() +
       randomDigit() +
       randomDigit() +
-      extname(absolutePath)
+      path.extname(absolutePath)
     );
   }
+  /**
+   * Parse prompt string and save valuable tokens as tags
+   * @param {Number} file_id
+   * @param {string} prompt
+   * @returns {{unsafe?:boolean}}
+   */
+  extractAIPromptTags(file_id, prompt) {
+    let unsafe = undefined;
+    const tags = prompt
+      .split(',')
+      .map((s) =>
+        s
+          .trim()
+          .replaceAll(' ', '_')
+          .replaceAll('\\(', '(')
+          .replaceAll('\\)', ')')
+      );
+    let locale = 'en'; // just default
+    let source_type = AI_GENERATED;
+    for (let i in tags) {
+      let booruTag = booruTagList.find((t) => t.name === tags[i]);
+      if (booruTag) {
+        if (booruTag.unsafe) unsafe = true;
+        let prefix = '';
+        if (booruTag.category === 3) prefix = 'series:';
+        if (booruTag.category === 4) prefix = 'character:';
+        // Add only if find the tag
+        addTag({}, this.db, file_id, prefix + tags[i], locale, source_type);
+      }
+    }
+    return { unsafe };
+  }
+  /**
+   * Extract tag from exif and save any of them
+   * @param {Number} file_id
+   * @param {object} exif
+   * @returns {{unsafe?:boolean}}
+   */
   extractExifTags(file_id, exif) {
     // try to extract exif tags
     if (!exif) {
       return false;
     }
+    let unsafe = undefined;
     let tags = [];
     if (exif.Artist) {
       tags.push(`creator:${exif.Artist}`);
@@ -70,8 +112,17 @@ class FileImporter {
     //save keywords
     let source_type = EXIF;
     for (let i in tags) {
-      addTag({}, this.db, file_id, tags[i], locale, source_type);
+      let prefix = '';
+      let booruTag = booruTagList.find((t) => t.name === tags[i]);
+      if (booruTag) {
+        if (booruTag.unsafe) unsafe = true;
+        if (booruTag.category === 3) prefix = 'series:';
+        if (booruTag.category === 4) prefix = 'character:';
+      }
+      addTag({}, this.db, file_id, prefix + tags[i], locale, source_type);
     }
+
+    return { unsafe };
   }
   async getPHash(absolutePath, fileImage) {
     try {
@@ -84,27 +135,41 @@ class FileImporter {
   getExif(absolutePath) {
     let fileBuffer = readFileSync(absolutePath);
     try {
-      return create(fileBuffer).parse(fileBuffer).tags;
+      return create(fileBuffer).parse(fileBuffer)?.tags || {};
     } catch (_error) {
       console.log(`Cannot extract exif from ${absolutePath}`);
       return {};
     }
   }
+  /**
+   *
+   * @param {object} exif
+   * @param {string} newFilePathInStorage
+   * @param {string} newPreviewPathInStorage
+   * @param {string} absolutePath
+   * @param {string} imagehash
+   * @param {object} metadata
+   * @param {import('./extract_neuro_metadata.js').AIMetadata} AIMetadata
+   * @param {Number} birthtime
+   * @returns
+   */
   async insertFile(
     exif,
     newFilePathInStorage,
     newPreviewPathInStorage,
     absolutePath,
     imagehash,
-    metadata
+    metadata,
+    AIMetadata,
+    birthtime
   ) {
     let { file_id } = await this.db.query(
-      'INSERT INTO files (full_path, preview_path, source_path, source_filename, imagehash, width, height, caption, exif_make, exif_model, exif_latitude, exif_longitude, exif_create_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id AS file_id;',
+      'INSERT INTO files (full_path, preview_path, source_path, source_filename, imagehash, width, height, caption, exif_make, exif_model, exif_latitude, exif_longitude, exif_create_date, neuro_prompt, neuro_negativePrompt, neuro_steps, neuro_sampler, neuro_cfgScale, neuro_seed, neuro_model, neuro_loras, file_birthtime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id AS file_id;',
       [
         newFilePathInStorage,
         newPreviewPathInStorage,
         absolutePath,
-        basename(absolutePath),
+        path.basename(absolutePath),
         imagehash,
         metadata.width,
         metadata.height,
@@ -113,7 +178,16 @@ class FileImporter {
         exif.Model,
         exif.GPSLatitude,
         exif.GPSLongitude,
-        exif.CreateDate
+        exif.CreateDate,
+        AIMetadata.prompt,
+        AIMetadata.negativePrompt,
+        AIMetadata.steps,
+        AIMetadata.sampler,
+        AIMetadata.cfgScale,
+        AIMetadata.seed,
+        AIMetadata.model,
+        JSON.stringify(AIMetadata.loras),
+        birthtime
       ]
     );
     return file_id;
@@ -124,14 +198,16 @@ class FileImporter {
     const storageDirPathForFile = this.generateStorageDirPathForFile();
     const filename = this.generateFilename(absolutePath);
     mkdirSync(storageDirPathForFile, { recursive: true });
-    const newFilePathInStorage = join(storageDirPathForFile, filename);
+    const newFilePathInStorage = path.join(storageDirPathForFile, filename);
 
     copyFile(absolutePath, newFilePathInStorage, () => {});
     const image = sharp(fileImage);
     const metadata = await image.metadata();
+    const AIMetadata = await extractAIMetadata(newFilePathInStorage);
+    console.log('extracted AI metadata', AIMetadata);
 
     // make preview
-    const newPreviewPathInStorage = join(
+    const newPreviewPathInStorage = path.join(
       storageDirPathForFile,
       PREVIEW_PREFIX + filename
     );
@@ -140,7 +216,8 @@ class FileImporter {
     return {
       metadata: metadata,
       newPreviewPathInStorage: newPreviewPathInStorage,
-      newFilePathInStorage: newFilePathInStorage
+      newFilePathInStorage: newFilePathInStorage,
+      AIMetadata: AIMetadata
     };
   }
   async importFileToStorage(absolutePath) {
@@ -153,9 +230,14 @@ class FileImporter {
     if (!imagehash) {
       return false;
     }
+    const { birthtime } = statSync(absolutePath);
 
-    let { newFilePathInStorage, newPreviewPathInStorage, metadata } =
-      await this.moveFileToMainStorage(fileImage, absolutePath);
+    let {
+      newFilePathInStorage,
+      newPreviewPathInStorage,
+      metadata,
+      AIMetadata
+    } = await this.moveFileToMainStorage(fileImage, absolutePath);
 
     let exif = this.getExif(absolutePath);
     let file_id = await this.insertFile(
@@ -164,10 +246,26 @@ class FileImporter {
       newPreviewPathInStorage,
       absolutePath,
       imagehash,
-      metadata
+      metadata,
+      AIMetadata,
+      birthtime
     );
+    let exifUnsafe = undefined;
     if (config.get('import_exif_tags_as_tags')) {
-      this.extractExifTags(file_id, exif);
+      ({ unsafe: exifUnsafe } = this.extractExifTags(file_id, exif));
+    }
+    const { unsafe: AIUnsafe } = this.extractAIPromptTags(
+      file_id,
+      AIMetadata.prompt
+    );
+    if (exifUnsafe || AIUnsafe) {
+      markAsUnSafe({}, this.db, file_id, false);
+    }
+    if (AIMetadata.model) {
+      const modelTagName = AIMetadata.model
+        .replace(/.*[\\/]/, '')
+        .replace(/\.[^.]+$/, '');
+      addTag({}, this.db, file_id, 'model:' + modelTagName, 'en', AI_GENERATED);
     }
 
     return { full_path: newFilePathInStorage, file_id: file_id };
@@ -186,13 +284,13 @@ class FileImporter {
       ).buffer()
     );
     const storageRootDir = this.getStorageDirectoryPath();
-    const storageDirPathForFile = join(storageRootDir, 'tmp');
+    const storageDirPathForFile = path.join(storageRootDir, 'tmp');
     mkdirSync(storageDirPathForFile, {
       recursive: true
     });
-    let tmpFilePath = join(
+    let tmpFilePath = path.join(
       storageDirPathForFile,
-      parse(url).name.split('?')[0] + '.png'
+      path.parse(url).name.split('?')[0] + '.png'
     );
     await sharp(buffer).toFormat('png').toFile(tmpFilePath);
     return tmpFilePath;
@@ -203,11 +301,11 @@ class FileImporter {
       return false;
     }
     const storageRootDir = this.getStorageDirectoryPath();
-    const storageDirPathForFile = join(storageRootDir, 'tmp');
+    const storageDirPathForFile = path.join(storageRootDir, 'tmp');
     mkdirSync(storageDirPathForFile, {
       recursive: true
     });
-    let tmpFilePath = join(
+    let tmpFilePath = path.join(
       storageDirPathForFile,
       new Date().getTime() +
         randomDigit() +

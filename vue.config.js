@@ -22,11 +22,21 @@ module.exports = defineConfig({
       customFileProtocol: './',
       externals: ['tesseract.js'],
       preload: 'src/preload.js',
+      chainWebpackMainProcess: (config) => {
+        config.module
+          .rule('babel')
+          .test(/\.js$/)
+          .use('babel-loader')
+          .loader('babel-loader')
+          .options({
+            plugins: ['@babel/plugin-transform-optional-chaining']
+          });
+      },
       builderOptions: {
         appId: 'com.electron.Tegownitsa',
         asarUnpack: ['**/node_modules/sharp/**'],
         extraFiles: [
-          ...['./libs/autotagger/.gitkeep'],
+          ...['./libs/wd_tagger/server.py', './libs/wd_tagger/wd_predictor.py'],
           ...(process.platform == 'win32' ? ['./libs/sqlite/fuzzy.dll'] : []),
           ...(process.platform == 'darwin' ? ['./libs/sqlite/fuzzy.dylib'] : [])
         ],

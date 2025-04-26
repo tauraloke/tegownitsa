@@ -33,7 +33,8 @@
     "help": "Help",
     "load_tags_from_saucenao": "Load tags from Saucenao for current files",
     "check_updates": "Check updates",
-    "load_tags_from_kheina": "Load tags from Kheina for current files..."
+    "load_tags_from_kheina": "Load tags from Kheina for current files...",
+    "ai_detect_tags": "Detect tags by AI"
   },
   "about": {
     "copyright": "Created by Tauraloke Esteru and Github contributors.",
@@ -60,8 +61,6 @@
     "restore": "Restore",
     "add": "Add",
     "back": "Go back",
-    "predict_tags": "Predict tags by neuronet",
-    "hide_predicted_tags": "Hide predictions",
     "previous": "To previous one",
     "next": "To next one"
   },
@@ -111,14 +110,21 @@
     "click_to_floppy_to_save_changes": "Click to floppy to save changes",
     "sources": "Sources",
     "caption_updated_for_file_x": "Caption updated for file #{0}",
-    "wait_for_neuronet_files": "No data found to predictions. You can wait for loading neural network files or cancel its.",
-    "neuronet_files_still_loading": "Files for a neuronet are still loading.",
     "fullsizes": "Found copies in the Internet",
     "size_parameters": "Image sizes",
     "improve_file": "Download and change",
-    "cannot_process_by_neuronet": "Something wrong - cannot recognize tags",
     "remove_file": "Remove the file",
-    "wrong_file_removing": "Something wrong while file was removing"
+    "wrong_file_removing": "Something wrong while file was removing",
+    "ai_metadata": "Detected AI metadata",
+    "ai_prompt": "Positive prompt",
+    "ai_negative_prompt": "Negative prompt",
+    "ai_steps": "Steps",
+    "ai_sampler": "Sampler",
+    "ai_cfg_scale": "CFG",
+    "neuro_seed": "Generation seed",
+    "neuro_model": "Model",
+    "birthtime": "File birth time",
+    "neuro_loras": "LoRAs"
   },
   "settings": {
     "application": "Application",
@@ -220,7 +226,8 @@
       "CHARACTER": "Character",
       "STYLE": "Style",
       "GENRE": "Genre",
-      "SPECIE": "Specie"
+      "SPECIE": "Specie",
+      "MODEL": "AI Generative Model"
     },
     "name": "Name",
     "score": "Score",
