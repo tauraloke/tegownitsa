@@ -52,7 +52,7 @@ class FileImporter {
    */
   extractAIPromptTags(file_id, prompt = '') {
     let unsafe = undefined;
-    const tags =
+    let tags =
       prompt
         ?.split(',')
         ?.map((s) =>
@@ -63,6 +63,7 @@ class FileImporter {
             .replaceAll('\\)', ')')
             .toLowerCase()
         ) || [];
+    if (JSON.stringify(tags) === '[""]') tags = [];
 
     let locale = 'en'; // just default
     let source_type = AI_GENERATED;
