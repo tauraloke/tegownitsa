@@ -15,5 +15,6 @@ module.exports = [
   { mask: /twitter\.com/, locale: 'en', name: 'twitter' },
   { mask: /furrynetwork\.com/, locale: 'en', name: 'furrynetwork' },
   { mask: /reactor\.cc\//, locale: 'ru', name: 'reactor' },
-  { mask: /civitai\.com\//, locale: 'en', name: 'civitai' }
+  { mask: /civitai\.com\//, locale: 'en', name: 'civitai' },
+  { mask: /aibooru\.online\//, locale: 'en', name: 'aibooru' }
 ];

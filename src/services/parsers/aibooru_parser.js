@@ -2,7 +2,7 @@ import BasicJsonMoebooruParser from './basic_json_moebooru_parser.js';
 // eslint-disable-next-line no-unused-vars
 import { ResponseImage } from './parser_response.js';
 
-export default class DanbooruParser extends BasicJsonMoebooruParser {
+export default class AibooruParser extends BasicJsonMoebooruParser {
   getItemId() {
     if (this.itemId) {
       return this.itemId;
@@ -21,7 +21,7 @@ export default class DanbooruParser extends BasicJsonMoebooruParser {
     throw `Cannot parse url ${this.url}`;
   }
   getFetchUrl() {
-    return `https://danbooru.donmai.us/posts/${this.getItemId()}.json`;
+    return `https://aibooru.online/posts/${this.getItemId()}.json`;
   }
   async extractTags() {
     try {
@@ -32,7 +32,8 @@ export default class DanbooruParser extends BasicJsonMoebooruParser {
         tag_string_character: 'character:',
         tag_string_copyright: 'series:',
         tag_string_artist: 'creator:',
-        tag_string_meta: 'meta:'
+        tag_string_meta: 'meta:',
+        tag_string_model: 'model:'
       };
       let groupKeys = Object.keys(groups);
       for (let index in groupKeys) {
