@@ -13,5 +13,6 @@ module.exports = [
   { mask: /furaffinity\.net\//, name: 'furaffinity' },
   { mask: /e-shuushuu\.net\//, name: 'eshuushuu' },
   { mask: /e621\.net\//, name: 'e621' },
-  { mask: /reactor\.cc\//, name: 'reactor', multipleImagesPerPost: true }
+  { mask: /reactor\.cc\//, name: 'reactor', multipleImagesPerPost: true },
+  { mask: /image\.civitai\.com\//, name: 'civitai' }
 ];
