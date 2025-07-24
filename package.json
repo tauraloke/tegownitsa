@@ -55,7 +55,7 @@
     "sqlite3": "^5.1.7",
     "tesseract.js": "^3.0.3",
     "vue": "^3.2.40",
-    "vue-i18n": "^9.2.2",
+    "vue-i18n": "^11.1.11",
     "vuetify": "^3.0.0-beta.13",
     "webfontloader": "^1.0.0"
   },
